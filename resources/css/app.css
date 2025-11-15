@@ -1,0 +1,13 @@
+/* Tabler Core */
+@import '@tabler/core/dist/css/tabler.min.css';
+@import '@tabler/core/dist/css/tabler-vendors.min.css';
+
+@media (min-width: 992px) {
+
+  :host,
+  :root {
+    /* margin-left: calc(100vw - 100%); */
+    margin-right: 0;
+    margin-left: 0 !important
+  }
+}

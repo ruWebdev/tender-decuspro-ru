@@ -1,0 +1,218 @@
+openapi: 3.1.0
+info:
+  title: Tender Platform API
+  version: 1.0.0
+  description: |
+    JSON API контракты для основных AJAX/интеграционных эндпоинтов
+servers:
+  - url: https://tender.dp.ru
+paths:
+  /deepseek/parse:
+    post:
+      summary: Отправка текста в DeepSeek для парсинга позиций (черновой API)
+      tags: [DeepSeek]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [raw_text]
+              properties:
+                raw_text:
+                  type: string
+                  description: Текстовый блок с позициями
+      responses:
+        '200':
+          description: Идентификатор асинхронной задачи
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /deepseek/result/{jobId}:
+    get:
+      summary: Получение результата парсинга DeepSeek
+      tags: [DeepSeek]
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Массив распознанных позиций
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeepSeekItem'
+  /tenders/autofill:
+    post:
+      summary: Автозаполнение позиций тендера на основе текста (DeepSeek)
+      tags: [Tenders]
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text:
+                  type: string
+                  description: Список строк вида "товар количество ед.изм"
+      responses:
+        '200':
+          description: Автоматически распознанные позиции
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TenderItemAutofill'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /proposals/{proposal}/total:
+    get:
+      summary: Получение итоговой суммы предложения
+      tags: [Proposals]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: proposal
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Итоговая сумма
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                    format: float
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /tenders/{tender}/best-prices:
+    get:
+      summary: Лучшие цены по позициям для поставщика
+      tags: [Tenders]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: tender
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Лучшие цены и цены текущего поставщика
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tender:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      title:
+                        type: string
+                  items:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/BestPriceItem'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: XSRF-TOKEN
+  responses:
+    ValidationError:
+      description: Ошибка валидации
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    type: integer
+    Forbidden:
+      description: Доступ запрещён
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    type: integer
+  schemas:
+    DeepSeekItem:
+      type: object
+      properties:
+        title:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+          nullable: true
+    TenderItemAutofill:
+      type: object
+      properties:
+        title:
+          type: string
+        quantity:
+          type: string
+        unit:
+          type: string
+          nullable: true
+    BestPriceItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        best_price:
+          type: number
+          nullable: true
+        my_price:
+          type: number
+          nullable: true
+        difference:
+          type: string
+          nullable: true
