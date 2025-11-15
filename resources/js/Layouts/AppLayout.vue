@@ -28,9 +28,12 @@ const logout = () => {
     <header>
       <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom mb-4">
         <div class="container">
-          <Link href="/" class="navbar-brand d-flex align-items-center">
-          <img src="/tabler/static/logo.svg" alt="Логотип" width="110" height="32" class="me-2" />
-          </Link>
+          <div style="display:none">
+            <Link href="/" class="navbar-brand d-flex align-items-center">
+            Tender
+            </Link>
+          </div>
+
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
             aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
