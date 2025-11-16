@@ -51,4 +51,19 @@ class TenderItem extends Model
     {
         return $this->hasMany(ProposalItem::class);
     }
+
+    public function getTitleAttribute($value): string
+    {
+        $locale = app()->getLocale();
+
+        if ($locale === 'en' && $this->name_en) {
+            return $this->name_en;
+        }
+
+        if (in_array($locale, ['cn', 'zh'], true) && $this->name_cn) {
+            return $this->name_cn;
+        }
+
+        return $value;
+    }
 }

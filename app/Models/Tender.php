@@ -20,6 +20,8 @@ class Tender extends Model
     protected $fillable = [
         'customer_id',
         'title',
+        'title_en',
+        'title_cn',
         'description',
         'description_en',
         'description_cn',
@@ -68,5 +70,20 @@ class Tender extends Model
     public function winner(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'winner_proposal_id');
+    }
+
+    public function getTitleAttribute($value): string
+    {
+        $locale = app()->getLocale();
+
+        if ($locale === 'en' && $this->title_en) {
+            return $this->title_en;
+        }
+
+        if (in_array($locale, ['cn', 'zh'], true) && $this->title_cn) {
+            return $this->title_cn;
+        }
+
+        return $value;
     }
 }

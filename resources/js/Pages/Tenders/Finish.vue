@@ -3,8 +3,10 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
+const { t } = useTranslations();
 
 const tender = computed(() => page.props.tender);
 const proposals = computed(() => page.props.proposals ?? []);
@@ -103,24 +105,24 @@ onMounted(() => {
 <template>
     <AppLayout>
         <div class="container mb-4">
-            <h1 class="h2 mb-3">Выбор победителя</h1>
+            <h1 class="h2 mb-3">{{ t('tenders.finish_title') }}</h1>
 
             <div v-if="tender" class="mb-3">
-                <p><strong>Закупка:</strong> {{ tender.title }}</p>
+                <p><strong>{{ t('tenders.tender_label') }}</strong> {{ tender.title }}</p>
             </div>
 
             <div v-if="loadingTotals" class="mb-3">
-                Загрузка итоговых сумм предложений...
+                {{ t('tenders.loading_totals') }}
             </div>
 
             <div v-if="rows.length" class="table-responsive">
                 <table class="table table-vcenter card-table">
                     <thead>
                         <tr>
-                            <th>Поставщик</th>
-                            <th>Итоговая сумма</th>
-                            <th>Разница с лидером</th>
-                            <th class="w-25">Действие</th>
+                            <th>{{ t('tenders.col_supplier') }}</th>
+                            <th>{{ t('tenders.col_total') }}</th>
+                            <th>{{ t('tenders.col_delta_leader') }}</th>
+                            <th class="w-25">{{ t('tenders.col_finish_actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -143,9 +145,9 @@ onMounted(() => {
                                     :disabled="finishingId === row.id">
                                     <span v-if="finishingId === row.id">
                                         <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                        Выбор...
+                                        {{ t('tenders.button_selecting') }}
                                     </span>
-                                    <span v-else>Выбрать победителем</span>
+                                    <span v-else>{{ t('tenders.button_select_winner') }}</span>
                                 </button>
                             </td>
                         </tr>
@@ -154,7 +156,7 @@ onMounted(() => {
             </div>
 
             <div v-else>
-                Предложения для выбора победителя отсутствуют.
+                {{ t('tenders.no_proposals_for_finish') }}
             </div>
         </div>
     </AppLayout>

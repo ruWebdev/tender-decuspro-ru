@@ -1,6 +1,8 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const props = defineProps({
   tenders: {
@@ -9,22 +11,39 @@ const props = defineProps({
   },
 });
 
+const page = usePage();
+const { t } = useTranslations();
+
+const currentLocale = computed(() => page.props.locale || 'ru');
+
+const jsLocale = computed(() => {
+  if (currentLocale.value === 'en') {
+    return 'en-US';
+  }
+
+  if (currentLocale.value === 'cn') {
+    return 'zh-CN';
+  }
+
+  return 'ru-RU';
+});
+
 const formatDate = (value) => {
   if (!value) {
     return '-';
   }
 
-  return new Date(value).toLocaleString();
+  return new Date(value).toLocaleString(jsLocale.value);
 };
 </script>
 
 <template>
   <AppLayout>
     <div class="container mb-4">
-      <h1 class="h2 mb-3">Закупки</h1>
+      <h1 class="h2 mb-3">{{ t('tenders.index_title') }}</h1>
 
       <div class="mb-3 d-flex justify-content-between align-items-center">
-        <span class="text-muted">Всего закупок: {{ props.tenders.length }}</span>
+        <span class="text-muted">{{ t('tenders.index_total') }} {{ props.tenders.length }}</span>
         <Link :href="route('tenders.create')" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
           stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -32,14 +51,14 @@ const formatDate = (value) => {
           <path d="M12 5l0 14" />
           <path d="M5 12l14 0" />
         </svg>
-        Создать закупку
+        {{ t('tenders.button_create') }}
         </Link>
       </div>
 
       <div v-if="props.tenders.length === 0" class="alert alert-info" role="alert">
         <div class="d-flex">
           <div>
-            Закупки пока не созданы.
+            {{ t('tenders.index_empty') }}
           </div>
         </div>
       </div>
@@ -48,12 +67,12 @@ const formatDate = (value) => {
         <table class="table table-vcenter card-table">
           <thead>
             <tr>
-              <th>Название</th>
-              <th>Дата создания</th>
-              <th>Актуально до</th>
-              <th>Статус</th>
-              <th>Позиций</th>
-              <th class="w-25">Действие</th>
+              <th>{{ t('tenders.col_title') }}</th>
+              <th>{{ t('tenders.col_created_at') }}</th>
+              <th>{{ t('tenders.col_valid_until') }}</th>
+              <th>{{ t('tenders.col_status') }}</th>
+              <th>{{ t('tenders.col_items') }}</th>
+              <th class="w-25">{{ t('tenders.col_actions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -67,21 +86,21 @@ const formatDate = (value) => {
               <td>{{ formatDate(tender.valid_until) }}</td>
               <td>
                 <span v-if="tender.is_finished" class="badge bg-success text-light">Завершен</span>
-                <span v-else class="badge bg-primary text-light">Открыт</span>
+                <span v-else class="badge bg-primary text-light">{{ t('tenders.status_open') }}</span>
               </td>
               <td>{{ tender.items_count ?? 0 }}</td>
               <td>
                 <div class="btn-list flex-nowrap">
                   <Link :href="route('tenders.show', { tender: tender.id })" class="btn btn-sm btn-ghost-primary">
-                  Открыть
+                  {{ t('tenders.action_open') }}
                   </Link>
                   <Link v-if="!tender.is_finished" :href="route('proposals.index.customer', { tender: tender.id })"
                     class="btn btn-sm btn-ghost-info">
-                  Предложения
+                  {{ t('tenders.action_proposals') }}
                   </Link>
                   <Link :href="route('tenders.comparison', { tender: tender.id })"
                     class="btn btn-sm btn-ghost-secondary">
-                  Сравнить
+                  {{ t('tenders.action_compare') }}
                   </Link>
                 </div>
               </td>

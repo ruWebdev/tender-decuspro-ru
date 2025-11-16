@@ -1,8 +1,10 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
+const { t } = useTranslations();
 
 const authUser = computed(() => page.props.auth?.user || null);
 const isCustomer = computed(() => authUser.value?.role === 'customer');
@@ -43,19 +45,19 @@ const logout = () => {
           <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
               <li class="nav-item">
-                <Link href="/" class="nav-link">Главная</Link>
+                <Link href="/" class="nav-link">{{ t('nav.home') }}</Link>
               </li>
 
               <li v-if="isCustomer" class="nav-item">
-                <Link href="/tenders" class="nav-link">Мои закупки</Link>
+                <Link href="/tenders" class="nav-link">{{ t('nav.my_tenders') }}</Link>
               </li>
 
               <li v-if="isSupplier" class="nav-item">
-                <Link href="/" class="nav-link">Активные закупки</Link>
+                <Link href="/" class="nav-link">{{ t('nav.active_tenders') }}</Link>
               </li>
 
               <li v-if="isSupplier" class="nav-item">
-                <Link href="/proposals" class="nav-link">Мои предложения</Link>
+                <Link href="/proposals" class="nav-link">{{ t('nav.my_proposals') }}</Link>
               </li>
             </ul>
 
@@ -72,21 +74,21 @@ const logout = () => {
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
-                    <Link :href="route('dashboard')" class="dropdown-item">Кабинет</Link>
+                    <Link :href="route('dashboard')" class="dropdown-item">{{ t('nav.dashboard') }}</Link>
                   </li>
                   <li v-if="isSupplier">
-                    <Link :href="route('profile.supplier')" class="dropdown-item">Профиль компании</Link>
+                    <Link :href="route('profile.supplier')" class="dropdown-item">{{ t('nav.supplier_profile') }}</Link>
                   </li>
                   <li>
                     <hr class="dropdown-divider">
                   </li>
                   <li>
-                    <button @click="logout" class="dropdown-item">Выход</button>
+                    <button @click="logout" class="dropdown-item">{{ t('nav.logout') }}</button>
                   </li>
                 </ul>
               </div>
               <div v-else>
-                <Link :href="route('login')" class="btn btn-primary btn-sm">Вход</Link>
+                <Link :href="route('login')" class="btn btn-primary btn-sm">{{ t('nav.login') }}</Link>
               </div>
             </div>
           </div>
@@ -101,7 +103,7 @@ const logout = () => {
     <footer class="border-top py-3 mt-4">
       <div class="container d-flex justify-content-between align-items-center small text-muted">
         <span>© {{ new Date().getFullYear() }} Tender Platform</span>
-        <span>Текущий язык: {{ locale }}</span>
+        <span>{{ t('nav.current_language') }}: {{ locale }}</span>
       </div>
     </footer>
   </div>

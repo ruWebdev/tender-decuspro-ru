@@ -1,8 +1,11 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
+const { t } = useTranslations();
+
 const tender = page.props.tender;
 const items = page.props.items || {};
 
@@ -20,20 +23,20 @@ const formatNumber = (value) => {
 <template>
     <AppLayout>
         <div class="container mb-4">
-            <h1 class="h2 mb-3">Лучшие цены по позициям</h1>
+            <h1 class="h2 mb-3">{{ t('tenders.best_prices_title') }}</h1>
 
             <div v-if="tender" class="mb-3">
-                <p><strong>Закупка:</strong> {{ tender.title }}</p>
+                <p><strong>{{ t('tenders.tender_label') }}</strong> {{ tender.title }}</p>
             </div>
 
             <div v-if="rows.length" class="table-responsive">
                 <table class="table table-vcenter card-table">
                     <thead>
                         <tr>
-                            <th>Позиция</th>
-                            <th>Лучшая цена</th>
-                            <th>Ваша цена</th>
-                            <th>Разница</th>
+                            <th>{{ t('tenders.col_item_title') }}</th>
+                            <th>{{ t('tenders.col_best_price') }}</th>
+                            <th>{{ t('tenders.col_my_price') }}</th>
+                            <th>{{ t('tenders.col_difference') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,7 +60,7 @@ const formatNumber = (value) => {
             </div>
 
             <div v-else>
-                Нет данных по лучшим ценам.
+                {{ t('tenders.no_best_prices') }}
             </div>
         </div>
     </AppLayout>

@@ -18,7 +18,7 @@ class TenderController extends Controller
 
         $tenders = Tender::query()
             ->where('customer_id', $user->id)
-            ->select('id', 'title', 'status', 'valid_until', 'created_at')
+            ->select('id', 'title', 'title_en', 'title_cn', 'status', 'valid_until', 'created_at')
             ->withCount('items')
             ->orderByDesc('created_at')
             ->get();

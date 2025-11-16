@@ -16,7 +16,7 @@ class HomeController extends Controller
         $tenders = Tender::query()
             ->where('status', 'open')
             ->where('is_finished', false)
-            ->select('id', 'title', 'created_at', 'valid_until')
+            ->select('id', 'title', 'title_en', 'title_cn', 'created_at', 'valid_until')
             ->withCount('items')
             ->orderByDesc('created_at')
             ->limit(10)

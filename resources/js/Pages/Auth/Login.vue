@@ -1,6 +1,7 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useTranslations } from '@/Composables/useTranslations';
 
 defineProps({
     canResetPassword: {
@@ -10,6 +11,8 @@ defineProps({
         type: String,
     },
 });
+
+const { t } = useTranslations();
 
 const form = useForm({
     email: '',
@@ -27,18 +30,19 @@ const submit = () => {
 <template>
     <GuestLayout>
 
-        <Head title="Вход" />
+        <Head :title="t('auth.login_title')" />
 
         <div class="card card-md">
             <div class="card-body">
-                <h2 class="h2 text-center mb-4">Вход в аккаунт</h2>
+                <h2 class="h2 text-center mb-4">{{ t('auth.login_heading') }}</h2>
                 <div v-if="status" class="alert alert-success" role="alert">{{ status }}</div>
 
                 <form @submit.prevent="submit" autocomplete="off" novalidate>
                     <div class="mb-3">
-                        <label class="form-label">Электронная почта</label>
-                        <input type="email" class="form-control" placeholder="email@example.com" autocomplete="off"
-                            v-model="form.email" :class="{ 'is-invalid': form.errors.email }" required autofocus>
+                        <label class="form-label">{{ t('auth.login_email_label') }}</label>
+                        <input type="email" class="form-control" :placeholder="t('auth.login_email_placeholder')"
+                            autocomplete="off" v-model="form.email" :class="{ 'is-invalid': form.errors.email }"
+                            required autofocus>
                         <div class="invalid-feedback" v-if="form.errors.email">
                             {{ form.errors.email }}
                         </div>
@@ -46,13 +50,14 @@ const submit = () => {
 
                     <div class="mb-2">
                         <label class="form-label">
-                            Пароль
+                            {{ t('auth.login_password_label') }}
                         </label>
                         <div class="input-group input-group-flat">
-                            <input type="password" class="form-control" placeholder="Ваш пароль" autocomplete="off"
+                            <input type="password" class="form-control"
+                                :placeholder="t('auth.login_password_placeholder')" autocomplete="off"
                                 v-model="form.password" :class="{ 'is-invalid': form.errors.password }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" title="Показать пароль" data-bs-toggle="tooltip">
+                                <a href="#" class="link-secondary" data-bs-toggle="tooltip">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +77,7 @@ const submit = () => {
                     <div class="mb-2 mt-4">
                         <label class="form-check">
                             <input type="checkbox" class="form-check-input" v-model="form.remember" />
-                            <span class="form-check-label">Запомнить меня на этом устройстве</span>
+                            <span class="form-check-label">{{ t('auth.login_remember_me') }}</span>
                         </label>
                     </div>
 
@@ -80,7 +85,7 @@ const submit = () => {
                         <button type="submit" class="btn btn-primary w-100" :disabled="form.processing">
                             <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"
                                 role="status"></span>
-                            Войти
+                            {{ t('auth.login_button') }}
                         </button>
                     </div>
                 </form>
@@ -88,8 +93,8 @@ const submit = () => {
         </div>
 
         <div class="text-center text-muted mt-3">
-            Еще нет аккаунта?
-            <Link :href="route('register')" tabindex="-1">Зарегистрироваться</Link>
+            {{ t('auth.login_no_account') }}
+            <Link :href="route('register')" tabindex="-1">{{ t('auth.login_register_link') }}</Link>
         </div>
     </GuestLayout>
 </template>

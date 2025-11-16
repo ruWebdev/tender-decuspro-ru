@@ -2,8 +2,10 @@
 import { computed } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
+const { t } = useTranslations();
 
 const tender = computed(() => page.props.tender);
 const proposal = computed(() => page.props.proposal);
@@ -73,28 +75,28 @@ const submitProposal = () => {
 <template>
     <AppLayout>
         <div class="container mb-4">
-            <h1 class="h2 mb-3">Участие в закупке</h1>
+            <h1 class="h2 mb-3">{{ t('proposals.participate_title') }}</h1>
 
             <div v-if="tender">
-                <p><strong>Закупка:</strong> {{ tender.title }}</p>
-                <p><strong>Срок подачи предложений до:</strong> {{ tender.valid_until }}</p>
+                <p><strong>{{ t('tenders.tender_label') }}</strong> {{ tender.title }}</p>
+                <p><strong>{{ t('proposals.deadline_label') }}</strong> {{ tender.valid_until }}</p>
             </div>
 
             <div v-if="proposal">
-                <p><strong>Статус предложения:</strong> {{ proposal.status }}</p>
+                <p><strong>{{ t('proposals.field_status') }}</strong> {{ proposal.status }}</p>
             </div>
 
             <div v-if="tender?.is_finished" class="mb-3">
                 <div v-if="winner && winner.id === proposal?.id">
-                    <strong>🎉 Вы победили!</strong>
+                    <strong>{{ t('proposals.result_won') }}</strong>
                 </div>
                 <div v-else>
-                    <strong>⚠️ Тендер завершён. Ваше предложение проиграло.</strong>
+                    <strong>{{ t('proposals.result_lost') }}</strong>
                 </div>
             </div>
 
             <div v-if="isExpired" class="mb-3">
-                <strong>Срок подачи предложений завершён</strong>
+                <strong>{{ t('proposals.deadline_passed') }}</strong>
             </div>
 
             <form @submit.prevent class="card">
@@ -103,11 +105,11 @@ const submitProposal = () => {
                         <table class="table table-vcenter card-table">
                             <thead>
                                 <tr>
-                                    <th>Позиция</th>
-                                    <th>Количество</th>
-                                    <th>Ед. изм.</th>
-                                    <th>Цена</th>
-                                    <th>Комментарий</th>
+                                    <th>{{ t('proposals.col_item_title') }}</th>
+                                    <th>{{ t('proposals.col_quantity') }}</th>
+                                    <th>{{ t('proposals.col_unit') }}</th>
+                                    <th>{{ t('proposals.col_price') }}</th>
+                                    <th>{{ t('proposals.col_comment') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,35 +143,35 @@ const submitProposal = () => {
                 <div class="card-footer text-end">
                     <button type="button" @click="saveDraft" class="btn btn-secondary me-2"
                         :disabled="isFormDisabled || form.processing || !canSaveDraft">
-                        Сохранить как черновик
+                        {{ t('proposals.button_save_draft') }}
                     </button>
 
                     <button type="button" @click="submitProposal" class="btn btn-primary"
                         :disabled="isFormDisabled || form.processing || !canSubmit">
-                        Отправить предложение
+                        {{ t('proposals.button_submit') }}
                     </button>
                 </div>
             </form>
 
             <div v-if="tender?.is_finished && winner" class="mt-4 card">
                 <div class="card-body">
-                    <h2 class="h4 mb-3">Результаты тендера</h2>
-                    <p class="mb-3"><strong>Финальная цена победителя:</strong> <span
+                    <h2 class="h4 mb-3">{{ t('proposals.results_title') }}</h2>
+                    <p class="mb-3"><strong>{{ t('proposals.results_final_price') }}</strong> <span
                             class="badge bg-success text-light">{{ winner.total?.toFixed(2) ?? '-' }}</span></p>
 
                     <div v-if="winner.items && winner.items.length" class="table-responsive">
                         <table class="table table-vcenter card-table">
                             <thead>
                                 <tr>
-                                    <th>Позиция</th>
-                                    <th>Цена победителя</th>
+                                    <th>{{ t('proposals.col_item_title') }}</th>
+                                    <th>{{ t('proposals.col_winner_price') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="item in winner.items" :key="item.tender_item_id">
                                     <td>
                                         {{form.items.find((i) => i.tender_item_id === item.tender_item_id)?.title
-                                            ?? 'Позиция'}}
+                                            ?? t('proposals.fallback_item')}}
                                     </td>
                                     <td><strong>{{ Number(item.price).toFixed(2) }}</strong></td>
                                 </tr>

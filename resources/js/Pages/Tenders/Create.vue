@@ -3,6 +3,9 @@ import { onBeforeUnmount, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { t } = useTranslations();
 
 const form = useForm({
   title: '',
@@ -36,7 +39,7 @@ const submit = () => {
 
 const autofill = async () => {
   if (!rawList.value.trim()) {
-    autofillMessage.value = 'Введите текст для разбора';
+    autofillMessage.value = t('tenders.autofill_failed');
     return;
   }
 
@@ -57,12 +60,12 @@ const autofill = async () => {
         unit: item.unit ?? '',
       }));
 
-      autofillMessage.value = 'Позиции заполнены автоматически';
+      autofillMessage.value = t('tenders.autofill_filled');
     } else {
-      autofillMessage.value = 'Не удалось распознать позиции из текста';
+      autofillMessage.value = t('tenders.autofill_failed');
     }
   } catch (error) {
-    autofillMessage.value = 'Ошибка при обращении к сервису автозаполнения';
+    autofillMessage.value = t('tenders.autofill_error');
   } finally {
     isAutofillLoading.value = false;
   }
@@ -76,13 +79,12 @@ onBeforeUnmount(() => {
 <template>
   <AppLayout>
     <div class="container mb-4">
-      <h1 class="h2 mb-3">Создание закупки</h1>
+      <h1 class="h2 mb-3">{{ t('tenders.create_title') }}</h1>
 
       <form @submit.prevent="submit" class="card">
         <div class="card-body">
-          <!-- Основные поля тендера -->
           <div class="mb-3">
-            <label class="form-label">Название закупки</label>
+            <label class="form-label">{{ t('tenders.label_title') }}</label>
             <input type="text" v-model="form.title" class="form-control" :class="{ 'is-invalid': form.errors.title }">
             <div v-if="form.errors.title" class="invalid-feedback">
               {{ form.errors.title }}
@@ -90,7 +92,7 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Описание</label>
+            <label class="form-label">{{ t('tenders.label_description') }}</label>
             <textarea rows="3" v-model="form.description" class="form-control"
               :class="{ 'is-invalid': form.errors.description }"></textarea>
             <div v-if="form.errors.description" class="invalid-feedback">
@@ -99,7 +101,7 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Скрытый комментарий</label>
+            <label class="form-label">{{ t('tenders.label_hidden_comment') }}</label>
             <textarea rows="3" v-model="form.hidden_comment" class="form-control"
               :class="{ 'is-invalid': form.errors.hidden_comment }"></textarea>
             <div v-if="form.errors.hidden_comment" class="invalid-feedback">
@@ -108,7 +110,7 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Действителен до</label>
+            <label class="form-label">{{ t('tenders.label_valid_until') }}</label>
             <input type="date" v-model="form.valid_until" class="form-control"
               :class="{ 'is-invalid': form.errors.valid_until }">
             <div v-if="form.errors.valid_until" class="invalid-feedback">
@@ -118,7 +120,7 @@ onBeforeUnmount(() => {
 
           <!-- Позиции тендера -->
           <div class="mb-3">
-            <h3 class="h5 mb-3">Позиции</h3>
+            <h3 class="h5 mb-3">{{ t('tenders.positions_block_title') }}</h3>
 
             <div v-if="form.errors.items" class="alert alert-danger">
               {{ form.errors.items }}
@@ -128,9 +130,9 @@ onBeforeUnmount(() => {
               <table class="table table-sm">
                 <thead>
                   <tr>
-                    <th>Название позиции</th>
-                    <th>Количество</th>
-                    <th>Ед. изм.</th>
+                    <th>{{ t('tenders.col_item_title') }}</th>
+                    <th>{{ t('tenders.col_quantity') }}</th>
+                    <th>{{ t('tenders.col_unit') }}</th>
                     <th class="w-10"></th>
                   </tr>
                 </thead>
@@ -170,25 +172,25 @@ onBeforeUnmount(() => {
             </div>
 
             <button type="button" @click="addItem" class="btn btn-sm btn-secondary">
-              + Добавить позицию
+              {{ t('tenders.button_add_item') }}
             </button>
           </div>
 
           <!-- Автозаполнение из текста -->
           <div class="mb-3">
-            <h3 class="h5 mb-3">Автозаполнить из текста</h3>
+            <h3 class="h5 mb-3">{{ t('tenders.autofill_block_title') }}</h3>
 
             <div class="mb-3">
               <textarea rows="4" v-model="rawList" class="form-control"
-                placeholder="Введите список товаров (название - количество)"></textarea>
+                :placeholder="t('tenders.autofill_placeholder')"></textarea>
             </div>
 
             <button type="button" @click="autofill" class="btn btn-secondary" :disabled="isAutofillLoading">
               <span v-if="isAutofillLoading">
                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                Автозаполнение...
+                {{ t('tenders.button_autofill_loading') }}
               </span>
-              <span v-else>Автозаполнение</span>
+              <span v-else>{{ t('tenders.button_autofill') }}</span>
             </button>
 
             <div v-if="autofillMessage" class="alert alert-info mt-2">
@@ -202,9 +204,9 @@ onBeforeUnmount(() => {
           <button type="submit" class="btn btn-primary" :disabled="form.processing">
             <span v-if="form.processing">
               <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-              Создание...
+              {{ t('tenders.create_button_processing') }}
             </span>
-            <span v-else>Создать закупку</span>
+            <span v-else>{{ t('tenders.create_button') }}</span>
           </button>
         </div>
       </form>

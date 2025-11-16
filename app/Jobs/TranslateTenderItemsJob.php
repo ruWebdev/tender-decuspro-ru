@@ -29,11 +29,27 @@ class TranslateTenderItemsJob implements ShouldQueue
 
         /** @var TenderItem $item */
         foreach ($tender->items as $item) {
-            $name = $item->title;
+            $name = $item->getRawOriginal('title');
 
-            $item->name_en = $translator->translate($name, 'en');
-            $item->name_cn = $translator->translate($name, 'zh');
-            $item->save();
+            if ($name === null || $name === '') {
+                continue;
+            }
+
+            $changed = false;
+
+            if (! $item->name_en) {
+                $item->name_en = $translator->translate($name, 'en');
+                $changed = true;
+            }
+
+            if (! $item->name_cn) {
+                $item->name_cn = $translator->translate($name, 'zh');
+                $changed = true;
+            }
+
+            if ($changed) {
+                $item->save();
+            }
         }
     }
 }

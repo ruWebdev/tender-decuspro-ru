@@ -2,8 +2,11 @@
 import { computed, ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
+const { t } = useTranslations();
+
 const tender = computed(() => page.props.tender);
 const comparison = computed(() => page.props.comparison ?? {});
 
@@ -78,31 +81,31 @@ const formatNumber = (value) => {
 <template>
     <AppLayout>
         <div class="container mb-4">
-            <h1 class="h2 mb-3">Сравнение предложений</h1>
+            <h1 class="h2 mb-3">{{ t('tenders.comparison_title') }}</h1>
 
             <div v-if="tender" class="mb-3">
-                <p><strong>Закупка:</strong> {{ tender.title }}</p>
+                <p><strong>{{ t('tenders.tender_label') }}</strong> {{ tender.title }}</p>
             </div>
 
             <div class="mb-3">
                 <label>
                     <input type="checkbox" v-model="showLeadersOnly">
-                    Показать только лидеров
+                    {{ t('tenders.label_show_leaders_only') }}
                 </label>
 
                 <div class="mt-2">
-                    <span>Сортировка: </span>
+                    <span>{{ t('tenders.sort_label') }} </span>
                     <label>
                         <input type="radio" value="none" v-model="sortMode">
-                        Без сортировки
+                        {{ t('tenders.sort_none') }}
                     </label>
                     <label class="ms-2">
                         <input type="radio" value="delta" v-model="sortMode">
-                        По отклонению от лучшей цены
+                        {{ t('tenders.sort_delta') }}
                     </label>
                     <label class="ms-2">
                         <input type="radio" value="total" v-model="sortMode">
-                        По итоговой сумме предложения
+                        {{ t('tenders.sort_total') }}
                     </label>
                 </div>
             </div>
@@ -111,12 +114,12 @@ const formatNumber = (value) => {
                 <table class="table table-vcenter card-table">
                     <thead>
                         <tr>
-                            <th>Позиция</th>
-                            <th>Кол-во</th>
-                            <th>Поставщик</th>
-                            <th>Цена</th>
-                            <th>Лучшая цена</th>
-                            <th>Разница</th>
+                            <th>{{ t('tenders.col_item_title') }}</th>
+                            <th>{{ t('tenders.col_quantity') }}</th>
+                            <th>{{ t('tenders.col_supplier') }}</th>
+                            <th>{{ t('tenders.col_price') }}</th>
+                            <th>{{ t('tenders.col_best_price') }}</th>
+                            <th>{{ t('tenders.col_difference') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -144,7 +147,7 @@ const formatNumber = (value) => {
             </div>
 
             <div v-else>
-                Нет отправленных предложений для сравнения.
+                {{ t('tenders.no_proposals_for_comparison') }}
             </div>
         </div>
     </AppLayout>

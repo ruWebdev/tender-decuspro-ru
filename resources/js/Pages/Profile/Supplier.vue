@@ -2,9 +2,11 @@
 import { computed, ref } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
+const { t } = useTranslations();
 
 const form = useForm({
   company_name: '',
@@ -26,46 +28,49 @@ const submit = () => {
 <template>
   <AppLayout>
     <div class="container mb-4">
-      <h1 class="h2 mb-3">Профиль поставщика</h1>
+      <h1 class="h2 mb-3">{{ t('common.supplier_profile_title') }}</h1>
 
       <div class="card">
         <div class="card-body">
           <div v-if="!isEditing" class="mb-3">
-            <p><strong>Пользователь:</strong> {{ user?.name }}</p>
-            <p><strong>Email:</strong> {{ user?.email }}</p>
+            <p><strong>{{ t('common.user') }}:</strong> {{ user?.name }}</p>
+            <p><strong>{{ t('common.email') }}:</strong> {{ user?.email }}</p>
             <button @click="isEditing = true" class="btn btn-primary">
-              Редактировать профиль
+              {{ t('common.edit') }}
             </button>
           </div>
 
           <form v-else @submit.prevent="submit">
             <div class="mb-3">
-              <label class="form-label">Название компании</label>
-              <input type="text" class="form-control" v-model="form.company_name" placeholder="Название вашей компании">
+              <label class="form-label">{{ t('common.company_name') }}</label>
+              <input type="text" class="form-control" v-model="form.company_name"
+                :placeholder="t('common.company_name_placeholder')">
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Телефон</label>
-              <input type="tel" class="form-control" v-model="form.contact_data.phone" placeholder="+7 (999) 999-99-99">
+              <label class="form-label">{{ t('common.phone') }}</label>
+              <input type="tel" class="form-control" v-model="form.contact_data.phone"
+                :placeholder="t('common.phone_placeholder')">
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Адрес</label>
-              <input type="text" class="form-control" v-model="form.contact_data.address" placeholder="Адрес компании">
+              <label class="form-label">{{ t('common.address') }}</label>
+              <input type="text" class="form-control" v-model="form.contact_data.address"
+                :placeholder="t('common.address_placeholder')">
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Веб-сайт</label>
+              <label class="form-label">{{ t('common.website') }}</label>
               <input type="url" class="form-control" v-model="form.contact_data.website"
-                placeholder="https://example.com">
+                :placeholder="t('common.website_placeholder')">
             </div>
 
             <div class="mb-3">
               <button type="submit" class="btn btn-primary" :disabled="form.processing">
-                Сохранить
+                {{ t('common.save') }}
               </button>
               <button type="button" @click="isEditing = false" class="btn btn-secondary ms-2">
-                Отмена
+                {{ t('common.cancel') }}
               </button>
             </div>
           </form>
