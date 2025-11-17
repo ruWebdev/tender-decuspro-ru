@@ -16,7 +16,7 @@ const localeOptions = [
 const form = useForm({
     name: '',
     email: '',
-    role: 'customer',
+    role: 'supplier',
     locale: currentLocale,
     password: '',
     password_confirmation: '',
@@ -57,18 +57,6 @@ const submit = () => {
                             required>
                         <div class="invalid-feedback" v-if="form.errors.email">
                             {{ form.errors.email }}
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">{{ t('auth.register_role_label') }}</label>
-                        <select class="form-control" v-model="form.role" :class="{ 'is-invalid': form.errors.role }"
-                            required>
-                            <option value="customer">{{ t('auth.register_role_customer') }}</option>
-                            <option value="supplier">{{ t('auth.register_role_supplier') }}</option>
-                        </select>
-                        <div class="invalid-feedback" v-if="form.errors.role">
-                            {{ form.errors.role }}
                         </div>
                     </div>
 

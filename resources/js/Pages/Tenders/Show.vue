@@ -90,11 +90,15 @@ const formatDate = (value) => {
     <div class="container mb-4">
       <div class="row g-4">
         <div class="col-12 col-lg-9">
-          <h1 class="h2 mb-3">{{ t('tenders.show_title') }}</h1>
+          <h1 class="h2">{{ t('tenders.show_title') }}</h1>
+        </div>
+        <div class="col-12 col-lg-9">
 
           <div v-if="tender" class="card mb-4">
             <div class="card-body">
               <h2 class="h4 mb-3">{{ tender.title }}</h2>
+
+
 
               <div class="row mb-3">
                 <div class="col-md-6">
@@ -128,11 +132,6 @@ const formatDate = (value) => {
                 <strong>{{ t('tenders.field_description') }}</strong>
                 <p>{{ tenderDescription || t('tenders.no_description') }}</p>
               </div>
-
-              <div v-if="tender.hidden_comment" class="mb-3">
-                <strong>{{ t('tenders.field_hidden_comment') }}</strong>
-                <p>{{ tender.hidden_comment }}</p>
-              </div>
             </div>
           </div>
 
@@ -140,23 +139,30 @@ const formatDate = (value) => {
             <div class="card-header">
               <h3 class="h5 mb-0">{{ t('tenders.positions_title') }}</h3>
             </div>
-            <div class="table-responsive" :class="{ 'table-blur': isGuest }">
-              <table class="table table-sm mb-0">
-                <thead>
-                  <tr>
-                    <th>{{ t('tenders.col_item_title') }}</th>
-                    <th>{{ t('tenders.col_quantity') }}</th>
-                    <th>{{ t('tenders.col_unit') }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="item in tender.items" :key="item.id">
-                    <td>{{ itemTitle(item) }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.unit || '-' }}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="table-wrapper" :class="{ 'table-blur': isGuest }">
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>{{ t('tenders.col_item_title') }}</th>
+                      <th>{{ t('tenders.col_quantity') }}</th>
+                      <th>{{ t('tenders.col_unit') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in tender.items" :key="item.id">
+                      <td>{{ itemTitle(item) }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>{{ item.unit || '-' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div v-if="isGuest" class="table-overlay">
+                <Link :href="route('register')" class="btn btn-warning btn-lg text-uppercase fw-bold">
+                {{ t('auth.register_free_cta') }}
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -181,6 +187,7 @@ const formatDate = (value) => {
             </Link>
           </div>
         </div>
+
 
         <div class="col-12 col-lg-3">
           <div v-if="isGuest" class="card mb-4">
@@ -271,8 +278,24 @@ const formatDate = (value) => {
 </template>
 
 <style scoped>
-.table-blur tbody {
-  filter: blur(6px);
+.table-wrapper {
+  position: relative;
+}
+
+.table-wrapper.table-blur table {
+  filter: blur(4px);
   pointer-events: none;
+}
+
+.table-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(0px);
+  text-align: center;
+  padding: 2rem;
 }
 </style>
