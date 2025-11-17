@@ -26,8 +26,8 @@ const { t } = useTranslations();
               <p><strong>{{ t('common.name') }}:</strong> {{ user?.name }}</p>
               <p><strong>{{ t('common.email') }}:</strong> {{ user?.email }}</p>
               <p><strong>{{ t('common.role') }}:</strong>
-                <span v-if="isCustomer" class="badge bg-primary">{{ t('common.customer') }}</span>
-                <span v-else-if="isSupplier" class="badge bg-success">{{ t('common.supplier') }}</span>
+                <span v-if="isCustomer" class="badge bg-primary text-light ms-1">{{ t('common.customer') }}</span>
+                <span v-else-if="isSupplier" class="badge bg-success text-light ms-1">{{ t('common.supplier') }}</span>
               </p>
             </div>
           </div>

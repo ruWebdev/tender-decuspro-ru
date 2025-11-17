@@ -23,6 +23,23 @@ const changeLocale = () => {
 const logout = () => {
   router.post(route('logout'));
 };
+
+const footerLinks = computed(() => [
+  {
+    label: t('home.footer.links.user_agreement.label'),
+    url: t('home.footer.links.user_agreement.url'),
+  },
+  {
+    label: t('home.footer.links.privacy.label'),
+    url: t('home.footer.links.privacy.url'),
+  },
+  {
+    label: t('home.footer.links.regulations.label'),
+    url: t('home.footer.links.regulations.url'),
+  },
+]);
+
+const currentYear = new Date().getFullYear();
 </script>
 
 <template>
@@ -100,11 +117,39 @@ const logout = () => {
       <slot />
     </main>
 
-    <footer class="border-top py-3 mt-4">
-      <div class="container d-flex justify-content-between align-items-center small text-muted">
-        <span>© {{ new Date().getFullYear() }} Tender Platform</span>
-        <span>{{ t('nav.current_language') }}: {{ locale }}</span>
+    <footer class="border-top py-4 mt-4">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="footer-logo rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center">
+            QBS
+          </div>
+          <div>
+            <p class="mb-0 fw-semibold">{{ t('home.footer.logo_alt') }}</p>
+            <small class="text-muted">© {{ currentYear }} · {{ t('home.footer.note') }}</small>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap gap-3">
+          <a v-for="link in footerLinks" :key="link.label" :href="link.url" class="text-decoration-none">
+            {{ link.label }}
+          </a>
+        </div>
       </div>
     </footer>
   </div>
 </template>
+
+<style scoped>
+.footer-logo {
+  width: 48px;
+  height: 48px;
+}
+
+footer a {
+  color: inherit;
+}
+
+footer a:hover {
+  color: #0d6efd;
+}
+</style>

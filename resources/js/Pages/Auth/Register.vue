@@ -1,15 +1,23 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { useTranslations } from '@/Composables/useTranslations';
 
 const { t } = useTranslations();
+const page = usePage();
+const currentLocale = page.props.locale || 'ru';
+
+const localeOptions = [
+    { value: 'ru', labelKey: 'auth.register_locale_option_ru' },
+    { value: 'en', labelKey: 'auth.register_locale_option_en' },
+    { value: 'cn', labelKey: 'auth.register_locale_option_cn' },
+];
 
 const form = useForm({
     name: '',
     email: '',
     role: 'customer',
-    locale: '',
+    locale: currentLocale,
     password: '',
     password_confirmation: '',
     terms: false,
@@ -66,8 +74,12 @@ const submit = () => {
 
                     <div class="mb-3">
                         <label class="form-label">{{ t('auth.register_locale_label') }}</label>
-                        <input type="text" class="form-control" :placeholder="t('auth.register_locale_placeholder')"
-                            autocomplete="off" v-model="form.locale" :class="{ 'is-invalid': form.errors.locale }">
+                        <select class="form-control" v-model="form.locale"
+                            :class="{ 'is-invalid': form.errors.locale }">
+                            <option v-for="option in localeOptions" :key="option.value" :value="option.value">
+                                {{ t(option.labelKey) }}
+                            </option>
+                        </select>
                         <div class="invalid-feedback" v-if="form.errors.locale">
                             {{ form.errors.locale }}
                         </div>
