@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'proposals' => Lang::get('proposals'),
                 'auth' => Lang::get('auth'),
                 'common' => Lang::get('common'),
+                'admin' => Lang::get('admin'),
             ],
         ];
     }

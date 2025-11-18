@@ -7,6 +7,7 @@ return [
     'my_proposals' => 'My proposals',
     'dashboard' => 'Dashboard',
     'supplier_profile' => 'Company profile',
+    'admin_panel' => 'Admin panel',
     'logout' => 'Logout',
     'login' => 'Login',
     'current_language' => 'Current language',

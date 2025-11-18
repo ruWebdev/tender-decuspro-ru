@@ -9,6 +9,7 @@ const { t } = useTranslations();
 const authUser = computed(() => page.props.auth?.user || null);
 const isCustomer = computed(() => authUser.value?.role === 'customer');
 const isSupplier = computed(() => authUser.value?.role === 'supplier');
+const isAdmin = computed(() => authUser.value?.role === 'admin');
 const currentLocale = computed(() => page.props.locale || 'ru');
 const locale = ref(currentLocale.value);
 
@@ -92,6 +93,9 @@ const currentYear = new Date().getFullYear();
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
                     <Link :href="route('dashboard')" class="dropdown-item">{{ t('nav.dashboard') }}</Link>
+                  </li>
+                  <li v-if="isAdmin">
+                    <Link :href="route('admin.dashboard')" class="dropdown-item">{{ t('nav.admin_panel') }}</Link>
                   </li>
                   <li v-if="isSupplier">
                     <Link :href="route('profile.supplier')" class="dropdown-item">{{ t('nav.supplier_profile') }}</Link>

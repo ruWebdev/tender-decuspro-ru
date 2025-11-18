@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminTendersController;
+use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\DeepSeekController;
 use App\Http\Controllers\HomeController;
@@ -72,6 +74,39 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:supplier'])->group(function () {
         Route::get('/profile/supplier', [SupplierProfileController::class, 'index'])->name('profile.supplier');
+    });
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/admin', \App\Http\Controllers\Admin\AdminDashboardController::class)->name('admin.dashboard');
+
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/users', [AdminUsersController::class, 'index'])->name('users.index');
+            Route::get('/users/create', [AdminUsersController::class, 'create'])->name('users.create');
+            Route::post('/users', [AdminUsersController::class, 'store'])->name('users.store');
+            Route::get('/users/{user}/edit', [AdminUsersController::class, 'edit'])->name('users.edit');
+            Route::put('/users/{user}', [AdminUsersController::class, 'update'])->name('users.update');
+            Route::post('/users/{user}/block', [AdminUsersController::class, 'block'])->name('users.block');
+            Route::post('/users/{user}/unblock', [AdminUsersController::class, 'unblock'])->name('users.unblock');
+            Route::delete('/users/{user}', [AdminUsersController::class, 'destroy'])->name('users.destroy');
+
+            Route::get('/tenders', [AdminTendersController::class, 'index'])->name('tenders.index');
+            Route::get('/tenders/create', [AdminTendersController::class, 'create'])->name('tenders.create');
+            Route::post('/tenders', [AdminTendersController::class, 'store'])->name('tenders.store');
+            Route::get('/tenders/{tender}', [AdminTendersController::class, 'show'])->name('tenders.show');
+            Route::get('/tenders/{tender}/edit', [AdminTendersController::class, 'edit'])->name('tenders.edit');
+            Route::put('/tenders/{tender}', [AdminTendersController::class, 'update'])->name('tenders.update');
+            Route::delete('/tenders/{tender}', [AdminTendersController::class, 'destroy'])->name('tenders.destroy');
+
+            Route::get('/content', [\App\Http\Controllers\Admin\AdminContentController::class, 'index'])->name('content.index');
+            Route::get('/content/pages', [\App\Http\Controllers\Admin\AdminContentController::class, 'pages'])->name('content.pages');
+            Route::get('/content/articles', [\App\Http\Controllers\Admin\AdminContentController::class, 'articles'])->name('content.articles');
+            Route::get('/content/news', [\App\Http\Controllers\Admin\AdminContentController::class, 'news'])->name('content.news');
+
+            Route::get('/ai', [\App\Http\Controllers\Admin\AdminAIController::class, 'index'])->name('ai.index');
+            Route::post('/ai/settings', [\App\Http\Controllers\Admin\AdminAIController::class, 'saveSettings'])->name('ai.save_settings');
+            Route::post('/ai/generate-tender', [\App\Http\Controllers\Admin\AdminAIController::class, 'generateTender'])->name('ai.generate_tender');
+            Route::post('/ai/translate-tenders', [\App\Http\Controllers\Admin\AdminAIController::class, 'translateTenders'])->name('ai.translate_tenders');
+        });
     });
 });
 

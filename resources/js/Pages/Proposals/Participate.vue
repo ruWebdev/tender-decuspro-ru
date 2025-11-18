@@ -100,45 +100,45 @@ const submitProposal = () => {
             </div>
 
             <form @submit.prevent class="card">
-                <div class="card-body">
-                    <div class="table-responsive mb-3">
-                        <table class="table table-vcenter card-table">
-                            <thead>
-                                <tr>
-                                    <th>{{ t('proposals.col_item_title') }}</th>
-                                    <th>{{ t('proposals.col_quantity') }}</th>
-                                    <th>{{ t('proposals.col_unit') }}</th>
-                                    <th>{{ t('proposals.col_price') }}</th>
-                                    <th>{{ t('proposals.col_comment') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, index) in form.items" :key="item.tender_item_id">
-                                    <td>{{ item.title }}</td>
-                                    <td><span class="badge bg-blue text-light">{{ item.quantity }}</span></td>
-                                    <td>{{ item.unit }}</td>
-                                    <td>
-                                        <input type="number" step="0.01" min="0" v-model="item.price"
-                                            class="form-control form-control-sm"
-                                            :class="{ 'is-invalid': form.errors[`items.${index}.price`] }"
-                                            :disabled="isFormDisabled">
-                                        <div v-if="form.errors[`items.${index}.price`]" class="invalid-feedback">
-                                            {{ form.errors[`items.${index}.price`] }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <textarea rows="2" v-model="item.comment" class="form-control form-control-sm"
-                                            :class="{ 'is-invalid': form.errors[`items.${index}.comment`] }"
-                                            :disabled="isFormDisabled"></textarea>
-                                        <div v-if="form.errors[`items.${index}.comment`]" class="invalid-feedback">
-                                            {{ form.errors[`items.${index}.comment`] }}
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+                <div class="table-responsive card-table mb-3">
+                    <table class="table table-vcenter card-table">
+                        <thead>
+                            <tr>
+                                <th>{{ t('proposals.col_item_title') }}</th>
+                                <th>{{ t('proposals.col_quantity') }}</th>
+                                <th>{{ t('proposals.col_unit') }}</th>
+                                <th>{{ t('proposals.col_price') }}</th>
+                                <th>{{ t('proposals.col_comment') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in form.items" :key="item.tender_item_id">
+                                <td>{{ item.title }}</td>
+                                <td><span class="badge bg-blue text-light">{{ item.quantity }}</span></td>
+                                <td>{{ item.unit }}</td>
+                                <td>
+                                    <input type="number" step="0.01" min="0" v-model="item.price"
+                                        class="form-control form-control-sm"
+                                        :class="{ 'is-invalid': form.errors[`items.${index}.price`] }"
+                                        :disabled="isFormDisabled">
+                                    <div v-if="form.errors[`items.${index}.price`]" class="invalid-feedback">
+                                        {{ form.errors[`items.${index}.price`] }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <textarea rows="2" v-model="item.comment" class="form-control form-control-sm"
+                                        :class="{ 'is-invalid': form.errors[`items.${index}.comment`] }"
+                                        :disabled="isFormDisabled"></textarea>
+                                    <div v-if="form.errors[`items.${index}.comment`]" class="invalid-feedback">
+                                        {{ form.errors[`items.${index}.comment`] }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+
 
                 <div class="card-footer text-end">
                     <button type="button" @click="saveDraft" class="btn btn-secondary me-2"
