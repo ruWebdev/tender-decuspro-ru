@@ -4,13 +4,24 @@ import { usePage } from '@inertiajs/vue3';
 export function useTranslations() {
     const page = usePage();
     const translations = computed(() => page.props.translations || {});
+    const overrides = computed(() => page.props.ui_overrides || {});
 
     const t = (key, fallback = '') => {
         if (!key) {
             return fallback;
         }
 
-        const parts = String(key).split('.');
+        const k = String(key);
+
+        // flat overrides first
+        if (overrides.value && Object.prototype.hasOwnProperty.call(overrides.value, k)) {
+            const ov = overrides.value[k];
+            if (typeof ov === 'string' && ov.length > 0) {
+                return ov;
+            }
+        }
+
+        const parts = k.split('.');
         let current = translations.value;
 
         for (const part of parts) {
@@ -25,7 +36,7 @@ export function useTranslations() {
             return current;
         }
 
-        return fallback || key;
+        return fallback || k;
     };
 
     return { t };

@@ -1,108 +1,100 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useForm, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
+const page = usePage();
 const { t } = useTranslations();
+
+const items = computed(() => page.props.items || []);
+
+const form = useForm({
+    items: items.value.map((i) => ({
+        key: i.key,
+        value_ru: i.value_ru || '',
+        value_en: i.value_en || '',
+        value_cn: i.value_cn || '',
+    })),
+});
+
+const activeTab = ref('ru');
+const tabs = [
+    { value: 'ru', label: 'Русский' },
+    { value: 'en', label: 'English' },
+    { value: 'cn', label: '中文' },
+];
+
+const addRow = () => {
+    form.items.push({ key: 'home.', value_ru: '', value_en: '', value_cn: '' });
+};
+
+const save = () => {
+    form.post(route('admin.content.home.save'));
+};
 </script>
 
 <template>
     <AdminLayout>
-        <div class="admin-content">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">{{ t('admin.content.title') }}</h1>
-            </div>
-
-            <div class="row g-4">
-                <!-- Страницы -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div
-                                    class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                                    <i class="ti ti-file-text"></i>
-                                </div>
-                                <h5 class="card-title mb-0">{{ t('admin.content.pages') }}</h5>
-                            </div>
-                            <p class="text-muted mb-3">Управление статическими страницами сайта</p>
-                            <Link href="/admin/content/pages" class="btn btn-primary w-100">
-                            {{ t('admin.content.actions.edit') }}
-                            </Link>
-                        </div>
+        <div class="container py-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h3 mb-0">{{ t('admin.content.home_editor.title') }}</h1>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" type="button" @click="addRow">
+                        {{ t('admin.content.home_editor.actions.add_row') }}
+                    </button>
+                    <div class="btn-group" role="group">
+                        <button v-for="tab in tabs" :key="tab.value" type="button" class="btn"
+                            :class="activeTab === tab.value ? 'btn-primary' : 'btn-outline-primary'"
+                            @click="activeTab = tab.value">
+                            {{ tab.label }}
+                        </button>
                     </div>
-                </div>
-
-                <!-- Статьи -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div
-                                    class="avatar avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                                    <i class="ti ti-article"></i>
-                                </div>
-                                <h5 class="card-title mb-0">{{ t('admin.content.articles') }}</h5>
-                            </div>
-                            <p class="text-muted mb-3">Создание и редактирование статей</p>
-                            <Link href="/admin/content/articles" class="btn btn-success w-100">
-                            {{ t('admin.content.actions.edit') }}
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Новости -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div
-                                    class="avatar avatar-sm bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                                    <i class="ti ti-news"></i>
-                                </div>
-                                <h5 class="card-title mb-0">{{ t('admin.content.news') }}</h5>
-                            </div>
-                            <p class="text-muted mb-3">Управление новостями и анонсами</p>
-                            <Link href="/admin/content/news" class="btn btn-info w-100">
-                            {{ t('admin.content.actions.edit') }}
-                            </Link>
-                        </div>
-                    </div>
+                    <button class="btn btn-success" :disabled="form.processing" @click="save">
+                        <span v-if="form.processing" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        {{ t('admin.content.home_editor.actions.save') }}
+                    </button>
                 </div>
             </div>
 
-            <!-- Статистика -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Статистика контента</h5>
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h2 text-primary mb-1">12</div>
-                                <div class="text-muted">Всего страниц</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h2 text-success mb-1">45</div>
-                                <div class="text-muted">Всего статей</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h2 text-info mb-1">28</div>
-                                <div class="text-muted">Всего новостей</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h2 text-warning mb-1">7</div>
-                                <div class="text-muted">Черновиков</div>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%">{{ t('admin.content.home_editor.col_key') }}</th>
+                                    <th>{{ t('admin.content.home_editor.col_value') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row, idx) in form.items" :key="row.key">
+                                    <td>
+                                        <input v-model="row.key" class="form-control form-control-sm"
+                                            placeholder="home.key.path" />
+                                    </td>
+                                    <td>
+                                        <template v-if="activeTab === 'ru'">
+                                            <textarea v-model="row.value_ru" rows="2" class="form-control"></textarea>
+                                        </template>
+                                        <template v-else-if="activeTab === 'en'">
+                                            <textarea v-model="row.value_en" rows="2" class="form-control"></textarea>
+                                        </template>
+                                        <template v-else>
+                                            <textarea v-model="row.value_cn" rows="2" class="form-control"></textarea>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-end">
+                        <button class="btn btn-primary" :disabled="form.processing" @click="save">
+                            <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"
+                                role="status"></span>
+                            {{ t('admin.content.home_editor.actions.save') }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -111,18 +103,11 @@ const { t } = useTranslations();
 </template>
 
 <style scoped>
-.avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+.btn-group .btn {
+    min-width: 110px;
 }
 
-.card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+textarea.form-control {
+    min-height: 42px;
 }
 </style>
