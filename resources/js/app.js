@@ -5,7 +5,7 @@ import './bootstrap';
 import '@tabler/core/dist/js/tabler';
 import '@tabler/core/dist/css/tabler.min.css';
 
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h, onMounted } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
@@ -18,12 +18,6 @@ function initializeTabler() {
     if (window.tabler) {
         window.tabler.init();
     }
-
-    // Initialize tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new window.bootstrap.Tooltip(tooltipTriggerEl);
-    });
 }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -60,4 +54,15 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+});
+
+// Переинициализация UI после навигации Inertia
+router.on('navigate', () => {
+    if (document.readyState === 'complete') {
+        try { initializeTabler(); } catch { }
+    } else {
+        window.addEventListener('load', () => {
+            try { initializeTabler(); } catch { }
+        }, { once: true });
+    }
 });

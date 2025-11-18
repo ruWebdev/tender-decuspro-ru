@@ -1,6 +1,7 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
 defineProps({
@@ -19,6 +20,8 @@ const form = useForm({
     password: '',
     remember: false,
 });
+
+const showPassword = ref(false);
 
 const submit = () => {
     form.post(route('login'), {
@@ -53,11 +56,11 @@ const submit = () => {
                             {{ t('auth.login_password_label') }}
                         </label>
                         <div class="input-group input-group-flat">
-                            <input type="password" class="form-control"
+                            <input :type="showPassword ? 'text' : 'password'" class="form-control"
                                 :placeholder="t('auth.login_password_placeholder')" autocomplete="off"
                                 v-model="form.password" :class="{ 'is-invalid': form.errors.password }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" data-bs-toggle="tooltip">
+                                <a href="#" class="link-secondary" data-bs-toggle="tooltip" @click.prevent="showPassword = !showPassword">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">

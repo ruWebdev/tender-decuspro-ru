@@ -1,6 +1,7 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
 const { t } = useTranslations();
@@ -22,6 +23,9 @@ const form = useForm({
     password_confirmation: '',
     terms: false,
 });
+
+const showPassword = ref(false);
+const showPasswordConfirm = ref(false);
 
 const submit = () => {
     form.post(route('register'), {
@@ -76,11 +80,11 @@ const submit = () => {
                     <div class="mb-2">
                         <label class="form-label">{{ t('auth.register_password_label') }}</label>
                         <div class="input-group input-group-flat">
-                            <input type="password" class="form-control"
+                            <input :type="showPassword ? 'text' : 'password'" class="form-control"
                                 :placeholder="t('auth.register_password_placeholder')" autocomplete="off"
                                 v-model="form.password" :class="{ 'is-invalid': form.errors.password }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" data-bs-toggle="tooltip">
+                                <a href="#" class="link-secondary" data-bs-toggle="tooltip" @click.prevent="showPassword = !showPassword">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">
@@ -100,12 +104,12 @@ const submit = () => {
                     <div class="mb-2">
                         <label class="form-label">{{ t('auth.register_password_confirm_label') }}</label>
                         <div class="input-group input-group-flat">
-                            <input type="password" class="form-control"
+                            <input :type="showPasswordConfirm ? 'text' : 'password'" class="form-control"
                                 :placeholder="t('auth.register_password_confirm_placeholder')" autocomplete="off"
                                 v-model="form.password_confirmation"
                                 :class="{ 'is-invalid': form.errors.password_confirmation }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" title="Показать пароль" data-bs-toggle="tooltip">
+                                <a href="#" class="link-secondary" title="Показать пароль" data-bs-toggle="tooltip" @click.prevent="showPasswordConfirm = !showPasswordConfirm">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">

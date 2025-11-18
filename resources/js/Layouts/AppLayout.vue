@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted, onUpdated, nextTick } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -41,6 +41,14 @@ const footerLinks = computed(() => [
 ]);
 
 const currentYear = new Date().getFullYear();
+
+onMounted(() => {
+  nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch {} } });
+});
+
+onUpdated(() => {
+  nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch {} } });
+});
 </script>
 
 <template>
