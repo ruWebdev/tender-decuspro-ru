@@ -40,6 +40,9 @@ const { t } = useTranslations();
                     <Link href="/admin/content" class="btn btn-outline-primary">
                     {{ t('admin.content.title') }}
                     </Link>
+                    <Link :href="route('admin.content.static_pages')" class="btn btn-outline-primary">
+                    {{ t('admin.content.static_pages.title') }}
+                    </Link>
                     <Link href="/admin/ai" class="btn btn-outline-primary">
                     {{ t('admin.ai.title') }}
                     </Link>

@@ -133,6 +133,26 @@ return [
             'edit' => '编辑',
             'delete' => '删除',
         ],
+        'static_pages' => [
+            'title' => '静态页面',
+            'pages' => [
+                'user_agreement' => '用户协议',
+                'privacy_policy' => '隐私政策',
+                'procurement_rules' => '采购规程',
+            ],
+            'fields' => [
+                'title_ru' => '标题 (RU)',
+                'title_en' => '标题 (EN)',
+                'title_cn' => '标题 (CN)',
+                'body_ru' => '内容 (RU)',
+                'body_en' => '内容 (EN)',
+                'body_cn' => '内容 (CN)',
+                'published' => '已发布',
+            ],
+            'actions' => [
+                'save' => '保存更改',
+            ],
+        ],
     ],
 
     'ai' => [

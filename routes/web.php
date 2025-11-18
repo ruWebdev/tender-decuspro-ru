@@ -12,6 +12,8 @@ use App\Http\Controllers\TenderAutofillController;
 use App\Http\Controllers\TenderComparisonController;
 use App\Http\Controllers\TenderController;
 use App\Http\Controllers\TenderFinishController;
+use App\Http\Controllers\ContentPageController;
+use App\Http\Controllers\Admin\AdminStaticPagesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -102,10 +104,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/content/articles', [\App\Http\Controllers\Admin\AdminContentController::class, 'articles'])->name('content.articles');
             Route::get('/content/news', [\App\Http\Controllers\Admin\AdminContentController::class, 'news'])->name('content.news');
 
-            Route::get('/ai', [\App\Http\Controllers\Admin\AdminAIController::class, 'index'])->name('ai.index');
-            Route::post('/ai/settings', [\App\Http\Controllers\Admin\AdminAIController::class, 'saveSettings'])->name('ai.save_settings');
-            Route::post('/ai/generate-tender', [\App\Http\Controllers\Admin\AdminAIController::class, 'generateTender'])->name('ai.generate_tender');
-            Route::post('/ai/translate-tenders', [\App\Http\Controllers\Admin\AdminAIController::class, 'translateTenders'])->name('ai.translate_tenders');
+            // Редактирование статических страниц (Пользовательское соглашение, Политика, Регламент)
+            Route::get('/content/static-pages', [AdminStaticPagesController::class, 'edit'])->name('content.static_pages');
+            Route::post('/content/static-pages', [AdminStaticPagesController::class, 'update'])->name('content.static_pages.update');
         });
     });
 });
@@ -115,5 +116,10 @@ Route::get('/lang/{locale}', function (string $locale) {
 
     return back();
 })->name('lang.switch');
+
+// Публичные документы
+Route::get('/docs/{slug}', [ContentPageController::class, 'show'])
+    ->whereIn('slug', ['user-agreement', 'privacy-policy', 'procurement-rules'])
+    ->name('docs.show');
 
 require __DIR__ . '/auth.php';

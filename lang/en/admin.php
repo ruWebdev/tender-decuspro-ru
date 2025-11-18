@@ -139,6 +139,26 @@ return [
             'edit' => 'Edit',
             'delete' => 'Delete',
         ],
+        'static_pages' => [
+            'title' => 'Static Pages',
+            'pages' => [
+                'user_agreement' => 'User Agreement',
+                'privacy_policy' => 'Privacy Policy',
+                'procurement_rules' => 'Procurement Regulations',
+            ],
+            'fields' => [
+                'title_ru' => 'Title (RU)',
+                'title_en' => 'Title (EN)',
+                'title_cn' => 'Title (CN)',
+                'body_ru' => 'Content (RU)',
+                'body_en' => 'Content (EN)',
+                'body_cn' => 'Content (CN)',
+                'published' => 'Published',
+            ],
+            'actions' => [
+                'save' => 'Save changes',
+            ],
+        ],
     ],
 
     'ai' => [
