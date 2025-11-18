@@ -20,6 +20,7 @@ class Proposal extends Model
     protected $fillable = [
         'tender_id',
         'status',
+        'is_partial',
         'user_id',
         'submitted_at',
     ];
@@ -33,6 +34,7 @@ class Proposal extends Model
     {
         return [
             'submitted_at' => 'datetime',
+            'is_partial' => 'boolean',
         ];
     }
 

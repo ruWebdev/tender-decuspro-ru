@@ -55,12 +55,22 @@ const isFormDisabled = computed(() => isExpired.value || isSubmitted.value || is
 const canSaveDraft = computed(() => !isExpired.value && !isSubmitted.value && !isFinished.value);
 const canSubmit = computed(() => !isExpired.value && !isSubmitted.value && !isFinished.value);
 
+const filteredItems = () => {
+    return (form.items || []).filter((i) => i.price !== '' && i.price !== null && !Number.isNaN(Number(i.price)));
+};
+
 const saveDraft = () => {
     if (!proposal.value) {
         return;
     }
 
-    form.put(route('proposals.update', { proposal: proposal.value.id }));
+    const items = filteredItems();
+    if (items.length === 0) {
+        return;
+    }
+
+    form.transform((data) => ({ ...data, items: items.map(({ tender_item_id, price, comment }) => ({ tender_item_id, price, comment })) }))
+        .put(route('proposals.update', { proposal: proposal.value.id }));
 };
 
 const submitProposal = () => {
@@ -68,7 +78,13 @@ const submitProposal = () => {
         return;
     }
 
-    form.post(route('proposals.store', { tender: tender.value.id }));
+    const items = filteredItems();
+    if (items.length === 0) {
+        return;
+    }
+
+    form.transform((data) => ({ ...data, items: items.map(({ tender_item_id, price, comment }) => ({ tender_item_id, price, comment })) }))
+        .post(route('proposals.store', { tender: tender.value.id }));
 };
 </script>
 
@@ -83,7 +99,8 @@ const submitProposal = () => {
             </div>
 
             <div v-if="proposal">
-                <p><strong>{{ t('proposals.field_status') }}</strong> {{ proposal.status }}</p>
+                <p class="mb-1"><strong>{{ t('proposals.field_status') }}</strong> {{ proposal.status }}</p>
+                <p v-if="proposal.is_partial" class="mb-2"><span class="badge bg-warning">{{ t('proposals.badge_partial') }}</span></p>
             </div>
 
             <div v-if="tender?.is_finished" class="mb-3">
@@ -137,6 +154,10 @@ const submitProposal = () => {
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="px-3 mb-3 text-muted small">
+                    {{ t('proposals.partial_hint') }}
                 </div>
 
 

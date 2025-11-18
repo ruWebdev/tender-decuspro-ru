@@ -66,4 +66,6 @@ return [
     'results_final_price' => '中标最终价格：',
     'col_winner_price' => '中标价格',
     'fallback_item' => '项目',
+    'badge_partial' => '部分',
+    'partial_hint' => '您可以只为部分项目填写价格。该报价将标记为“部分”。',
 ];

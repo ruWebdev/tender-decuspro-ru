@@ -120,7 +120,7 @@ class ProposalController extends Controller
 
         $this->authorize('update', $proposal);
 
-        DB::transaction(function () use ($validated, $proposal): void {
+        DB::transaction(function () use ($validated, $proposal, $tender): void {
             $items = collect($validated['items'])
                 ->values()
                 ->map(function (array $item): array {
@@ -137,6 +137,7 @@ class ProposalController extends Controller
 
             $proposal->forceFill([
                 'status' => 'submitted',
+                'is_partial' => count($items) < $tender->items()->count(),
                 'submitted_at' => now(),
             ])->save();
         });
@@ -169,6 +170,13 @@ class ProposalController extends Controller
 
             $proposal->items()->delete();
             $proposal->items()->createMany($items);
+
+            // При сохранении черновика сразу отмечаем частичность по текущему набору позиций
+            $tender = $proposal->tender()->withCount('items')->first();
+            $total = (int) ($tender->items_count ?? 0);
+            $proposal->forceFill([
+                'is_partial' => $total > 0 ? (count($items) < $total) : false,
+            ])->save();
         });
 
         return redirect()->route('proposals.participate', ['tender' => $proposal->tender_id]);

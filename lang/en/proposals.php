@@ -66,4 +66,6 @@ return [
     'results_final_price' => 'Winner final price:',
     'col_winner_price' => 'Winner price',
     'fallback_item' => 'Item',
+    'badge_partial' => 'Partial',
+    'partial_hint' => 'You may provide prices only for part of the items. Such proposal will be marked as “Partial”.',
 ];
