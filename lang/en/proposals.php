@@ -68,4 +68,26 @@ return [
     'fallback_item' => 'Item',
     'badge_partial' => 'Partial',
     'partial_hint' => 'You may provide prices only for part of the items. Such proposal will be marked as “Partial”.',
+
+    // Statuses
+    'status_submitted' => 'Submitted',
+    'status_draft' => 'Draft',
+    'status_withdrawn' => 'Withdrawn',
+    'status_approved' => 'Approved',
+    'status_rejected' => 'Rejected',
+
+    // Actions and confirms
+    'action_withdraw' => 'Withdraw',
+    'confirm_withdraw' => 'Withdraw the proposal?',
+    'button_exit_without_saving' => 'Exit without saving',
+    'confirm_discard' => 'Delete draft?',
+
+    // Customer view
+    'view_customer_title' => 'Supplier proposal',
+    'field_supplier' => 'Supplier:',
+    'field_submitted_at' => 'Submitted at:',
+    'no_items' => 'There are no items in the proposal.',
+    'back_to_tender' => 'Back to tender',
+    'action_approve' => 'Approve',
+    'action_reject' => 'Reject',
 ];

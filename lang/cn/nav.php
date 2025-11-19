@@ -4,6 +4,7 @@ return [
     'home' => '主页',
     'my_tenders' => '我的招标',
     'active_tenders' => '进行中的招标',
+    'all_tenders' => '全部招标',
     'my_proposals' => '我的报价',
     'dashboard' => '个人中心',
     'supplier_profile' => '公司资料',

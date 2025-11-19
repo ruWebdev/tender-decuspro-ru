@@ -68,4 +68,26 @@ return [
     'fallback_item' => '项目',
     'badge_partial' => '部分',
     'partial_hint' => '您可以只为部分项目填写价格。该报价将标记为“部分”。',
+
+    // 状态
+    'status_submitted' => '已提交',
+    'status_draft' => '草稿',
+    'status_withdrawn' => '已撤回',
+    'status_approved' => '已接受',
+    'status_rejected' => '已拒绝',
+
+    // 动作与确认
+    'action_withdraw' => '撤回',
+    'confirm_withdraw' => '确认撤回该报价？',
+    'button_exit_without_saving' => '不保存并退出',
+    'confirm_discard' => '删除草稿？',
+
+    // 客户视图
+    'view_customer_title' => '供应商报价',
+    'field_supplier' => '供应商：',
+    'field_submitted_at' => '提交时间：',
+    'no_items' => '报价中没有项目。',
+    'back_to_tender' => '返回招标',
+    'action_approve' => '接受',
+    'action_reject' => '拒绝',
 ];

@@ -328,7 +328,6 @@ const statusOptions = computed(() => [
         <div class="container">
           <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
             <div>
-              <p class="text-uppercase text-muted small mb-1">{{ t('home.title') }}</p>
               <h2 class="h3 mb-0">{{ t('home.tenders.title_section') }}</h2>
             </div>
             <Link :href="route('tenders.index')" class="btn btn-outline-primary">
@@ -378,11 +377,11 @@ const statusOptions = computed(() => [
                   <td>
                     <p class="mb-1 fw-semibold">{{ tender.title }}</p>
                     <small class="text-muted">{{ t('tenders.field_created_at') }}: {{ formatDate(tender.created_at)
-                      }}</small>
+                    }}</small>
                   </td>
                   <td>
                     <p class="mb-0 text-muted">{{ getTenderDescription(tender) || t('home.tenders.table.no_description')
-                      }}</p>
+                    }}</p>
                   </td>
                   <td>{{ formatDate(tender.valid_until) }}</td>
                   <td>

@@ -165,10 +165,36 @@ return [
         'title' => 'AI Tools',
         'index_title' => 'AI Tools',
         'tender_generation' => 'Tender Generation',
+        'tender_generation_desc' => 'Generate a new tender using AI based on the configured prompt',
         'translation' => 'Translation',
+        'translation_desc' => 'Translate all tenders to English and Chinese',
+        'settings' => [
+            'title' => 'AI Settings',
+            'deepseek_api_key' => 'Deepseek API Key',
+            'deepseek_api_key_note' => 'Enter your Deepseek API key to enable AI features',
+            'tender_prompt' => 'Tender generation prompt',
+            'tender_prompt_note' => 'Configure the template used to auto-generate tender descriptions',
+            'save' => 'Save settings',
+        ],
         'actions' => [
             'generate' => 'Generate',
             'translate' => 'Translate',
+        ],
+    ],
+
+    'smtp' => [
+        'title' => 'SMTP Settings',
+        'fields' => [
+            'host' => 'SMTP host',
+            'port' => 'SMTP port',
+            'encryption' => 'Encryption',
+            'encryption_tls' => 'TLS',
+            'encryption_ssl' => 'SSL',
+            'encryption_none' => 'None',
+            'username' => 'Username',
+            'password' => 'Password',
+            'from_address' => 'From email',
+            'from_name' => 'From name',
         ],
     ],
 ];

@@ -13,6 +13,7 @@ return [
     'role' => 'Role',
     'save' => 'Save',
     'cancel' => 'Cancel',
+    'back' => 'Back',
     'edit' => 'Edit',
     'help' => 'Help',
     'main_page' => 'Main page',
@@ -33,4 +34,11 @@ return [
     'address_placeholder' => 'City, street, office',
     'website' => 'Website',
     'website_placeholder' => 'https://example.com',
+
+    // General
+    'no_data' => 'No data',
+    'apply' => 'Apply',
+    'reset' => 'Reset',
+    'unknown' => 'Unknown',
+    'info' => 'Info',
 ];

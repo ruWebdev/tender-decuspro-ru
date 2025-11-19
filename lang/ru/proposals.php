@@ -68,4 +68,26 @@ return [
     'fallback_item' => 'Позиция',
     'badge_partial' => 'Частичное',
     'partial_hint' => 'Можно заполнить цены только для части позиций. Такое предложение будет отмечено как «Частичное».',
+
+    // Статусы
+    'status_submitted' => 'Отправлено',
+    'status_draft' => 'Черновик',
+    'status_withdrawn' => 'Отозвано',
+    'status_approved' => 'Принято',
+    'status_rejected' => 'Отклонено',
+
+    // Действия и подтверждения
+    'action_withdraw' => 'Отозвать',
+    'confirm_withdraw' => 'Отозвать заявку?',
+    'button_exit_without_saving' => 'Выйти без сохранения',
+    'confirm_discard' => 'Удалить черновик?',
+
+    // Просмотр со стороны заказчика
+    'view_customer_title' => 'Предложение поставщика',
+    'field_supplier' => 'Поставщик:',
+    'field_submitted_at' => 'Отправлено:',
+    'no_items' => 'Нет позиций в предложении.',
+    'back_to_tender' => 'Назад к тендеру',
+    'action_approve' => 'Принять',
+    'action_reject' => 'Отклонить',
 ];

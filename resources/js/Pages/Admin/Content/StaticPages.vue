@@ -51,176 +51,176 @@ const save = () => {
 
 <template>
     <AdminLayout>
-        <div class="container">
-            <h1 class="h2 mb-4">{{ t('admin.content.static_pages.title') }}</h1>
 
-            <div class="row g-3">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">{{ t('admin.content.static_pages.pages.user_agreement') }}</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_ru')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.user_agreement.title_ru">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_en')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.user_agreement.title_en">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_cn')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.user_agreement.title_cn">
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.user_agreement.body_ru"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.user_agreement.body_en"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.user_agreement.body_cn"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-check">
-                                        <input type="checkbox" class="form-check-input"
-                                            v-model="form.pages.user_agreement.published">
-                                        <span class="form-check-label">{{
-                                            t('admin.content.static_pages.fields.published') }}</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+        <h1 class="h2 mb-4">{{ t('admin.content.static_pages.title') }}</h1>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">{{ t('admin.content.static_pages.pages.user_agreement') }}</h2>
                     </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">{{ t('admin.content.static_pages.pages.privacy_policy') }}</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_ru')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.privacy_policy.title_ru">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_en')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.privacy_policy.title_en">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_cn')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.privacy_policy.title_cn">
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.privacy_policy.body_ru"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.privacy_policy.body_en"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.privacy_policy.body_cn"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-check">
-                                        <input type="checkbox" class="form-check-input"
-                                            v-model="form.pages.privacy_policy.published">
-                                        <span class="form-check-label">{{
-                                            t('admin.content.static_pages.fields.published') }}</span>
-                                    </label>
-                                </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_ru')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.user_agreement.title_ru">
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">{{ t('admin.content.static_pages.pages.procurement_rules') }}</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_ru')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.procurement_rules.title_ru">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_en')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.procurement_rules.title_en">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.title_cn')
-                                        }}</label>
-                                    <input class="form-control" v-model="form.pages.procurement_rules.title_cn">
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.procurement_rules.body_ru"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.procurement_rules.body_en"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
-                                        }}</label>
-                                    <textarea class="form-control" rows="6"
-                                        v-model="form.pages.procurement_rules.body_cn"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-check">
-                                        <input type="checkbox" class="form-check-input"
-                                            v-model="form.pages.procurement_rules.published">
-                                        <span class="form-check-label">{{
-                                            t('admin.content.static_pages.fields.published') }}</span>
-                                    </label>
-                                </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_en')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.user_agreement.title_en">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_cn')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.user_agreement.title_cn">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.user_agreement.body_ru"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.user_agreement.body_en"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.user_agreement.body_cn"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                        v-model="form.pages.user_agreement.published">
+                                    <span class="form-check-label">{{
+                                        t('admin.content.static_pages.fields.published') }}</span>
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-3 text-end">
-                <button class="btn btn-primary" :disabled="form.processing" @click="save">
-                    <span v-if="form.processing" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                    {{ t('admin.content.static_pages.actions.save') }}
-                </button>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">{{ t('admin.content.static_pages.pages.privacy_policy') }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_ru')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.privacy_policy.title_ru">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_en')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.privacy_policy.title_en">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_cn')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.privacy_policy.title_cn">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.privacy_policy.body_ru"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.privacy_policy.body_en"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.privacy_policy.body_cn"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                        v-model="form.pages.privacy_policy.published">
+                                    <span class="form-check-label">{{
+                                        t('admin.content.static_pages.fields.published') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">{{ t('admin.content.static_pages.pages.procurement_rules') }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_ru')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.procurement_rules.title_ru">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_en')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.procurement_rules.title_en">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.title_cn')
+                                }}</label>
+                                <input class="form-control" v-model="form.pages.procurement_rules.title_cn">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.procurement_rules.body_ru"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.procurement_rules.body_en"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
+                                }}</label>
+                                <textarea class="form-control" rows="6"
+                                    v-model="form.pages.procurement_rules.body_cn"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                        v-model="form.pages.procurement_rules.published">
+                                    <span class="form-check-label">{{
+                                        t('admin.content.static_pages.fields.published') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="mt-3 text-end">
+            <button class="btn btn-primary" :disabled="form.processing" @click="save">
+                <span v-if="form.processing" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                {{ t('admin.content.static_pages.actions.save') }}
+            </button>
+        </div>
+
     </AdminLayout>
 </template>

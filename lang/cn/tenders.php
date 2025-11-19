@@ -38,6 +38,16 @@ return [
     'action_compare_tender' => '比较报价',
     'action_view_proposals' => '查看报价',
 
+    // Q&A
+    'qa_title' => '向客户提问',
+    'qa_empty' => '暂无已发布的问题。',
+    'qa_participant_prefix' => '参与者',
+    'qa_customer_answer' => '客户回复',
+    'qa_ask_label' => '向客户提问',
+    'qa_ask_placeholder' => '请输入您的问题… 它将经过审核，通过后会公开发布。',
+    'qa_ask_submit' => '提交审核',
+    'qa_moderation_note' => '问题将在管理员审核后发布。',
+
     'create_title' => '创建招标',
     'label_title' => '招标名称',
     'label_description' => '说明',

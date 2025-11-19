@@ -171,10 +171,36 @@ return [
         'title' => 'ИИ инструменты',
         'index_title' => 'ИИ инструменты',
         'tender_generation' => 'Генерация тендера',
+        'tender_generation_desc' => 'Генерация нового тендера с помощью ИИ на основе настроенного промпта',
         'translation' => 'Перевод',
+        'translation_desc' => 'Перевод всех тендеров на английский и китайский языки',
+        'settings' => [
+            'title' => 'Настройки ИИ',
+            'deepseek_api_key' => 'Ключ API Deepseek',
+            'deepseek_api_key_note' => 'Введите ваш API ключ от Deepseek для доступа к функциям ИИ',
+            'tender_prompt' => 'Промпт для создания тендера',
+            'tender_prompt_note' => 'Настройте шаблон для автоматической генерации описаний тендеров',
+            'save' => 'Сохранить настройки',
+        ],
         'actions' => [
             'generate' => 'Сгенерировать',
             'translate' => 'Перевести',
+        ],
+    ],
+
+    'smtp' => [
+        'title' => 'SMTP настройки',
+        'fields' => [
+            'host' => 'SMTP хост',
+            'port' => 'SMTP порт',
+            'encryption' => 'Шифрование',
+            'encryption_tls' => 'TLS',
+            'encryption_ssl' => 'SSL',
+            'encryption_none' => 'Без шифрования',
+            'username' => 'Имя пользователя',
+            'password' => 'Пароль',
+            'from_address' => 'Email отправителя',
+            'from_name' => 'Имя отправителя',
         ],
     ],
 ];

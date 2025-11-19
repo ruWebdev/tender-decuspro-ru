@@ -15,6 +15,13 @@ const props = defineProps({
 });
 
 const { t } = useTranslations();
+
+const formatDate = (value) => {
+    if (!value) return '-';
+    const d = new Date(value);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
 </script>
 
 <template>
@@ -33,7 +40,7 @@ const { t } = useTranslations();
                             <th>{{ t('proposals.customer_col_supplier') }}</th>
                             <th>{{ t('proposals.customer_col_submitted_at') }}</th>
                             <th>{{ t('proposals.customer_col_items') }}</th>
-                            <th class="w-25">{{ t('proposals.customer_col_actions') }}</th>
+                            <th class="w-1 text-center">{{ t('proposals.customer_col_actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,7 +50,7 @@ const { t } = useTranslations();
                         </tr>
                         <tr v-for="proposal in props.proposals" :key="proposal.id">
                             <td>{{ proposal.user?.name }}</td>
-                            <td>{{ proposal.submitted_at }}</td>
+                            <td>{{ formatDate(proposal.submitted_at) }}</td>
                             <td><span class="badge bg-blue text-light">{{ proposal.items_count ?? 0 }}</span></td>
                             <td>
                                 <div class="btn-list flex-nowrap">

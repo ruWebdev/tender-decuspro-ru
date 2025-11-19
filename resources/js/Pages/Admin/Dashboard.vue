@@ -72,22 +72,6 @@ const statusBadgeClass = (status) => {
 <template>
     <AdminLayout>
         <div class="admin-dashboard">
-            <div class="welcome-card card mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div>
-                        <p class="text-uppercase text-muted small mb-2">{{ t('admin.panel_title') }}</p>
-                        <h2 class="h4 mb-0">{{ t('admin.welcome', { name: page.props.auth?.user?.name || '' }) }}</h2>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <Link href="/admin/tenders" class="btn btn-outline-primary btn-sm">
-                        {{ t('admin.tenders.title') }}
-                        </Link>
-                        <Link href="/admin/users" class="btn btn-primary btn-sm">
-                        {{ t('admin.users.title') }}
-                        </Link>
-                    </div>
-                </div>
-            </div>
 
             <div class="row g-3 mb-4">
                 <div class="col-md-4" v-for="(value, key) in stats" :key="key">
@@ -125,7 +109,7 @@ const statusBadgeClass = (status) => {
                                     <tr v-for="tender in recentTenders" :key="tender.id">
                                         <td>{{ tender.title }}</td>
                                         <td>
-                                            <span class="badge" :class="statusBadgeClass(tender.status)">
+                                            <span class="badge text-light" :class="statusBadgeClass(tender.status)">
                                                 {{ tenderStatusLabel(tender.status) }}
                                             </span>
                                         </td>

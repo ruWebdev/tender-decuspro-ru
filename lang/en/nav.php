@@ -4,6 +4,7 @@ return [
     'home' => 'Home',
     'my_tenders' => 'My tenders',
     'active_tenders' => 'Active tenders',
+    'all_tenders' => 'All tenders',
     'my_proposals' => 'My proposals',
     'dashboard' => 'Dashboard',
     'supplier_profile' => 'Company profile',

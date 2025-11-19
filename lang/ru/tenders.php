@@ -21,6 +21,7 @@ return [
     'button_create' => 'Создать закупку',
 
     'show_title' => 'Детали закупки',
+    'active_title' => 'Активные закупки',
     'field_status' => 'Статус:',
     'field_created_at' => 'Создано:',
     'field_valid_until' => 'Актуально до:',
@@ -37,6 +38,16 @@ return [
     'action_participate' => 'Откликнуться на тендер',
     'action_compare_tender' => 'Сравнить предложения',
     'action_view_proposals' => 'Просмотреть предложения',
+
+    // Q&A
+    'qa_title' => 'Вопросы заказчику',
+    'qa_empty' => 'Пока нет опубликованных вопросов.',
+    'qa_participant_prefix' => 'Участник',
+    'qa_customer_answer' => 'Ответ заказчика',
+    'qa_ask_label' => 'Задать вопрос заказчику',
+    'qa_ask_placeholder' => 'Напишите ваш вопрос... Он попадёт на модерацию и при одобрении будет опубликован.',
+    'qa_ask_submit' => 'Отправить на модерацию',
+    'qa_moderation_note' => 'Вопрос будет опубликован после проверки администратором.',
 
     'create_title' => 'Создание закупки',
     'label_title' => 'Название закупки',

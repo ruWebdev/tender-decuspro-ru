@@ -159,10 +159,36 @@ return [
         'title' => 'AI工具',
         'index_title' => 'AI工具',
         'tender_generation' => '招标生成',
+        'tender_generation_desc' => '基于已配置的提示，使用AI生成新的招标',
         'translation' => '翻译',
+        'translation_desc' => '将所有招标翻译为英文和中文',
+        'settings' => [
+            'title' => 'AI设置',
+            'deepseek_api_key' => 'Deepseek API密钥',
+            'deepseek_api_key_note' => '输入您的Deepseek API密钥以启用AI功能',
+            'tender_prompt' => '招标生成提示词',
+            'tender_prompt_note' => '配置用于自动生成招标描述的模板',
+            'save' => '保存设置',
+        ],
         'actions' => [
             'generate' => '生成',
             'translate' => '翻译',
+        ],
+    ],
+
+    'smtp' => [
+        'title' => 'SMTP设置',
+        'fields' => [
+            'host' => 'SMTP主机',
+            'port' => 'SMTP端口',
+            'encryption' => '加密方式',
+            'encryption_tls' => 'TLS',
+            'encryption_ssl' => 'SSL',
+            'encryption_none' => '无',
+            'username' => '用户名',
+            'password' => '密码',
+            'from_address' => '发件邮箱',
+            'from_name' => '发件人名称',
         ],
     ],
 ];

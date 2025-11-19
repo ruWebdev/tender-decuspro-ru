@@ -38,6 +38,15 @@ return [
     'action_compare_tender' => 'Compare proposals',
     'action_view_proposals' => 'View proposals',
 
+    'qa_title' => 'Questions to customer',
+    'qa_empty' => 'No published questions yet.',
+    'qa_participant_prefix' => 'Participant',
+    'qa_customer_answer' => 'Customer answer',
+    'qa_ask_label' => 'Ask a question to the customer',
+    'qa_ask_placeholder' => 'Write your question... It will be moderated and published if approved.',
+    'qa_ask_submit' => 'Submit for moderation',
+    'qa_moderation_note' => 'The question will be published after administrator review.',
+
     'create_title' => 'Create tender',
     'label_title' => 'Tender title',
     'label_description' => 'Description',

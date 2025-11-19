@@ -13,6 +13,7 @@ return [
     'role' => 'Роль',
     'save' => 'Сохранить',
     'cancel' => 'Отмена',
+    'back' => 'Назад',
     'edit' => 'Редактировать',
     'help' => 'Справка',
     'main_page' => 'Главная страница',
@@ -33,4 +34,11 @@ return [
     'address_placeholder' => 'Город, улица, офис',
     'website' => 'Сайт',
     'website_placeholder' => 'https://example.com',
+
+    // Общие
+    'no_data' => 'Нет данных',
+    'apply' => 'Применить',
+    'reset' => 'Сбросить',
+    'unknown' => 'Неизвестно',
+    'info' => 'Информация',
 ];

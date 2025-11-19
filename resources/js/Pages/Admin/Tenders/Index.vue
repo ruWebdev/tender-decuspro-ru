@@ -145,11 +145,10 @@ const customerLabel = (customerId) => {
             <!-- Таблица тендеров -->
             <div class="card">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-vcenter table-hover mb-0">
                         <thead>
                             <tr>
                                 <th>{{ t('admin.tenders.table.col_title') }}</th>
-                                <th>{{ t('admin.tenders.table.col_customer') }}</th>
                                 <th>{{ t('admin.tenders.table.col_status') }}</th>
                                 <th>{{ t('admin.tenders.table.col_valid_until') }}</th>
                                 <th>{{ t('admin.tenders.table.col_created_at') }}</th>
@@ -165,17 +164,8 @@ const customerLabel = (customerId) => {
                             </tr>
                             <tr v-for="tender in tenders.data" :key="tender.id">
                                 <td>
-                                    <div class="text-truncate" style="max-width: 200px;">
+                                    <div style="max-width: 200px;">
                                         <strong>{{ tender.title }}</strong>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div
-                                            class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                            {{ customerLabel(tender.customer_id).charAt(0).toUpperCase() }}
-                                        </div>
-                                        <span>{{ customerLabel(tender.customer_id) }}</span>
                                     </div>
                                 </td>
                                 <td>

@@ -87,10 +87,10 @@ const finishedLabel = (isFinished) => {
                             </p>
                             <p class="mb-2">
                                 <strong>{{ t('admin.tenders.form.status') }}:</strong>
-                                <span class="badge me-1" :class="statusBadgeClass(tender.status)">
+                                <span class="badge ms-1 me-1 text-light" :class="statusBadgeClass(tender.status)">
                                     {{ statusLabel(tender.status) }}
                                 </span>
-                                <span class="badge" :class="finishedBadgeClass(tender.is_finished)">
+                                <span class="badge text-light" :class="finishedBadgeClass(tender.is_finished)">
                                     {{ finishedLabel(tender.is_finished) }}
                                 </span>
                             </p>
@@ -128,7 +128,7 @@ const finishedLabel = (isFinished) => {
             </div>
 
             <!-- Позиции тендера -->
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">{{ t('tenders.positions_title', 'Позиции тендера') }}</h5>
                 </div>

@@ -13,6 +13,7 @@ return [
     'role' => '角色',
     'save' => '保存',
     'cancel' => '取消',
+    'back' => '返回',
     'edit' => '编辑',
     'help' => '帮助',
     'main_page' => '主页',
@@ -33,4 +34,11 @@ return [
     'address_placeholder' => '城市、街道、办公室',
     'website' => '网站',
     'website_placeholder' => 'https://example.com',
+
+    // 通用
+    'no_data' => '暂无数据',
+    'apply' => '应用',
+    'reset' => '重置',
+    'unknown' => '未知',
+    'info' => '信息',
 ];

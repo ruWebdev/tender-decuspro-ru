@@ -22,8 +22,11 @@ Route::get('/dashboard', [CabinetController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-Route::middleware(['auth', 'role:customer'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/tenders', [TenderController::class, 'index'])->name('tenders.index');
+});
+
+Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/tenders/create', [TenderController::class, 'create'])->name('tenders.create');
     Route::post('/tenders', [TenderController::class, 'store'])->name('tenders.store');
 
@@ -39,6 +42,12 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/proposals/{proposal}', [ProposalController::class, 'viewCustomer'])
         ->name('proposals.view.customer');
 
+    // Управление заявками поставщиков заказчиком
+    Route::post('/proposals/{proposal}/approve', [ProposalController::class, 'approve'])
+        ->name('proposals.approve');
+    Route::post('/proposals/{proposal}/reject', [ProposalController::class, 'reject'])
+        ->name('proposals.reject');
+
     Route::get('/tenders/{tender}/comparison', [TenderComparisonController::class, 'index'])
         ->name('tenders.comparison');
 
@@ -48,6 +57,9 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/tenders/{tender}/finish', [TenderFinishController::class, 'finish'])
         ->name('tenders.finish.submit');
 });
+
+// Список тендеров доступен всем авторизованным пользователям (роль-специфичное поведение в контроллере)
+// (определено выше, здесь дублирование удалено)
 
 Route::get('/tenders/{tender}', [TenderController::class, 'show'])->name('tenders.show');
 
@@ -65,7 +77,7 @@ Route::middleware(['auth', 'role:supplier'])->group(function () {
         ->name('tenders.best-prices');
 });
 
-Route::get('/proposals', [ProposalController::class, 'index'])->name('proposals.index');
+// перенесено в блок поставщика
 
 Route::get('/proposals/{proposal}/total', [ProposalTotalController::class, 'show'])
     ->middleware(['auth'])
@@ -76,7 +88,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:supplier'])->group(function () {
         Route::get('/profile/supplier', [SupplierProfileController::class, 'index'])->name('profile.supplier');
+
+        // Список заявок поставщика
+        Route::get('/proposals', [ProposalController::class, 'index'])->name('proposals.index');
+        // Отзыв заявки
+        Route::post('/proposal/{proposal}/withdraw', [ProposalController::class, 'withdraw'])->name('proposals.withdraw');
+        // Удаление черновика
+        Route::delete('/proposal/{proposal}/discard', [ProposalController::class, 'discard'])->name('proposals.discard');
+
+        // Вопросы по тендерам (поставщики могут задавать)
+        Route::post('/tenders/{tender}/questions', [\App\Http\Controllers\TenderQuestionController::class, 'store'])
+            ->name('tenders.questions.store');
     });
+
 
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin', \App\Http\Controllers\Admin\AdminDashboardController::class)->name('admin.dashboard');
@@ -108,6 +132,22 @@ Route::middleware(['auth'])->group(function () {
             // Редактирование статических страниц (Пользовательское соглашение, Политика, Регламент)
             Route::get('/content/static-pages', [AdminStaticPagesController::class, 'edit'])->name('content.static_pages');
             Route::post('/content/static-pages', [AdminStaticPagesController::class, 'update'])->name('content.static_pages.update');
+
+            // Инструменты ИИ
+            Route::get('/ai', [\App\Http\Controllers\Admin\AdminAIController::class, 'index'])->name('ai.index');
+            Route::post('/ai/settings', [\App\Http\Controllers\Admin\AdminAIController::class, 'saveSettings'])->name('ai.save_settings');
+            Route::post('/ai/generate-tender', [\App\Http\Controllers\Admin\AdminAIController::class, 'generateTender'])->name('ai.generate_tender');
+            Route::post('/ai/translate-tenders', [\App\Http\Controllers\Admin\AdminAIController::class, 'translateTenders'])->name('ai.translate_tenders');
+
+            // Настройки SMTP
+            Route::get('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'index'])->name('smtp.index');
+            Route::post('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'save'])->name('smtp.save');
+
+            // Модерация вопросов по тендерам
+            Route::get('/tenders/{tender}/questions', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'index'])->name('tenders.questions.index');
+            Route::post('/tenders/{tender}/questions/{question}/publish', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'publish'])->name('tenders.questions.publish');
+            Route::post('/tenders/{tender}/questions/{question}/unpublish', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'unpublish'])->name('tenders.questions.unpublish');
+            Route::post('/tenders/{tender}/questions/{question}/answer', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'answer'])->name('tenders.questions.answer');
         });
     });
 });

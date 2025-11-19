@@ -69,37 +69,36 @@ const translateTenders = () => {
             <!-- Настройки ИИ -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Настройки ИИ</h5>
+                    <h5 class="card-title mb-0">{{ t('admin.ai.settings.title') }}</h5>
                 </div>
                 <div class="card-body">
                     <form @submit.prevent="saveSettings">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label">Ключ API Deepseek</label>
+                                <label class="form-label">{{ t('admin.ai.settings.deepseek_api_key') }}</label>
                                 <input type="password" v-model="form.deepseek_api_key" class="form-control"
                                     :class="{ 'is-invalid': form.errors.deepseek_api_key }" placeholder="sk-...">
                                 <div v-if="form.errors.deepseek_api_key" class="invalid-feedback">
                                     {{ form.errors.deepseek_api_key }}
                                 </div>
-                                <div class="form-text">Введите ваш API ключ от Deepseek для доступа к функциям ИИ</div>
+                                <div class="form-text">{{ t('admin.ai.settings.deepseek_api_key_note') }}</div>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Промпт для создания тендера</label>
+                                <label class="form-label">{{ t('admin.ai.settings.tender_prompt') }}</label>
                                 <textarea v-model="form.tender_prompt" class="form-control" rows="12"
                                     :class="{ 'is-invalid': form.errors.tender_prompt }"
                                     placeholder="Введите промпт..."></textarea>
                                 <div v-if="form.errors.tender_prompt" class="invalid-feedback">
                                     {{ form.errors.tender_prompt }}
                                 </div>
-                                <div class="form-text">Настройте шаблон для автоматической генерации описаний тендеров
-                                </div>
+                                <div class="form-text">{{ t('admin.ai.settings.tender_prompt_note') }}</div>
                             </div>
 
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary" :disabled="form.processing">
                                     <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"></span>
-                                    Сохранить настройки
+                                    {{ t('admin.ai.settings.save') }}
                                 </button>
                             </div>
                         </div>
@@ -120,8 +119,7 @@ const translateTenders = () => {
                                 </div>
                                 <h5 class="card-title mb-0">{{ t('admin.ai.tender_generation') }}</h5>
                             </div>
-                            <p class="text-muted mb-3">Генерация нового тендера с помощью ИИ на основе настроенного
-                                промпта</p>
+                            <p class="text-muted mb-3">{{ t('admin.ai.tender_generation_desc') }}</p>
                             <button @click="generateTender" class="btn btn-primary w-100" :disabled="form.processing">
                                 <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"></span>
                                 {{ t('admin.ai.actions.generate') }}
@@ -141,8 +139,7 @@ const translateTenders = () => {
                                 </div>
                                 <h5 class="card-title mb-0">{{ t('admin.ai.translation') }}</h5>
                             </div>
-                            <p class="text-muted mb-3">Перевод всех тендеров на несколько языков (английский, китайский)
-                            </p>
+                            <p class="text-muted mb-3">{{ t('admin.ai.translation_desc') }}</p>
                             <button @click="translateTenders" class="btn btn-success w-100" :disabled="form.processing">
                                 <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"></span>
                                 {{ t('admin.ai.actions.translate') }}

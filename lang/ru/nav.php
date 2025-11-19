@@ -4,6 +4,7 @@ return [
     'home' => 'Главная',
     'my_tenders' => 'Мои закупки',
     'active_tenders' => 'Активные закупки',
+    'all_tenders' => 'Все тендеры',
     'my_proposals' => 'Мои предложения',
     'dashboard' => 'Кабинет',
     'supplier_profile' => 'Профиль компании',

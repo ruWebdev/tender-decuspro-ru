@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Tender;
 use App\Models\TenderItem;
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -89,6 +90,11 @@ class TenderGeneratorService
 
     private function buildPrompt(): string
     {
+        $custom = Setting::get('tender_prompt');
+        if (is_string($custom) && $custom !== '') {
+            return $custom;
+        }
+
         return <<<'PROMPT'
 You are generating a new tender (procurement) for an online tender platform.
 

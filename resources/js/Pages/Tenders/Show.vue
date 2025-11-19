@@ -83,6 +83,23 @@ const formatDate = (value) => {
   }
   return new Date(value).toLocaleString(jsLocale.value);
 };
+
+// Q&A
+const questions = computed(() => page.props.questions || []);
+const questionForm = useForm({
+  question: '',
+});
+const submitQuestion = () => {
+  if (!tender.value) return;
+  questionForm.post(route('tenders.questions.store', { tender: tender.value.id }), {
+    preserveScroll: true,
+    onSuccess: () => {
+      questionForm.reset('question');
+    },
+  });
+};
+const myProposal = computed(() => page.props.my_proposal || null);
+
 </script>
 
 <template>
@@ -118,6 +135,7 @@ const formatDate = (value) => {
                     <strong>{{ t('tenders.field_valid_until') }}</strong> {{ formatDate(tender.valid_until) }}
                   </p>
                 </div>
+
                 <div class="col-md-6">
                   <p v-if="tender.is_finished" class="text-success">
                     <strong>{{ t('tenders.status_finished_label') }}</strong>
@@ -139,9 +157,9 @@ const formatDate = (value) => {
             <div class="card-header">
               <h3 class="h5 mb-0">{{ t('tenders.positions_title') }}</h3>
             </div>
-            <div class="table-wrapper" :class="{ 'table-blur': isGuest }">
-              <div class="table-responsive">
-                <table class="table table-sm mb-0">
+            <div class="table-responsive">
+              <div class="table-wrapper" :class="{ 'table-blur': isGuest }">
+                <table class="table card-table table-vcenter">
                   <thead>
                     <tr>
                       <th>{{ t('tenders.col_item_title') }}</th>
@@ -166,15 +184,66 @@ const formatDate = (value) => {
             </div>
           </div>
 
+          <!-- Q&A: Questions to customer -->
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h3 class="h5 mb-0">{{ t('tenders.qa_title') }}</h3>
+            </div>
+            <div class="card-body">
+              <div v-if="questions.length === 0" class="text-muted mb-3">{{ t('tenders.qa_empty') }}</div>
+
+              <div v-for="(q, idx) in questions" :key="q.id" class="mb-3 pb-3 border-bottom">
+                <div class="fw-semibold mb-1">
+                  {{ t('tenders.qa_participant_prefix', 'Участник') }}{{ idx + 1 }}:
+                  {{ q.question }}
+                </div>
+                <div v-if="q.answer" class="ms-3 text-muted">
+                  <span class="fw-semibold">{{ t('tenders.qa_customer_answer') }}:</span>
+                  {{ q.answer }}
+                </div>
+              </div>
+
+              <!-- Ask form for suppliers when tender is open -->
+              <div v-if="isSupplier && !tender.is_finished" class="mt-3">
+                <label class="form-label">{{ t('tenders.qa_ask_label') }}</label>
+                <textarea v-model="questionForm.question" class="form-control" rows="3"
+                  :placeholder="t('tenders.qa_ask_placeholder')"
+                  :class="{ 'is-invalid': questionForm.errors.question }"></textarea>
+                <div v-if="questionForm.errors.question" class="invalid-feedback">{{ questionForm.errors.question
+                  }}</div>
+                <div class="mt-2 d-flex justify-content-end">
+                  <button class="btn btn-primary" :disabled="questionForm.processing || !questionForm.question.trim()"
+                    @click="submitQuestion">
+                    <span v-if="questionForm.processing" class="spinner-border spinner-border-sm me-2"></span>
+                    {{ t('tenders.qa_ask_submit') }}
+                  </button>
+                </div>
+                <div class="form-text mt-2">
+                  {{ t('tenders.qa_moderation_note') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="mb-3 d-flex gap-2 flex-wrap">
             <Link :href="route('tenders.index')" class="btn btn-secondary">
             {{ t('tenders.back_to_list') }}
             </Link>
 
-            <Link v-if="isSupplier && !tender.is_finished" :href="route('proposals.participate', { tender: tender.id })"
-              class="btn btn-success">
+            <Link v-if="isSupplier && !tender.is_finished && !myProposal"
+              :href="route('proposals.participate', { tender: tender.id })" class="btn btn-success">
             {{ t('tenders.action_participate') }}
             </Link>
+            <Link v-if="isSupplier && !tender.is_finished && myProposal && myProposal.status === 'draft'"
+              :href="route('proposals.participate', { tender: tender.id })" class="btn btn-outline-secondary">
+            {{ t('proposals.action_edit', 'Редактировать') }}
+            </Link>
+            <form v-if="isSupplier && !tender.is_finished && myProposal && myProposal.status === 'submitted'"
+              :action="route('proposals.withdraw', { proposal: myProposal.id })" method="post" class="d-inline">
+              <input type="hidden" name="_method" value="POST" />
+              <button type="submit" class="btn btn-outline-danger">{{ t('proposals.action_withdraw', 'Отозвать')
+                }}</button>
+            </form>
 
             <Link v-if="isCustomer" :href="route('tenders.comparison', { tender: tender.id })"
               class="btn btn-outline-primary">

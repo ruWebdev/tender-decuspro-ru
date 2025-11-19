@@ -43,11 +43,11 @@ const footerLinks = computed(() => [
 const currentYear = new Date().getFullYear();
 
 onMounted(() => {
-  nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch {} } });
+  nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch { } } });
 });
 
 onUpdated(() => {
-  nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch {} } });
+  nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch { } } });
 });
 </script>
 
@@ -79,7 +79,7 @@ onUpdated(() => {
               </li>
 
               <li v-if="isSupplier" class="nav-item">
-                <Link href="/" class="nav-link">{{ t('nav.active_tenders') }}</Link>
+                <Link :href="route('tenders.index')" class="nav-link">{{ t('nav.all_tenders', 'Все тендеры') }}</Link>
               </li>
 
               <li v-if="isSupplier" class="nav-item">

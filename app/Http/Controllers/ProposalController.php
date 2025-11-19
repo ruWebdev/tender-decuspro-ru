@@ -12,9 +12,22 @@ use Inertia\Response;
 
 class ProposalController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('Proposals/Index');
+        $user = $request->user();
+
+        $proposals = Proposal::query()
+            ->where('user_id', $user->id)
+            ->with(['tender:id,title,valid_until,status'])
+            ->withCount('items')
+            ->orderByDesc('submitted_at')
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Proposals/Index', [
+            'proposals' => $proposals,
+        ]);
     }
 
     public function indexCustomer(Tender $tender): Response
@@ -180,5 +193,57 @@ class ProposalController extends Controller
         });
 
         return redirect()->route('proposals.participate', ['tender' => $proposal->tender_id]);
+    }
+
+    public function withdraw(Request $request, Proposal $proposal): RedirectResponse
+    {
+        $this->authorize('withdraw', $proposal);
+
+        DB::transaction(function () use ($proposal): void {
+            $proposal->forceFill([
+                'status' => 'withdrawn',
+                'submitted_at' => null,
+            ])->save();
+        });
+
+        return redirect()->route('proposals.index');
+    }
+
+    public function discard(Request $request, Proposal $proposal): RedirectResponse
+    {
+        $this->authorize('discard', $proposal);
+
+        DB::transaction(function () use ($proposal): void {
+            $proposal->items()->delete();
+            $proposal->delete();
+        });
+
+        return redirect()->route('tenders.index');
+    }
+
+    public function approve(Request $request, Proposal $proposal): RedirectResponse
+    {
+        $this->authorize('approve', $proposal);
+
+        DB::transaction(function () use ($proposal): void {
+            $proposal->forceFill([
+                'status' => 'approved',
+            ])->save();
+        });
+
+        return back();
+    }
+
+    public function reject(Request $request, Proposal $proposal): RedirectResponse
+    {
+        $this->authorize('reject', $proposal);
+
+        DB::transaction(function () use ($proposal): void {
+            $proposal->forceFill([
+                'status' => 'rejected',
+            ])->save();
+        });
+
+        return back();
     }
 }

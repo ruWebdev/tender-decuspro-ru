@@ -29,6 +29,40 @@ const addRow = () => {
     form.items.push({ key: 'home.', value_ru: '', value_en: '', value_cn: '' });
 };
 
+const removeRow = (idx) => {
+    form.items.splice(idx, 1);
+};
+
+const search = ref('');
+
+const groups = computed(() => {
+    const list = form.items.map((row, index) => ({ index, row }));
+    const filtered = search.value.trim().toLowerCase();
+    const byGroup = new Map();
+
+    for (const it of list) {
+        const k = it.row.key || '';
+        if (filtered) {
+            const hay = [k, it.row.value_ru, it.row.value_en, it.row.value_cn].join(' ').toLowerCase();
+            if (!hay.includes(filtered)) continue;
+        }
+        const parts = k.split('.');
+        let grp = 'home.other';
+        if (parts.length >= 2) {
+            grp = `${parts[0]}.${parts[1]}`;
+        }
+        if (!byGroup.has(grp)) byGroup.set(grp, []);
+        byGroup.get(grp).push(it);
+    }
+
+    return Array.from(byGroup.entries()).map(([group, items]) => ({ group, items }));
+});
+
+const addInGroup = (group) => {
+    const prefix = group.endsWith('.') ? group : `${group}.`;
+    form.items.push({ key: `${prefix}new_key`, value_ru: '', value_en: '', value_cn: '' });
+};
+
 const save = () => {
     form.post(route('admin.content.home.save'));
 };
@@ -36,65 +70,93 @@ const save = () => {
 
 <template>
     <AdminLayout>
-        <div class="container py-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="h3 mb-0">{{ t('admin.content.home_editor.title') }}</h1>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary" type="button" @click="addRow">
-                        {{ t('admin.content.home_editor.actions.add_row') }}
-                    </button>
-                    <div class="btn-group" role="group">
-                        <button v-for="tab in tabs" :key="tab.value" type="button" class="btn"
-                            :class="activeTab === tab.value ? 'btn-primary' : 'btn-outline-primary'"
-                            @click="activeTab = tab.value">
-                            {{ tab.label }}
-                        </button>
-                    </div>
-                    <button class="btn btn-success" :disabled="form.processing" @click="save">
-                        <span v-if="form.processing" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                        {{ t('admin.content.home_editor.actions.save') }}
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">{{ t('admin.content.home_editor.title') }}</h1>
+            <div class="d-flex gap-2 align-items-center">
+                <div class="input-group">
+                    <input v-model="search" type="text" class="form-control" :placeholder="t('common.search', 'Поиск')">
+                </div>
+                <div class="btn-group" role="group">
+                    <button v-for="tab in tabs" :key="tab.value" type="button" class="btn"
+                        :class="activeTab === tab.value ? 'btn-primary' : 'btn-outline-primary'"
+                        @click="activeTab = tab.value">
+                        {{ tab.label }}
                     </button>
                 </div>
+                <button class="btn btn-success" :disabled="form.processing" @click="save"
+                    style="width: 260px !important;">
+                    <span v-if="form.processing" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    {{ t('admin.content.home_editor.actions.save') }}
+                </button>
             </div>
+        </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30%">{{ t('admin.content.home_editor.col_key') }}</th>
-                                    <th>{{ t('admin.content.home_editor.col_value') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(row, idx) in form.items" :key="row.key">
-                                    <td>
-                                        <input v-model="row.key" class="form-control form-control-sm"
-                                            placeholder="home.key.path" />
-                                    </td>
-                                    <td>
-                                        <template v-if="activeTab === 'ru'">
-                                            <textarea v-model="row.value_ru" rows="2" class="form-control"></textarea>
-                                        </template>
-                                        <template v-else-if="activeTab === 'en'">
-                                            <textarea v-model="row.value_en" rows="2" class="form-control"></textarea>
-                                        </template>
-                                        <template v-else>
-                                            <textarea v-model="row.value_cn" rows="2" class="form-control"></textarea>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="text-end">
-                        <button class="btn btn-primary" :disabled="form.processing" @click="save">
-                            <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"
-                                role="status"></span>
-                            {{ t('admin.content.home_editor.actions.save') }}
-                        </button>
+        <div class="accordion" id="homeContentAccordion">
+            <div class="accordion-item" v-for="section in groups" :key="section.group">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        :data-bs-target="`#grp-${section.group}`">
+                        {{ section.group }}
+                    </button>
+                </h2>
+                <div :id="`grp-${section.group}`" class="accordion-collapse collapse"
+                    data-bs-parent="#homeContentAccordion">
+                    <div class="accordion-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <button class="btn btn-outline-secondary btn-sm" type="button"
+                                @click="addInGroup(section.group)">
+                                {{ t('admin.content.home_editor.actions.add_row') }}
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 34%">{{ t('admin.content.home_editor.col_key') }}</th>
+                                        <th>{{ t('admin.content.home_editor.col_value') }}</th>
+                                        <th style="width: 1%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="it in section.items" :key="it.index">
+                                        <td>
+                                            <input v-model="form.items[it.index].key"
+                                                class="form-control form-control-sm" placeholder="home.key.path" />
+                                        </td>
+                                        <td>
+                                            <template v-if="activeTab === 'ru'">
+                                                <textarea v-model="form.items[it.index].value_ru" rows="2"
+                                                    class="form-control"></textarea>
+                                            </template>
+                                            <template v-else-if="activeTab === 'en'">
+                                                <textarea v-model="form.items[it.index].value_en" rows="2"
+                                                    class="form-control"></textarea>
+                                            </template>
+                                            <template v-else>
+                                                <textarea v-model="form.items[it.index].value_cn" rows="2"
+                                                    class="form-control"></textarea>
+                                            </template>
+                                        </td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-outline-danger btn-icon"
+                                                @click="removeRow(it.index)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M4 7l16 0" />
+                                                    <path d="M10 11l0 6" />
+                                                    <path d="M14 11l0 6" />
+                                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

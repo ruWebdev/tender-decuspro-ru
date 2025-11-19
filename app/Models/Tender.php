@@ -57,6 +57,11 @@ class Tender extends Model
         return $this->hasMany(TenderItem::class);
     }
 
+    public function questions(): HasMany
+    {
+        return $this->hasMany(TenderQuestion::class);
+    }
+
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class);

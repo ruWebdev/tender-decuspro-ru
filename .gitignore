@@ -1,6 +1,5 @@
 *.log
 .DS_Store
-AGENTS.md
 .env
 .env.backup
 .env.production
@@ -23,3 +22,4 @@ AGENTS.md
 Homestead.json
 Homestead.yaml
 Thumbs.db
+AGENTS.md

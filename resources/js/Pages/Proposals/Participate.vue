@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -10,6 +10,23 @@ const { t } = useTranslations();
 const tender = computed(() => page.props.tender);
 const proposal = computed(() => page.props.proposal);
 const winner = computed(() => page.props.winner ?? null);
+
+const currentLocale = computed(() => page.props.locale || 'ru');
+
+const tenderDescription = computed(() => {
+    if (!tender.value) return '';
+    if (currentLocale.value === 'en') return tender.value.description_en || tender.value.description || '';
+    if (currentLocale.value === 'cn') return tender.value.description_cn || tender.value.description || '';
+    return tender.value.description || '';
+});
+
+const statusLabel = computed(() => {
+    const s = proposal.value?.status;
+    if (s === 'submitted') return t('proposals.status_submitted', 'Отправлено');
+    if (s === 'draft') return t('proposals.status_draft', 'Черновик');
+    if (s === 'withdrawn') return t('proposals.status_withdrawn', 'Отозвано');
+    return s || '-';
+});
 
 const buildItemsFromTender = () => {
     const tenderItems = tender.value?.items ?? [];
@@ -86,6 +103,23 @@ const submitProposal = () => {
     form.transform((data) => ({ ...data, items: items.map(({ tender_item_id, price, comment }) => ({ tender_item_id, price, comment })) }))
         .post(route('proposals.store', { tender: tender.value.id }));
 };
+
+const discardDraft = () => {
+    if (!proposal.value || proposal.value.status !== 'draft') return;
+    if (!confirm(t('proposals.confirm_discard', 'Удалить черновик?'))) return;
+    router.delete(route('proposals.discard', { proposal: proposal.value.id }), {
+        preserveScroll: false,
+        onSuccess: () => router.visit(route('tenders.index')),
+    });
+};
+
+const withdraw = () => {
+    if (!proposal.value || proposal.value.status !== 'submitted') return;
+    if (!confirm(t('proposals.confirm_withdraw', 'Отозвать заявку?'))) return;
+    router.post(route('proposals.withdraw', { proposal: proposal.value.id }), {}, {
+        onSuccess: () => router.visit(route('proposals.index')),
+    });
+};
 </script>
 
 <template>
@@ -93,15 +127,26 @@ const submitProposal = () => {
         <div class="container mb-4">
             <h1 class="h2 mb-3">{{ t('proposals.participate_title') }}</h1>
 
-            <div v-if="tender">
-                <p><strong>{{ t('tenders.tender_label') }}</strong> {{ tender.title }}</p>
-                <p><strong>{{ t('proposals.deadline_label') }}</strong> {{ tender.valid_until }}</p>
+            <div v-if="tender" class="card mb-3">
+                <div class="card-body">
+                    <p class="mb-2"><strong>{{ t('tenders.tender_label') }}</strong> {{ tender.title }}</p>
+                    <p class="mb-2"><strong>{{ t('proposals.deadline_label') }}</strong> {{ tender.valid_until }}</p>
+                    <div>
+                        <strong>{{ t('tenders.field_description') }}</strong>
+                        <p class="mb-0 mt-2">{{ tenderDescription || t('tenders.no_description') }}</p>
+                    </div>
+
+                    <div class="mt-2" v-if="proposal">
+                        <p class="mb-1"><strong>{{ t('proposals.field_status') }}</strong> {{ statusLabel }}</p>
+                        <p v-if="proposal.is_partial" class="mb-2"><span class="badge bg-warning text-light mt-2">{{
+                            t('proposals.badge_partial') }}</span></p>
+                    </div>
+                </div>
+
+
             </div>
 
-            <div v-if="proposal">
-                <p class="mb-1"><strong>{{ t('proposals.field_status') }}</strong> {{ proposal.status }}</p>
-                <p v-if="proposal.is_partial" class="mb-2"><span class="badge bg-warning">{{ t('proposals.badge_partial') }}</span></p>
-            </div>
+
 
             <div v-if="tender?.is_finished" class="mb-3">
                 <div v-if="winner && winner.id === proposal?.id">
@@ -156,12 +201,20 @@ const submitProposal = () => {
                     </table>
                 </div>
 
-                <div class="px-3 mb-3 text-muted small">
+                <div class="px-3 text-muted small p-4">
                     {{ t('proposals.partial_hint') }}
                 </div>
 
 
-                <div class="card-footer text-end">
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="button" v-if="proposal?.status === 'submitted'" @click="withdraw"
+                        class="btn btn-outline-danger">
+                        {{ t('proposals.action_withdraw', 'Отозвать') }}
+                    </button>
+                    <button type="button" @click="discardDraft" class="btn btn-outline-secondary"
+                        :disabled="isFormDisabled || form.processing || proposal?.status !== 'draft'">
+                        {{ t('proposals.button_exit_without_saving', 'Выйти без сохранения') }}
+                    </button>
                     <button type="button" @click="saveDraft" class="btn btn-secondary me-2"
                         :disabled="isFormDisabled || form.processing || !canSaveDraft">
                         {{ t('proposals.button_save_draft') }}

@@ -50,4 +50,78 @@ class ProposalPolicy
 
         return $proposal->status === 'draft';
     }
+
+    /**
+     * Заказчик может принять предложение по своему тендеру, пока тендер не завершен.
+     */
+    public function approve(User $user, Proposal $proposal): bool
+    {
+        $tender = $proposal->tender;
+        if ($tender === null) {
+            return false;
+        }
+        if ($tender->is_finished) {
+            return false;
+        }
+        return $user->id === $tender->customer_id;
+    }
+
+    /**
+     * Заказчик может отклонить предложение по своему тендеру, пока тендер не завершен.
+     */
+    public function reject(User $user, Proposal $proposal): bool
+    {
+        return $this->approve($user, $proposal);
+    }
+
+    /**
+     * Поставщик может отозвать только своё отправленное предложение,
+     * пока тендер открыт и срок не истёк.
+     */
+    public function withdraw(User $user, Proposal $proposal): bool
+    {
+        if (! $user->isSupplier()) {
+            return false;
+        }
+
+        if ($proposal->user_id !== $user->id) {
+            return false;
+        }
+
+        $tender = $proposal->tender;
+        if ($tender === null) {
+            return false;
+        }
+
+        if ($tender->is_finished || $tender->valid_until->isPast()) {
+            return false;
+        }
+
+        return $proposal->status === 'submitted';
+    }
+
+    /**
+     * Поставщик может удалить свой черновик предложения, пока тендер открыт и срок не истёк.
+     */
+    public function discard(User $user, Proposal $proposal): bool
+    {
+        if (! $user->isSupplier()) {
+            return false;
+        }
+
+        if ($proposal->user_id !== $user->id) {
+            return false;
+        }
+
+        $tender = $proposal->tender;
+        if ($tender === null) {
+            return false;
+        }
+
+        if ($tender->is_finished || $tender->valid_until->isPast()) {
+            return false;
+        }
+
+        return $proposal->status === 'draft';
+    }
 }
