@@ -17,6 +17,7 @@ const form = useForm({
     description: props.tender.description || '',
     hidden_comment: props.tender.hidden_comment || '',
     valid_until: props.tender.valid_until,
+    valid_until_time: props.tender.valid_until_time || '',
     status: props.tender.status,
     items: props.tender.items?.map(item => ({
         title: item.title,
@@ -116,12 +117,24 @@ const submit = () => {
                                 {{ form.errors.valid_until }}
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ t('tenders.label_valid_until_time', 'Время окончания')
+                                }}</label>
+                            <input type="time" v-model="form.valid_until_time" class="form-control"
+                                :class="{ 'is-invalid': form.errors.valid_until_time }">
+                            <div v-if="form.errors.valid_until_time" class="invalid-feedback">
+                                {{ form.errors.valid_until_time }}
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="card-header">
+                    <h2 class="m-0">{{ t('tenders.positions_title', 'Позиции тендера') }}</h2>
+                </div>
+                <div class="card-body">
 
                     <!-- Позиции тендера -->
                     <div class="mt-4">
-                        <h5 class="mb-3">{{ t('tenders.positions_block_title', 'Позиции тендера') }}</h5>
-
                         <div v-if="form.errors.items" class="alert alert-danger">
                             {{ form.errors.items }}
                         </div>

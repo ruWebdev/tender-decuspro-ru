@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminTendersController;
 use App\Http\Controllers\Admin\AdminUsersController;
+use App\Http\Controllers\Admin\AdminBackupController;
+use App\Http\Controllers\Admin\AdminSystemLogController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\DeepSeekController;
 use App\Http\Controllers\HomeController;
@@ -102,7 +104,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['role:admin|moderator'])->group(function () {
         Route::get('/admin', \App\Http\Controllers\Admin\AdminDashboardController::class)->name('admin.dashboard');
 
         Route::prefix('admin')->name('admin.')->group(function () {
@@ -121,6 +123,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/tenders/{tender}', [AdminTendersController::class, 'show'])->name('tenders.show');
             Route::get('/tenders/{tender}/edit', [AdminTendersController::class, 'edit'])->name('tenders.edit');
             Route::put('/tenders/{tender}', [AdminTendersController::class, 'update'])->name('tenders.update');
+            Route::post('/tenders/{tender}/retender', [AdminTendersController::class, 'retender'])->name('tenders.retender');
             Route::delete('/tenders/{tender}', [AdminTendersController::class, 'destroy'])->name('tenders.destroy');
 
             Route::get('/content', [\App\Http\Controllers\Admin\AdminContentController::class, 'index'])->name('content.index');
@@ -133,15 +136,26 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/content/static-pages', [AdminStaticPagesController::class, 'edit'])->name('content.static_pages');
             Route::post('/content/static-pages', [AdminStaticPagesController::class, 'update'])->name('content.static_pages.update');
 
-            // Инструменты ИИ
-            Route::get('/ai', [\App\Http\Controllers\Admin\AdminAIController::class, 'index'])->name('ai.index');
-            Route::post('/ai/settings', [\App\Http\Controllers\Admin\AdminAIController::class, 'saveSettings'])->name('ai.save_settings');
-            Route::post('/ai/generate-tender', [\App\Http\Controllers\Admin\AdminAIController::class, 'generateTender'])->name('ai.generate_tender');
-            Route::post('/ai/translate-tenders', [\App\Http\Controllers\Admin\AdminAIController::class, 'translateTenders'])->name('ai.translate_tenders');
+            // Инструменты ИИ (только для администратора)
+            Route::middleware('role:admin')->group(function () {
+                Route::get('/ai', [\App\Http\Controllers\Admin\AdminAIController::class, 'index'])->name('ai.index');
+                Route::post('/ai/settings', [\App\Http\Controllers\Admin\AdminAIController::class, 'saveSettings'])->name('ai.save_settings');
+                Route::post('/ai/generate-tender', [\App\Http\Controllers\Admin\AdminAIController::class, 'generateTender'])->name('ai.generate_tender');
+                Route::post('/ai/translate-tenders', [\App\Http\Controllers\Admin\AdminAIController::class, 'translateTenders'])->name('ai.translate_tenders');
 
-            // Настройки SMTP
-            Route::get('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'index'])->name('smtp.index');
-            Route::post('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'save'])->name('smtp.save');
+                // Настройки SMTP (только для администратора)
+                Route::get('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'index'])->name('smtp.index');
+                Route::post('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'save'])->name('smtp.save');
+
+                // Резервные копии (только для администратора)
+                Route::get('/backup', [AdminBackupController::class, 'index'])->name('backup.index');
+                Route::post('/backup/run', [AdminBackupController::class, 'run'])->name('backup.run');
+                Route::get('/backup/download/{file}', [AdminBackupController::class, 'download'])->name('backup.download');
+                Route::delete('/backup/{file}', [AdminBackupController::class, 'destroy'])->name('backup.destroy');
+
+                // Системные логи (только для администратора)
+                Route::get('/system-logs', [AdminSystemLogController::class, 'index'])->name('system_logs.index');
+            });
 
             // Модерация вопросов по тендерам
             Route::get('/tenders/{tender}/questions', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'index'])->name('tenders.questions.index');

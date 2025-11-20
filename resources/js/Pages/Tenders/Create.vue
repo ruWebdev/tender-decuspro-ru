@@ -12,6 +12,7 @@ const form = useForm({
   description: '',
   hidden_comment: '',
   valid_until: '',
+  valid_until_time: '',
   items: [
     { title: '', quantity: '', unit: '' },
   ],
@@ -115,6 +116,15 @@ onBeforeUnmount(() => {
               :class="{ 'is-invalid': form.errors.valid_until }">
             <div v-if="form.errors.valid_until" class="invalid-feedback">
               {{ form.errors.valid_until }}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{{ t('tenders.label_valid_until_time', 'Время окончания') }}</label>
+            <input type="time" v-model="form.valid_until_time" class="form-control"
+              :class="{ 'is-invalid': form.errors.valid_until_time }">
+            <div v-if="form.errors.valid_until_time" class="invalid-feedback">
+              {{ form.errors.valid_until_time }}
             </div>
           </div>
 

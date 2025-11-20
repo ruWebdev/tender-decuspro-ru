@@ -6,6 +6,8 @@ return [
     'active_tenders' => 'Активные закупки',
     'all_tenders' => 'Все тендеры',
     'my_proposals' => 'Мои предложения',
+    'create_tender' => 'Создать тендер',
+    'supplier_proposals' => 'Предложения поставщиков',
     'dashboard' => 'Кабинет',
     'supplier_profile' => 'Профиль компании',
     'admin_panel' => 'Админ-панель',

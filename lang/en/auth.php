@@ -36,6 +36,7 @@ return [
     'register_password_placeholder' => 'Create a password',
     'register_password_confirm_label' => 'Confirm password',
     'register_password_confirm_placeholder' => 'Repeat the password',
+    'register_password_show_tooltip' => 'Show password',
     'register_terms_label' => 'I agree with the',
     'register_terms_link' => 'terms and policy',
     'register_button' => 'Create account',

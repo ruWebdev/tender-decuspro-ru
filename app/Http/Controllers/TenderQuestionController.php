@@ -14,7 +14,7 @@ class TenderQuestionController extends Controller
         $this->authorize('participate', $tender); // поставщик имеет право задавать вопросы к открытому тендеру
 
         $user = $request->user();
-        if (! $user || $user->role !== 'supplier') {
+        if (! $user || ! $user->isSupplier()) {
             abort(403);
         }
 

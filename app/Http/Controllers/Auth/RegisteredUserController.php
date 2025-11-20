@@ -33,7 +33,6 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'role' => 'required|string|in:' . implode(',', [User::ROLE_CUSTOMER, User::ROLE_SUPPLIER]),
             'locale' => 'nullable|string|max:5',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -41,10 +40,12 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
             'locale' => $request->input('locale') ?: config('app.locale'),
+            'role' => User::ROLE_SUPPLIER,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->assignRole(User::ROLE_SUPPLIER);
 
         event(new Registered($user));
 

@@ -7,9 +7,12 @@ const page = usePage();
 const { t } = useTranslations();
 
 const authUser = computed(() => page.props.auth?.user || null);
-const isCustomer = computed(() => authUser.value?.role === 'customer');
-const isSupplier = computed(() => authUser.value?.role === 'supplier');
-const isAdmin = computed(() => authUser.value?.role === 'admin');
+const userRoles = computed(() => authUser.value?.role_names || []);
+const hasRole = (role) => userRoles.value.includes(role);
+const isCustomer = computed(() => hasRole('customer'));
+const isSupplier = computed(() => hasRole('supplier'));
+const isAdmin = computed(() => hasRole('admin'));
+const canAccessAdmin = computed(() => hasRole('admin') || hasRole('moderator'));
 const currentLocale = computed(() => page.props.locale || 'ru');
 const locale = ref(currentLocale.value);
 
@@ -75,7 +78,11 @@ onUpdated(() => {
               </li>
 
               <li v-if="isCustomer" class="nav-item">
-                <Link href="/tenders" class="nav-link">{{ t('nav.my_tenders') }}</Link>
+                <Link :href="route('tenders.create')" class="nav-link">{{ t('nav.create_tender') }}</Link>
+              </li>
+
+              <li v-if="isCustomer" class="nav-item">
+                <Link :href="route('tenders.index')" class="nav-link">{{ t('nav.supplier_proposals') }}</Link>
               </li>
 
               <li v-if="isSupplier" class="nav-item">
@@ -83,7 +90,7 @@ onUpdated(() => {
               </li>
 
               <li v-if="isSupplier" class="nav-item">
-                <Link href="/proposals" class="nav-link">{{ t('nav.my_proposals') }}</Link>
+                <Link :href="route('proposals.index')" class="nav-link">{{ t('nav.my_proposals') }}</Link>
               </li>
             </ul>
 
@@ -102,7 +109,7 @@ onUpdated(() => {
                   <li>
                     <Link :href="route('dashboard')" class="dropdown-item">{{ t('nav.dashboard') }}</Link>
                   </li>
-                  <li v-if="isAdmin">
+                  <li v-if="canAccessAdmin">
                     <Link :href="route('admin.dashboard')" class="dropdown-item">{{ t('nav.admin_panel') }}</Link>
                   </li>
                   <li v-if="isSupplier">

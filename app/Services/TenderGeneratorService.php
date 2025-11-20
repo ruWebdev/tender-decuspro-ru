@@ -14,8 +14,7 @@ class TenderGeneratorService
     public function generate(?User $customer = null): ?Tender
     {
         if (! $customer) {
-            $customer = User::query()
-                ->where('role', User::ROLE_CUSTOMER)
+            $customer = User::role(User::ROLE_CUSTOMER)
                 ->orderBy('id')
                 ->first();
         }

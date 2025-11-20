@@ -54,6 +54,7 @@ return [
     'label_description' => 'Описание',
     'label_hidden_comment' => 'Скрытый комментарий',
     'label_valid_until' => 'Действителен до',
+    'label_valid_until_time' => 'Время окончания',
     'positions_block_title' => 'Позиции',
     'button_add_item' => '+ Добавить позицию',
     'autofill_block_title' => 'Автозаполнить из текста',

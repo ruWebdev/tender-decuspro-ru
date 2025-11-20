@@ -27,11 +27,12 @@ class HomeController extends Controller
                 'description_cn',
                 'status',
                 'created_at',
-                'valid_until'
+                'valid_until',
+                'valid_until_time'
             )
             ->withCount('items')
             ->orderByDesc('created_at')
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         $overrides = UiContent::getOverridesFor(app()->getLocale(), 'home.');

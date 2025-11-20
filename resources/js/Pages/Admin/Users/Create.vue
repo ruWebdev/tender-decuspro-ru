@@ -65,6 +65,7 @@ const submit = () => {
                                 <option value="customer">{{ t('admin.users.roles.customer') }}</option>
                                 <option value="supplier">{{ t('admin.users.roles.supplier') }}</option>
                                 <option value="admin">{{ t('admin.users.roles.admin') }}</option>
+                                <option value="moderator">{{ t('admin.users.roles.moderator') }}</option>
                             </select>
                             <div v-if="form.errors.role" class="invalid-feedback">
                                 {{ form.errors.role }}

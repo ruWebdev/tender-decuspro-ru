@@ -7,6 +7,7 @@ use App\Jobs\TranslateTenderJob;
 use App\Models\Tender;
 use App\Models\TenderItem;
 use App\Models\User;
+use App\Services\SystemLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,8 +40,7 @@ class AdminTendersController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $customers = User::query()
-            ->where('role', User::ROLE_CUSTOMER)
+        $customers = User::role(User::ROLE_CUSTOMER)
             ->select('id', 'name', 'email')
             ->orderBy('name')
             ->get();
@@ -61,8 +61,7 @@ class AdminTendersController extends Controller
 
     public function create(): Response
     {
-        $customers = User::query()
-            ->where('role', User::ROLE_CUSTOMER)
+        $customers = User::role(User::ROLE_CUSTOMER)
             ->select('id', 'name', 'email')
             ->orderBy('name')
             ->get();
@@ -80,6 +79,7 @@ class AdminTendersController extends Controller
             'description' => ['nullable', 'string'],
             'hidden_comment' => ['nullable', 'string'],
             'valid_until' => ['required', 'date'],
+            'valid_until_time' => ['nullable', 'date_format:H:i'],
             'status' => ['required', 'string', Rule::in(['open', 'closed', 'review'])],
             'items' => ['required', 'array', 'min:1'],
             'items.*.title' => ['required', 'string'],
@@ -96,6 +96,7 @@ class AdminTendersController extends Controller
                 'description' => $validated['description'] ?? null,
                 'hidden_comment' => $validated['hidden_comment'] ?? null,
                 'valid_until' => $validated['valid_until'],
+                'valid_until_time' => $validated['valid_until_time'] ?? null,
                 'status' => $validated['status'],
             ]);
 
@@ -135,8 +136,7 @@ class AdminTendersController extends Controller
     {
         $tender->load(['customer:id,name,email', 'items']);
 
-        $customers = User::query()
-            ->where('role', User::ROLE_CUSTOMER)
+        $customers = User::role(User::ROLE_CUSTOMER)
             ->select('id', 'name', 'email')
             ->orderBy('name')
             ->get();
@@ -155,6 +155,7 @@ class AdminTendersController extends Controller
             'description' => ['nullable', 'string'],
             'hidden_comment' => ['nullable', 'string'],
             'valid_until' => ['required', 'date'],
+            'valid_until_time' => ['nullable', 'date_format:H:i'],
             'status' => ['required', 'string', Rule::in(['open', 'closed', 'review'])],
             'items' => ['required', 'array', 'min:1'],
             'items.*.title' => ['required', 'string'],
@@ -169,6 +170,7 @@ class AdminTendersController extends Controller
                 'description' => $validated['description'] ?? null,
                 'hidden_comment' => $validated['hidden_comment'] ?? null,
                 'valid_until' => $validated['valid_until'],
+                'valid_until_time' => $validated['valid_until_time'] ?? null,
                 'status' => $validated['status'],
             ]);
 
@@ -193,6 +195,63 @@ class AdminTendersController extends Controller
 
         return redirect()->route('admin.tenders.index')
             ->with('success', 'Тендер успешно обновлен');
+    }
+
+    public function retender(Tender $tender, SystemLogService $log): RedirectResponse
+    {
+        $newTender = null;
+
+        DB::transaction(function () use ($tender, &$newTender): void {
+            $round = (int) ($tender->round_number ?? 1) + 1;
+
+            $newTender = Tender::create([
+                'customer_id' => $tender->customer_id,
+                'parent_tender_id' => $tender->id,
+                'title' => $tender->getRawOriginal('title'),
+                'title_en' => $tender->getRawOriginal('title_en'),
+                'title_cn' => $tender->getRawOriginal('title_cn'),
+                'description' => $tender->getRawOriginal('description'),
+                'description_en' => $tender->getRawOriginal('description_en'),
+                'description_cn' => $tender->getRawOriginal('description_cn'),
+                'hidden_comment' => $tender->hidden_comment,
+                'valid_until' => now()->addDays(7),
+                'status' => 'open',
+                'round_number' => $round,
+            ]);
+
+            $items = $tender->items
+                ->sortBy('position_index')
+                ->values()
+                ->map(function (TenderItem $item, int $index): array {
+                    return [
+                        'title' => $item->title,
+                        'quantity' => $item->quantity,
+                        'unit' => $item->unit,
+                        'position_index' => $item->position_index ?? $index,
+                    ];
+                })
+                ->all();
+
+            if (! empty($items)) {
+                $newTender->items()->createMany($items);
+            }
+        });
+
+        if ($newTender) {
+            TranslateTenderJob::dispatch($newTender);
+
+            $log->business('tender_retender_created', 'Создан новый раунд тендера (переторжка)', [
+                'source_tender_id' => $tender->id,
+                'new_tender_id' => $newTender->id,
+                'round' => $newTender->round_number,
+            ]);
+
+            return redirect()->route('admin.tenders.show', $newTender->id)
+                ->with('success', 'Переторжка создана на основе выбранного тендера');
+        }
+
+        return redirect()->route('admin.tenders.show', $tender->id)
+            ->with('error', 'Не удалось создать переторжку');
     }
 
     public function destroy(Tender $tender): RedirectResponse

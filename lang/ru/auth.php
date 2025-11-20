@@ -36,6 +36,7 @@ return [
     'register_password_placeholder' => 'Придумайте пароль',
     'register_password_confirm_label' => 'Подтверждение пароля',
     'register_password_confirm_placeholder' => 'Повторите пароль',
+    'register_password_show_tooltip' => 'Показать пароль',
     'register_terms_label' => 'Я соглашаюсь с',
     'register_terms_link' => 'условиями и политикой',
     'register_button' => 'Создать аккаунт',

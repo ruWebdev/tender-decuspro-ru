@@ -1,9 +1,17 @@
 <script setup>
+import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
 const { t } = useTranslations();
+
+const authUser = computed(() => page.props?.auth?.user || null);
+const userRoles = computed(() => authUser.value?.role_names || []);
+const hasRole = (role) => userRoles.value.includes(role);
+const isAdmin = computed(() => hasRole('admin'));
+const isModerator = computed(() => hasRole('moderator'));
+const canAccessAdmin = computed(() => isAdmin.value || isModerator.value);
 
 // helper to check if current URL matches a given path
 const isActive = (path) => {
@@ -46,34 +54,43 @@ const isActiveContent = () => {
             <div class="container py-4 text-dark">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-2 flex-wrap">
-                        <Link href="/admin" :class="['btn', isActive('/admin') ? 'btn-dark' : 'btn-outline-dark']">
+                        <Link v-if="canAccessAdmin" href="/admin"
+                            :class="['btn btn-sm', isActive('/admin') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('nav.dashboard') }}
                         </Link>
-                        <Link href="/admin/users"
-                            :class="['btn', isActive('/admin/users') ? 'btn-dark' : 'btn-outline-dark']">
+                        <Link v-if="canAccessAdmin" href="/admin/users"
+                            :class="['btn btn-sm', isActive('/admin/users') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.users.title') }}
                         </Link>
-                        <Link href="/admin/tenders"
-                            :class="['btn', isActive('/admin/tenders') ? 'btn-dark' : 'btn-outline-dark']">
+                        <Link v-if="canAccessAdmin" href="/admin/tenders"
+                            :class="['btn btn-sm', isActive('/admin/tenders') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.tenders.title') }}
                         </Link>
-                        <Link href="/admin/content"
-                            :class="['btn', isActiveContent() ? 'btn-dark' : 'btn-outline-dark']">
+                        <Link v-if="canAccessAdmin" href="/admin/content"
+                            :class="['btn btn-sm', isActiveContent() ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.content.title') }}
                         </Link>
-                        <Link :href="route('admin.content.static_pages')"
-                            :class="['btn', isActive('/admin/content/static-pages') ? 'btn-dark' : 'btn-outline-dark']">
+                        <Link v-if="canAccessAdmin" :href="route('admin.content.static_pages')"
+                            :class="['btn btn-sm', isActive('/admin/content/static-pages') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.content.static_pages.title') }}
                         </Link>
-                        <Link href="/admin/ai"
+                        <Link v-if="isAdmin" href="/admin/backup"
+                            :class="['btn btn-sm', isActive('/admin/backup') ? 'btn-dark' : 'btn-outline-dark']">
+                        {{ t('admin.backup.title') }}
+                        </Link>
+                        <Link v-if="isAdmin" href="/admin/system-logs"
+                            :class="['btn btn-sm', isActive('/admin/system-logs') ? 'btn-dark' : 'btn-outline-dark']">
+                        {{ t('admin.system_logs.title') }}
+                        </Link>
+                        <Link v-if="isAdmin" href="/admin/ai"
                             :class="['btn', isActive('/admin/ai') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.ai.title') }}
                         </Link>
-                        <Link href="/admin/smtp"
-                            :class="['btn', isActive('/admin/smtp') ? 'btn-dark' : 'btn-outline-dark']">
+                        <Link v-if="isAdmin" href="/admin/smtp"
+                            :class="['btn btn-sm', isActive('/admin/smtp') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.smtp.title') }}
                         </Link>
-                        <Link :href="route('logout')" method="post" class="btn btn-outline-dark">
+                        <Link :href="route('logout')" method="post" class="btn btn-sm btn-outline-dark">
                         {{ t('nav.logout') }}
                         </Link>
                     </div>

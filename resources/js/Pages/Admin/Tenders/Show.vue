@@ -1,5 +1,6 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -8,6 +9,11 @@ const { t } = useTranslations();
 
 const props = defineProps({
     tender: Object,
+});
+
+const canRetender = computed(() => {
+    if (!props.tender) return false;
+    return Boolean(props.tender.is_finished) || props.tender.status === 'closed';
 });
 
 const formatDate = (value) => {
@@ -52,6 +58,15 @@ const finishedBadgeClass = (isFinished) => {
 const finishedLabel = (isFinished) => {
     return isFinished ? t('admin.tenders.filters.finished') : t('admin.tenders.filters.active');
 };
+
+const retender = () => {
+    if (!props.tender) return;
+    if (!confirm(t('admin.tenders.actions.confirm_retender', 'Создать переторжку на основе этого тендера?'))) {
+        return;
+    }
+
+    router.post(route('admin.tenders.retender', props.tender.id));
+};
 </script>
 
 <template>
@@ -60,6 +75,9 @@ const finishedLabel = (isFinished) => {
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">{{ t('admin.tenders.show_title') }}</h1>
                 <div class="d-flex gap-2">
+                    <button v-if="canRetender" type="button" class="btn btn-outline-primary" @click="retender">
+                        {{ t('admin.tenders.actions.retender', 'Объявить переторжку') }}
+                    </button>
                     <Link :href="route('admin.tenders.edit', tender.id)" class="btn btn-warning">
                     {{ t('admin.tenders.actions.edit') }}
                     </Link>
@@ -72,7 +90,7 @@ const finishedLabel = (isFinished) => {
             <!-- Основная информация -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">{{ t('common.information', 'Информация') }}</h5>
+                    <h2 class="m-0">{{ t('common.information', 'Информация') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -97,6 +115,10 @@ const finishedLabel = (isFinished) => {
                             <p class="mb-2">
                                 <strong>{{ t('admin.tenders.form.valid_until') }}:</strong>
                                 {{ formatDate(tender.valid_until) }}
+                            </p>
+                            <p v-if="tender.round_number" class="mb-2">
+                                <strong>{{ t('admin.tenders.round_label', 'Раунд торгов') }}:</strong>
+                                {{ tender.round_number }}
                             </p>
                         </div>
                         <div class="col-md-6">
@@ -130,34 +152,33 @@ const finishedLabel = (isFinished) => {
             <!-- Позиции тендера -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">{{ t('tenders.positions_title', 'Позиции тендера') }}</h5>
+                    <h2 class="m-0">{{ t('tenders.positions_title', 'Позиции тендера') }}</h2>
                 </div>
-                <div class="card-body">
+                <div class="table-responsive">
                     <div v-if="!tender.items || tender.items.length === 0" class="text-center text-muted py-4">
                         {{ t('admin.tenders.no_items', 'Нет позиций') }}
                     </div>
-                    <div v-else class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>{{ t('tenders.col_item_title') }}</th>
-                                    <th>{{ t('tenders.col_quantity') }}</th>
-                                    <th>{{ t('tenders.col_unit') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, index) in tender.items" :key="item.id">
-                                    <td>{{ index + 1 }}</td>
-                                    <td>{{ item.title }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>{{ item.unit || '-' }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table v-else class="table card-table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>{{ t('tenders.col_item_title') }}</th>
+                                <th>{{ t('tenders.col_quantity') }}</th>
+                                <th>{{ t('tenders.col_unit') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in tender.items" :key="item.id">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.unit || '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
 
             <!-- Кнопки действий -->
             <div class="card-footer text-end">

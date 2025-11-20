@@ -19,6 +19,7 @@ class Tender extends Model
      */
     protected $fillable = [
         'customer_id',
+        'parent_tender_id',
         'title',
         'title_en',
         'title_cn',
@@ -27,10 +28,12 @@ class Tender extends Model
         'description_cn',
         'hidden_comment',
         'valid_until',
+        'valid_until_time',
         'status',
         'is_finished',
         'finished_at',
         'winner_proposal_id',
+        'round_number',
     ];
 
     /**
@@ -42,6 +45,7 @@ class Tender extends Model
     {
         return [
             'valid_until' => 'datetime',
+            'valid_until_time' => 'string',
             'finished_at' => 'datetime',
             'is_finished' => 'boolean',
         ];
@@ -50,6 +54,16 @@ class Tender extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_tender_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_tender_id');
     }
 
     public function items(): HasMany

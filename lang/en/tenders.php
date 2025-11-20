@@ -52,6 +52,7 @@ return [
     'label_description' => 'Description',
     'label_hidden_comment' => 'Hidden comment',
     'label_valid_until' => 'Valid until',
+    'label_valid_until_time' => 'End time',
     'positions_block_title' => 'Items',
     'button_add_item' => '+ Add item',
     'autofill_block_title' => 'Autofill from text',

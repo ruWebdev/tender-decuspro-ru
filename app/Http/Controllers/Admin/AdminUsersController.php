@@ -18,7 +18,7 @@ class AdminUsersController extends Controller
         $query = User::query();
 
         if ($request->filled('role')) {
-            $query->where('role', $request->input('role'));
+            $query->role($request->input('role'));
         }
 
         if ($request->filled('is_blocked')) {
@@ -26,7 +26,7 @@ class AdminUsersController extends Controller
         }
 
         $users = $query
-            ->select('id', 'name', 'email', 'role', 'locale', 'is_blocked', 'blocked_at', 'created_at')
+            ->select('id', 'name', 'email', 'locale', 'is_blocked', 'blocked_at', 'created_at')
             ->orderByDesc('created_at')
             ->paginate(20)
             ->withQueryString();
@@ -35,6 +35,7 @@ class AdminUsersController extends Controller
             User::ROLE_CUSTOMER => 'Заказчик',
             User::ROLE_SUPPLIER => 'Поставщик',
             User::ROLE_ADMIN => 'Администратор',
+            User::ROLE_MODERATOR => 'Модератор',
         ];
 
         return Inertia::render('Admin/Users/Index', [
@@ -50,6 +51,7 @@ class AdminUsersController extends Controller
             User::ROLE_CUSTOMER => 'Заказчик',
             User::ROLE_SUPPLIER => 'Поставщик',
             User::ROLE_ADMIN => 'Администратор',
+            User::ROLE_MODERATOR => 'Модератор',
         ];
 
         return Inertia::render('Admin/Users/Create', [
@@ -63,17 +65,18 @@ class AdminUsersController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
-            'role' => ['required', 'string', Rule::in([User::ROLE_CUSTOMER, User::ROLE_SUPPLIER, User::ROLE_ADMIN])],
+            'role' => ['required', 'string', Rule::in([User::ROLE_CUSTOMER, User::ROLE_SUPPLIER, User::ROLE_ADMIN, User::ROLE_MODERATOR])],
             'locale' => ['nullable', 'string', 'in:ru,en,cn'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
             'locale' => $validated['locale'] ?? 'ru',
         ]);
+
+        $user->assignRole($validated['role']);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Пользователь успешно создан');
@@ -85,6 +88,7 @@ class AdminUsersController extends Controller
             User::ROLE_CUSTOMER => 'Заказчик',
             User::ROLE_SUPPLIER => 'Поставщик',
             User::ROLE_ADMIN => 'Администратор',
+            User::ROLE_MODERATOR => 'Модератор',
         ];
 
         return Inertia::render('Admin/Users/Edit', [
@@ -98,11 +102,17 @@ class AdminUsersController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role' => ['required', 'string', Rule::in([User::ROLE_CUSTOMER, User::ROLE_SUPPLIER, User::ROLE_ADMIN])],
+            'role' => ['required', 'string', Rule::in([User::ROLE_CUSTOMER, User::ROLE_SUPPLIER, User::ROLE_ADMIN, User::ROLE_MODERATOR])],
             'locale' => ['nullable', 'string', 'in:ru,en,cn'],
         ]);
 
-        $user->update($validated);
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'locale' => $validated['locale'] ?? $user->locale,
+        ]);
+
+        $user->syncRoles([$validated['role']]);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Пользователь успешно обновлен');

@@ -8,6 +8,11 @@ return [
         'total_users' => '用户总数',
         'active_tenders' => '进行中的招标',
         'suppliers' => '系统中的供应商',
+        'suppliers_new' => '新增供应商',
+        'suppliers_active' => '活跃供应商',
+        'suppliers_blocked' => '被屏蔽的供应商',
+        'average_bids_per_tender' => '每个招标的平均投标数',
+        'budget_savings' => '预算节省',
     ],
 
     'sections' => [
@@ -15,6 +20,8 @@ return [
         'tenders' => '招标管理',
         'content' => '内容管理',
         'ai' => 'AI工具',
+        'recent_activity_title' => '最新招标',
+        'shortcuts_title' => '快捷链接',
     ],
 
     'users' => [
@@ -28,6 +35,7 @@ return [
             'col_email' => '邮箱',
             'col_role' => '角色',
             'col_locale' => '语言',
+            'col_blocked' => '封禁状态',
             'col_status' => '状态',
             'col_created_at' => '创建时间',
             'col_actions' => '操作',
@@ -54,6 +62,7 @@ return [
             'customer' => '客户',
             'supplier' => '供应商',
             'admin' => '管理员',
+            'moderator' => '版主',
         ],
 
         'actions' => [
@@ -117,9 +126,12 @@ return [
             'show' => '查看',
             'delete' => '删除',
             'confirm_delete' => '您确定要删除此招标吗？',
+            'retender' => '发起二次竞价',
+            'confirm_retender' => '基于此招标创建新一轮招标吗？',
         ],
 
         'no_items' => '无项目',
+        'round_label' => '竞价轮次',
     ],
 
     'content' => [
@@ -152,6 +164,25 @@ return [
             'actions' => [
                 'save' => '保存更改',
             ],
+        ],
+    ],
+    'system_logs' => [
+        'title' => '系统日志',
+        'empty' => '当前没有日志记录',
+        'filters' => [
+            'title' => '筛选',
+            'level' => '级别',
+            'code' => '事件代码',
+            'from' => '起始日期',
+            'to' => '结束日期',
+            'all' => '全部',
+        ],
+        'table' => [
+            'level' => '级别',
+            'code' => '代码',
+            'message' => '消息',
+            'context' => '上下文',
+            'created_at' => '创建时间',
         ],
     ],
 
@@ -189,6 +220,34 @@ return [
             'password' => '密码',
             'from_address' => '发件邮箱',
             'from_name' => '发件人名称',
+        ],
+    ],
+
+    'backup' => [
+        'title' => '备份管理',
+        'empty' => '暂无备份文件',
+        'confirm_run' => '现在创建新的备份吗？',
+        'confirm_delete' => '确定要删除所选备份吗？',
+        'actions' => [
+            'run' => '创建备份',
+            'download' => '下载',
+            'delete' => '删除',
+        ],
+        'table' => [
+            'name' => '文件',
+            'size' => '大小',
+            'created_at' => '创建时间',
+            'actions' => '操作',
+        ],
+    ],
+
+    'analytics' => [
+        'procurement_volume_title' => '期间内的采购总额',
+        'current_period' => '当月',
+        'top_suppliers_title' => '中标次数最多的供应商',
+        'top_suppliers' => [
+            'col_name' => '供应商',
+            'col_wins' => '中标次数',
         ],
     ],
 ];

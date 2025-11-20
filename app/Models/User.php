@@ -7,17 +7,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, Notifiable, HasUuids, HasRoles;
 
     public const ROLE_CUSTOMER = 'customer';
     public const ROLE_SUPPLIER = 'supplier';
     public const ROLE_ADMIN = 'admin';
+    public const ROLE_MODERATOR = 'moderator';
 
     /**
      * Атрибуты, доступные для массового присвоения.
@@ -28,10 +31,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
         'locale',
         'is_blocked',
         'blocked_at',
+    ];
+
+    /**
+     * Дополнительные виртуальные атрибуты для сериализации.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'role_names',
     ];
 
     /**
@@ -59,6 +70,11 @@ class User extends Authenticatable
         ];
     }
 
+    protected function roleNames(): Attribute
+    {
+        return Attribute::get(fn() => $this->getRoleNames()->toArray());
+    }
+
     public function supplierProfile(): HasOne
     {
         return $this->hasOne(SupplierProfile::class);
@@ -76,16 +92,21 @@ class User extends Authenticatable
 
     public function isCustomer(): bool
     {
-        return $this->role === self::ROLE_CUSTOMER;
+        return $this->hasRole(self::ROLE_CUSTOMER);
     }
 
     public function isSupplier(): bool
     {
-        return $this->role === self::ROLE_SUPPLIER;
+        return $this->hasRole(self::ROLE_SUPPLIER);
     }
 
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->hasRole(self::ROLE_ADMIN);
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->hasRole(self::ROLE_MODERATOR);
     }
 }

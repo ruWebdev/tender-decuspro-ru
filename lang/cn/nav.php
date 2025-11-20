@@ -6,6 +6,8 @@ return [
     'active_tenders' => '进行中的招标',
     'all_tenders' => '全部招标',
     'my_proposals' => '我的报价',
+    'create_tender' => '创建招标',
+    'supplier_proposals' => '供应商报价',
     'dashboard' => '个人中心',
     'supplier_profile' => '公司资料',
     'admin_panel' => '管理面板',

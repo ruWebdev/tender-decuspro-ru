@@ -16,24 +16,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RoleSeeder::class);
+
         // Базовые пользователи с ролями
         $customer = User::factory()->create([
             'name' => 'Customer User',
             'email' => 'customer@example.com',
-            'role' => User::ROLE_CUSTOMER,
         ]);
+        $customer->assignRole(User::ROLE_CUSTOMER);
 
         $supplier = User::factory()->create([
             'name' => 'Supplier User',
             'email' => 'supplier@example.com',
-            'role' => User::ROLE_SUPPLIER,
         ]);
+        $supplier->assignRole(User::ROLE_SUPPLIER);
 
-        User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
-            'role' => User::ROLE_ADMIN,
         ]);
+        $admin->assignRole(User::ROLE_ADMIN);
 
         // Тестовый тендер
         $tender = Tender::create([

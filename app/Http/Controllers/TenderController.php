@@ -20,7 +20,20 @@ class TenderController extends Controller
         if ($user && method_exists($user, 'isCustomer') && $user->isCustomer()) {
             $tenders = Tender::query()
                 ->where('customer_id', $user->id)
-                ->select('id', 'title', 'title_en', 'title_cn', 'status', 'valid_until', 'created_at')
+                ->select(
+                    'id',
+                    'title',
+                    'title_en',
+                    'title_cn',
+                    'description',
+                    'description_en',
+                    'description_cn',
+                    'status',
+                    'is_finished',
+                    'valid_until',
+                    'valid_until_time',
+                    'created_at'
+                )
                 ->withCount(['items', 'proposals'])
                 ->orderByDesc('created_at')
                 ->get();
@@ -36,7 +49,20 @@ class TenderController extends Controller
             ->where(function ($q) {
                 $q->whereNull('is_finished')->orWhere('is_finished', false);
             })
-            ->select('id', 'title', 'title_en', 'title_cn', 'status', 'valid_until', 'created_at')
+            ->select(
+                'id',
+                'title',
+                'title_en',
+                'title_cn',
+                'description',
+                'description_en',
+                'description_cn',
+                'status',
+                'is_finished',
+                'valid_until',
+                'valid_until_time',
+                'created_at'
+            )
             ->withCount('items')
             ->selectSub(
                 DB::table('proposals')
@@ -115,6 +141,7 @@ class TenderController extends Controller
             'description' => ['nullable', 'string'],
             'hidden_comment' => ['nullable', 'string'],
             'valid_until' => ['required', 'date'],
+            'valid_until_time' => ['nullable', 'date_format:H:i'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.title' => ['required', 'string'],
             'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
@@ -130,6 +157,7 @@ class TenderController extends Controller
                 'description' => $validated['description'] ?? null,
                 'hidden_comment' => $validated['hidden_comment'] ?? null,
                 'valid_until' => $validated['valid_until'],
+                'valid_until_time' => $validated['valid_until_time'] ?? null,
             ]);
 
             $items = collect($validated['items'])

@@ -10,6 +10,9 @@ const { t } = useTranslations();
 const stats = computed(() => page.props.stats || {});
 const recentTenders = computed(() => page.props.recentTenders || []);
 
+const procurementVolume = computed(() => page.props.procurement_volume || 0);
+const topSuppliers = computed(() => (page.props.top_suppliers || []).slice(0, 5));
+
 const shortcuts = computed(() => [
     {
         label: t('admin.users.title'),
@@ -67,6 +70,37 @@ const statusBadgeClass = (status) => {
 
     return 'bg-dark';
 };
+
+const currencyByLocale = (locale) => {
+    if (!locale) return 'RUB';
+    const l = String(locale).toLowerCase();
+    if (l.startsWith('ru')) return 'RUB';
+    if (l.startsWith('en')) return 'USD';
+    if (l.startsWith('zh') || l.startsWith('cn')) return 'CNY';
+    return 'RUB';
+};
+
+const formatNumber = (value) => {
+    try {
+        return new Intl.NumberFormat(page.props.locale || 'ru').format(value ?? 0);
+    } catch (_) {
+        return String(value ?? 0);
+    }
+};
+
+const formatCurrency = (value) => {
+    const currency = currencyByLocale(page.props.locale || 'ru');
+    try {
+        return new Intl.NumberFormat(page.props.locale || 'ru', {
+            style: 'currency',
+            currency,
+            maximumFractionDigits: 2,
+        }).format(value ?? 0);
+    } catch (_) {
+        const symbol = currency === 'RUB' ? '₽' : currency === 'USD' ? '$' : currency === 'CNY' ? '¥' : '';
+        return `${formatNumber(value ?? 0)} ${symbol}`.trim();
+    }
+};
 </script>
 
 <template>
@@ -78,7 +112,12 @@ const statusBadgeClass = (status) => {
                     <div class="card h-100">
                         <div class="card-body">
                             <p class="text-muted text-uppercase small mb-1">{{ t(`admin.stats.${key}`) }}</p>
-                            <p class="display-6 fw-semibold mb-0">{{ value }}</p>
+                            <p class="display-6 fw-semibold mb-0">
+                                <span v-if="key === 'budget_savings'">{{ formatCurrency(value) }}</span>
+                                <span v-else-if="key === 'average_bids_per_tender'">{{ Number(value ||
+                                    0).toLocaleString(page.props.locale || 'ru', { maximumFractionDigits: 1 }) }}</span>
+                                <span v-else>{{ formatNumber(value) }}</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -131,6 +170,52 @@ const statusBadgeClass = (status) => {
                                 class="btn w-100" :class="`btn-${shortcut.variant}`">
                             {{ shortcut.label }}
                             </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="h5 mb-0">{{ t('admin.analytics.procurement_volume_title',
+                                'Объем проведенных закупок за период') }}</h3>
+                            <span class="text-muted small">{{ t('admin.analytics.current_period', 'за текущий месяц')
+                            }}</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="display-6 fw-semibold mb-0">{{ formatCurrency(procurementVolume) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="h5 mb-0">{{ t('admin.analytics.top_suppliers_title',
+                                'Топ поставщиков по количеству выигранных тендеров') }}</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>{{ t('admin.analytics.top_suppliers.col_name', 'Поставщик') }}</th>
+                                        <th class="text-end">{{ t('admin.analytics.top_suppliers.col_wins',
+                                            'Выиграно тендеров') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-if="topSuppliers.length === 0">
+                                        <td colspan="2" class="text-center text-muted py-4">{{ t('common.no_data',
+                                            'Нет данных') }}</td>
+                                    </tr>
+                                    <tr v-for="(s, idx) in topSuppliers" :key="`${s.name}-${idx}`">
+                                        <td>{{ s.name }}</td>
+                                        <td class="text-end">{{ formatNumber(s.won_tenders_count || 0) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

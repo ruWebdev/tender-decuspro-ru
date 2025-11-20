@@ -6,6 +6,8 @@ return [
     'active_tenders' => 'Active tenders',
     'all_tenders' => 'All tenders',
     'my_proposals' => 'My proposals',
+    'create_tender' => 'Create tender',
+    'supplier_proposals' => 'Suppliers’ proposals',
     'dashboard' => 'Dashboard',
     'supplier_profile' => 'Company profile',
     'admin_panel' => 'Admin panel',

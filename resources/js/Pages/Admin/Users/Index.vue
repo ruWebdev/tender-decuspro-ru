@@ -62,7 +62,16 @@ const formatDate = (value) => {
     });
 };
 
-const roleLabel = (role) => {
+const userPrimaryRole = (user) => {
+    if (Array.isArray(user.role_names) && user.role_names.length > 0) {
+        return user.role_names[0];
+    }
+
+    return 'supplier';
+};
+
+const roleLabel = (user) => {
+    const role = userPrimaryRole(user);
     return props.roles[role] || role;
 };
 
@@ -145,18 +154,12 @@ const blockedBadgeClass = (isBlocked) => {
                             </tr>
                             <tr v-for="user in users.data" :key="user.id">
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div
-                                            class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                            {{ user.name.charAt(0).toUpperCase() }}
-                                        </div>
-                                        <span>{{ user.name }}</span>
-                                    </div>
+                                    {{ user.name }}
                                 </td>
                                 <td>{{ user.email }}</td>
                                 <td>
                                     <span class="badge bg-info text-white">
-                                        {{ roleLabel(user.role) }}
+                                        {{ roleLabel(user) }}
                                     </span>
                                 </td>
                                 <td>

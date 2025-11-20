@@ -53,6 +53,7 @@ return [
     'label_description' => '说明',
     'label_hidden_comment' => '隐藏评论',
     'label_valid_until' => '有效期至',
+    'label_valid_until_time' => '结束时间',
     'positions_block_title' => '项目',
     'button_add_item' => '+ 添加项目',
     'autofill_block_title' => '从文本自动填充',

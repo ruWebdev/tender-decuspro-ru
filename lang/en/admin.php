@@ -8,6 +8,11 @@ return [
         'total_users' => 'Total users',
         'active_tenders' => 'Active tenders',
         'suppliers' => 'Suppliers in system',
+        'suppliers_new' => 'New suppliers',
+        'suppliers_active' => 'Active suppliers',
+        'suppliers_blocked' => 'Blocked suppliers',
+        'average_bids_per_tender' => 'Average bids per tender',
+        'budget_savings' => 'Budget savings',
     ],
 
     'sections' => [
@@ -15,6 +20,8 @@ return [
         'tenders' => 'Tender Management',
         'content' => 'Content Management',
         'ai' => 'AI Tools',
+        'recent_activity_title' => 'Recent tenders',
+        'shortcuts_title' => 'Shortcuts',
     ],
 
     'users' => [
@@ -28,6 +35,7 @@ return [
             'col_email' => 'Email',
             'col_role' => 'Role',
             'col_locale' => 'Language',
+            'col_blocked' => 'Blocked',
             'col_status' => 'Status',
             'col_created_at' => 'Created',
             'col_actions' => 'Actions',
@@ -54,6 +62,7 @@ return [
             'customer' => 'Customer',
             'supplier' => 'Supplier',
             'admin' => 'Administrator',
+            'moderator' => 'Moderator',
         ],
 
         'actions' => [
@@ -117,6 +126,8 @@ return [
             'show' => 'View',
             'delete' => 'Delete',
             'confirm_delete' => 'Are you sure you want to delete this tender?',
+            'retender' => 'Start rebidding',
+            'confirm_retender' => 'Create a new tender round based on this one?',
         ],
 
         'no_items' => 'No items',
@@ -126,6 +137,8 @@ return [
             'updated' => 'Tender updated successfully',
             'deleted' => 'Tender deleted',
         ],
+
+        'round_label' => 'Bidding round',
     ],
 
     'content' => [
@@ -158,6 +171,25 @@ return [
             'actions' => [
                 'save' => 'Save changes',
             ],
+        ],
+    ],
+    'system_logs' => [
+        'title' => 'System logs',
+        'empty' => 'No logs yet',
+        'filters' => [
+            'title' => 'Filters',
+            'level' => 'Level',
+            'code' => 'Event code',
+            'from' => 'From date',
+            'to' => 'To date',
+            'all' => 'All',
+        ],
+        'table' => [
+            'level' => 'Level',
+            'code' => 'Code',
+            'message' => 'Message',
+            'context' => 'Context',
+            'created_at' => 'Created at',
         ],
     ],
 
@@ -195,6 +227,34 @@ return [
             'password' => 'Password',
             'from_address' => 'From email',
             'from_name' => 'From name',
+        ],
+    ],
+
+    'backup' => [
+        'title' => 'Backups',
+        'empty' => 'No backups found',
+        'confirm_run' => 'Create a new backup now?',
+        'confirm_delete' => 'Delete the selected backup?',
+        'actions' => [
+            'run' => 'Create backup',
+            'download' => 'Download',
+            'delete' => 'Delete',
+        ],
+        'table' => [
+            'name' => 'File',
+            'size' => 'Size',
+            'created_at' => 'Created at',
+            'actions' => 'Actions',
+        ],
+    ],
+
+    'analytics' => [
+        'procurement_volume_title' => 'Procurement volume for the period',
+        'current_period' => 'current month',
+        'top_suppliers_title' => 'Top suppliers by won tenders',
+        'top_suppliers' => [
+            'col_name' => 'Supplier',
+            'col_wins' => 'Won tenders',
         ],
     ],
 ];

@@ -9,8 +9,10 @@ const { t } = useTranslations();
 
 const tender = computed(() => page.props.tender);
 const authUser = computed(() => page.props.auth?.user || null);
-const isSupplier = computed(() => authUser.value?.role === 'supplier');
-const isCustomer = computed(() => authUser.value?.role === 'customer');
+const roleNames = computed(() => authUser.value?.role_names || []);
+const hasRole = (role) => roleNames.value.includes(role);
+const isSupplier = computed(() => hasRole('supplier'));
+const isCustomer = computed(() => hasRole('customer'));
 const isGuest = computed(() => !authUser.value);
 
 const currentLocale = computed(() => page.props.locale || 'ru');
@@ -84,6 +86,19 @@ const formatDate = (value) => {
   return new Date(value).toLocaleString(jsLocale.value);
 };
 
+const formatTime = (tender) => {
+  const time = tender?.valid_until_time;
+  if (time && /^\d{2}:\d{2}$/.test(time)) return time;
+  const d = tender?.valid_until ? new Date(tender.valid_until) : null;
+  if (!d) return '';
+  return d.toLocaleTimeString(jsLocale.value, { hour: '2-digit', minute: '2-digit' });
+};
+
+const formatDateOnly = (value) => {
+  if (!value) return '-';
+  return new Date(value).toLocaleDateString(jsLocale.value, { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+
 // Q&A
 const questions = computed(() => page.props.questions || []);
 const questionForm = useForm({
@@ -132,7 +147,9 @@ const myProposal = computed(() => page.props.my_proposal || null);
                     <strong>{{ t('tenders.field_created_at') }}</strong> {{ formatDate(tender.created_at) }}
                   </p>
                   <p class="mb-1">
-                    <strong>{{ t('tenders.field_valid_until') }}</strong> {{ formatDate(tender.valid_until) }}
+                    <strong>{{ t('tenders.field_valid_until') }}</strong>
+                    {{ formatDateOnly(tender.valid_until) }}
+                    <span v-if="formatTime(tender)" class="text-muted">{{ ' ' + formatTime(tender) }}</span>
                   </p>
                 </div>
 
@@ -210,7 +227,7 @@ const myProposal = computed(() => page.props.my_proposal || null);
                   :placeholder="t('tenders.qa_ask_placeholder')"
                   :class="{ 'is-invalid': questionForm.errors.question }"></textarea>
                 <div v-if="questionForm.errors.question" class="invalid-feedback">{{ questionForm.errors.question
-                  }}</div>
+                }}</div>
                 <div class="mt-2 d-flex justify-content-end">
                   <button class="btn btn-primary" :disabled="questionForm.processing || !questionForm.question.trim()"
                     @click="submitQuestion">
@@ -242,7 +259,7 @@ const myProposal = computed(() => page.props.my_proposal || null);
               :action="route('proposals.withdraw', { proposal: myProposal.id })" method="post" class="d-inline">
               <input type="hidden" name="_method" value="POST" />
               <button type="submit" class="btn btn-outline-danger">{{ t('proposals.action_withdraw', 'Отозвать')
-                }}</button>
+              }}</button>
             </form>
 
             <Link v-if="isCustomer" :href="route('tenders.comparison', { tender: tender.id })"

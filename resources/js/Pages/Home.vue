@@ -36,6 +36,14 @@ const formatDate = (value) => {
   });
 };
 
+const formatTime = (tender) => {
+  const time = tender?.valid_until_time;
+  if (time && /^\d{2}:\d{2}$/.test(time)) return time;
+  const d = tender?.valid_until ? new Date(tender.valid_until) : null;
+  if (!d) return '';
+  return d.toLocaleTimeString(jsLocale.value, { hour: '2-digit', minute: '2-digit' });
+};
+
 const getTenderDescription = (tender) => {
   if (currentLocale.value === 'en' && tender.description_en) {
     return tender.description_en;
@@ -85,6 +93,8 @@ const filteredTenders = computed(() => {
     return true;
   });
 });
+
+const displayedTenders = computed(() => filteredTenders.value.slice(0, 5));
 
 const heroHighlights = computed(() => [
   t('home.hero.points.one'),
@@ -372,7 +382,7 @@ const statusOptions = computed(() => [
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="tender in filteredTenders" :key="tender.id">
+                <tr v-for="tender in displayedTenders" :key="tender.id">
                   <td class="text-muted">{{ tender.id }}</td>
                   <td>
                     <p class="mb-1 fw-semibold">{{ tender.title }}</p>
@@ -383,7 +393,10 @@ const statusOptions = computed(() => [
                     <p class="mb-0 text-muted">{{ getTenderDescription(tender) || t('home.tenders.table.no_description')
                     }}</p>
                   </td>
-                  <td>{{ formatDate(tender.valid_until) }}</td>
+                  <td>
+                    {{ formatDate(tender.valid_until) }}
+                    <span v-if="formatTime(tender)" class="text-muted">{{ ' ' + formatTime(tender) }}</span>
+                  </td>
                   <td>
                     <span class="badge" :class="statusBadgeClass(tender.status)">
                       {{ tenderStatusLabel(tender.status) }}

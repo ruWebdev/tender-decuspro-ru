@@ -84,7 +84,8 @@ const submit = () => {
                                 :placeholder="t('auth.register_password_placeholder')" autocomplete="off"
                                 v-model="form.password" :class="{ 'is-invalid': form.errors.password }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" data-bs-toggle="tooltip" @click.prevent="showPassword = !showPassword">
+                                <a href="#" class="link-secondary" data-bs-toggle="tooltip"
+                                    @click.prevent="showPassword = !showPassword">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">
@@ -109,7 +110,9 @@ const submit = () => {
                                 v-model="form.password_confirmation"
                                 :class="{ 'is-invalid': form.errors.password_confirmation }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" title="Показать пароль" data-bs-toggle="tooltip" @click.prevent="showPasswordConfirm = !showPasswordConfirm">
+                                <a href="#" class="link-secondary" :title="t('auth.register_password_show_tooltip')"
+                                    data-bs-toggle="tooltip"
+                                    @click.prevent="showPasswordConfirm = !showPasswordConfirm">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">
