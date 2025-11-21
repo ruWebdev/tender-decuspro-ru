@@ -3,6 +3,8 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useTranslations } from '@/Composables/useTranslations';
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const page = usePage();
 const { t } = useTranslations();
@@ -80,20 +82,20 @@ const save = () => {
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.user_agreement.body_ru"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.user_agreement.body_ru"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.user_agreement.body_en"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.user_agreement.body_en"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.user_agreement.body_cn"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.user_agreement.body_cn"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-check">
@@ -133,20 +135,20 @@ const save = () => {
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.privacy_policy.body_ru"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.privacy_policy.body_ru"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.privacy_policy.body_en"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.privacy_policy.body_en"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.privacy_policy.body_cn"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.privacy_policy.body_cn"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-check">
@@ -186,20 +188,20 @@ const save = () => {
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_ru')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.procurement_rules.body_ru"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.procurement_rules.body_ru"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_en')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.procurement_rules.body_en"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.procurement_rules.body_en"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ t('admin.content.static_pages.fields.body_cn')
                                 }}</label>
-                                <textarea class="form-control" rows="6"
-                                    v-model="form.pages.procurement_rules.body_cn"></textarea>
+                                <QuillEditor class="mb-3" v-model:content="form.pages.procurement_rules.body_cn"
+                                    contentType="html" theme="snow" />
                             </div>
                             <div class="col-12">
                                 <label class="form-check">
@@ -224,3 +226,13 @@ const save = () => {
 
     </AdminLayout>
 </template>
+
+<style scoped>
+:deep(.ql-container) {
+    height: auto !important;
+}
+
+:deep(.ql-editor) {
+    min-height: 240px;
+}
+</style>

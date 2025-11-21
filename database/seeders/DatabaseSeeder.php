@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(RoleSeeder::class);
+        $this->call(UiContentSeeder::class);
 
         // Базовые пользователи с ролями
         $customer = User::factory()->create([
