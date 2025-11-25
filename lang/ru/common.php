@@ -41,4 +41,39 @@ return [
     'reset' => 'Сбросить',
     'unknown' => 'Неизвестно',
     'info' => 'Информация',
+    'status' => 'Статус',
+
+    // Модерация поставщика
+    'moderation_status' => 'Статус модерации',
+    'moderation_waiting_documents' => 'Ожидает загрузки документов',
+    'moderation_in_review' => 'На проверке',
+    'moderation_approved' => 'Проверено',
+    'moderation_rejected' => 'Отклонено',
+    'moderation_unknown' => 'Статус неизвестен',
+    'moderation_rejection_reason' => 'Причина отказа',
+    'moderation_rejection_hint' => 'Изучите комментарии и загрузите исправленные документы ниже.',
+
+    // Документы поставщика
+    'documents' => 'Документы',
+    'documents_card_title' => 'Документы для проверки контрагента',
+    'documents_card_intro' => 'Загрузите базовые документы компании для заключения контракта и проверки контрагента.',
+    'upload_documents' => 'Загрузить документы',
+    'current_file' => 'Текущий файл',
+
+    'doc_business_license' => 'Свидетельство о регистрации компании (Business License, 营业执照)',
+    'doc_business_license_hint' => 'Основной регистрационный документ компании. Должен быть актуальным и содержать название, юридический адрес, уставной капитал, сферу деятельности и срок действия.',
+    'doc_tax_certificate' => 'Свидетельство налогоплательщика (Tax Registration Certificate)',
+    'doc_tax_certificate_hint' => 'Подтверждает регистрацию компании в налоговых органах.',
+    'doc_power_of_attorney' => 'Доверенность на подписанта (Power of Attorney / Certificate of Incumbency)',
+    'doc_power_of_attorney_hint' => 'Нужна, если договор подписывает не генеральный директор, а уполномоченный сотрудник.',
+    'doc_board_resolution' => 'Протокол о назначении генерального директора (Board Resolution)',
+    'doc_board_resolution_hint' => 'Подтверждает, кто является законным представителем компании.',
+    'doc_passport_director' => 'Паспорт генерального директора',
+    'doc_passport_director_hint' => 'Документ для идентификации руководителя компании.',
+    'doc_passport_signatory' => 'Паспорт подписанта договора',
+    'doc_passport_signatory_hint' => 'Документ для идентификации уполномоченного подписанта, если он отличается от директора.',
+
+    'doc_status_pending' => 'На проверке',
+    'doc_status_approved' => 'Проверено',
+    'doc_status_rejected' => 'Отклонено',
 ];

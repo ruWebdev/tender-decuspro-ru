@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -9,6 +9,14 @@ const { t } = useTranslations();
 
 const props = defineProps({
     tender: Object,
+    chats: {
+        type: Array,
+        default: () => [],
+    },
+    hasUnreadChatMessages: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const canRetender = computed(() => {
@@ -59,6 +67,101 @@ const finishedLabel = (isFinished) => {
     return isFinished ? t('admin.tenders.filters.finished') : t('admin.tenders.filters.active');
 };
 
+const chatList = computed(() => props.chats || []);
+const hasUnreadChat = computed(() => !!props.hasUnreadChatMessages);
+
+const isChatOpen = ref(false);
+const selectedChatId = ref(null);
+
+const currentChat = computed(() => {
+    if (!chatList.value.length) {
+        return null;
+    }
+
+    const found = chatList.value.find((chat) => chat.id === selectedChatId.value);
+
+    return found || chatList.value[0];
+});
+
+const markChatAsRead = () => {
+    if (!currentChat.value) {
+        return;
+    }
+
+    router.post(route('admin.tenders.chats.read', {
+        tender: props.tender.id,
+        chat: currentChat.value.id,
+    }), {}, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            isChatOpen.value = true;
+        },
+    });
+};
+
+const openChat = () => {
+    if (!chatList.value.length) {
+        return;
+    }
+
+    if (!selectedChatId.value && chatList.value[0]) {
+        selectedChatId.value = chatList.value[0].id;
+    }
+
+    if (isChatOpen.value) {
+        return;
+    }
+
+    markChatAsRead();
+};
+
+const closeChat = () => {
+    isChatOpen.value = false;
+};
+
+const selectChat = (chatId) => {
+    selectedChatId.value = chatId;
+
+    if (!isChatOpen.value) {
+        isChatOpen.value = true;
+    }
+
+    markChatAsRead();
+};
+
+const chatForm = useForm({
+    body: '',
+});
+
+const sendChatMessage = () => {
+    if (!currentChat.value) return;
+    if (!chatForm.body || !chatForm.body.trim()) return;
+
+    chatForm.post(route('admin.tenders.chats.messages.store', {
+        tender: props.tender.id,
+        chat: currentChat.value.id,
+    }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            chatForm.reset('body');
+        },
+    });
+};
+
+const toggleTranslate = () => {
+    if (!currentChat.value) {
+        return;
+    }
+
+    router.post(route('admin.tenders.chats.toggle_translate', {
+        tender: props.tender.id,
+        chat: currentChat.value.id,
+    }), {}, {
+        preserveScroll: true,
+    });
+};
+
 const retender = () => {
     if (!props.tender) return;
     if (!confirm(t('admin.tenders.actions.confirm_retender', 'Создать переторжку на основе этого тендера?'))) {
@@ -75,6 +178,13 @@ const retender = () => {
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">{{ t('admin.tenders.show_title') }}</h1>
                 <div class="d-flex gap-2">
+                    <button v-if="chatList.length" type="button" class="btn btn-outline-info position-relative"
+                        :class="{ 'btn-chat-blink': hasUnreadChat }" @click="openChat">
+                        <i class="ti ti-message-circle me-1"></i>
+                        {{ t('admin.tenders.chat.button_title') }}
+                        <span v-if="hasUnreadChat"
+                            class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                    </button>
                     <button v-if="canRetender" type="button" class="btn btn-outline-primary" @click="retender">
                         {{ t('admin.tenders.actions.retender', 'Объявить переторжку') }}
                     </button>
@@ -190,5 +300,154 @@ const retender = () => {
                 </Link>
             </div>
         </div>
+
+        <!-- Offcanvas с чатами по тендеру -->
+        <div v-if="isChatOpen" class="offcanvas-backdrop-custom" @click="closeChat">
+            <div class="offcanvas-panel" @click.stop>
+                <div class="offcanvas-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ t('admin.tenders.chat.offcanvas_title') }}</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @click="closeChat"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <div class="row g-3">
+                        <div class="col-4 border-end">
+                            <h6 class="mb-2">{{ t('admin.tenders.chat.list_title') }}</h6>
+                            <div v-if="!chatList.length" class="text-muted small">
+                                {{ t('admin.tenders.chat.empty') }}
+                            </div>
+                            <ul v-else class="list-group list-group-flush small">
+                                <li v-for="chat in chatList" :key="chat.id"
+                                    class="list-group-item list-group-item-action"
+                                    :class="{ 'active': currentChat && chat.id === currentChat.id }"
+                                    style="cursor: pointer;" @click="selectChat(chat.id)">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-semibold">{{ chat.supplier?.name || '-' }}</div>
+                                            <div class="text-muted">{{ chat.supplier?.email }}</div>
+                                        </div>
+                                        <span v-if="chat.unread_count" class="badge bg-danger">
+                                            {{ chat.unread_count }}
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-8">
+                            <h6 class="mb-2">{{ t('admin.tenders.chat.messages_title') }}</h6>
+                            <div v-if="!currentChat" class="text-muted small">
+                                {{ t('admin.tenders.chat.empty') }}
+                            </div>
+
+                            <div v-else>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox"
+                                        :checked="currentChat.translate_to_ru" @change="toggleTranslate">
+                                    <label class="form-check-label">
+                                        {{ t('admin.tenders.chat.translate_to_ru') }}
+                                    </label>
+                                </div>
+
+                                <div class="chat-messages-admin mb-3">
+                                    <div v-for="message in currentChat.messages" :key="message.id"
+                                        class="chat-message-admin mb-2">
+                                        <div class="small fw-semibold mb-1">
+                                            <span v-if="message.sender_id === currentChat.supplier.id">
+                                                {{ t('admin.tenders.chat.supplier_label') }}
+                                            </span>
+                                            <span v-else>
+                                                {{ t('admin.tenders.chat.customer_label') }}
+                                            </span>
+                                        </div>
+                                        <div class="chat-message-body-admin">
+                                            {{ currentChat.translate_to_ru && message.translated_body_ru
+                                                ? message.translated_body_ru
+                                                : message.body }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <textarea v-model="chatForm.body" class="form-control mb-2" rows="3"
+                                        :placeholder="t('admin.tenders.chat.input_placeholder')"
+                                        :disabled="chatForm.processing"></textarea>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            :disabled="chatForm.processing || !chatForm.body || !chatForm.body.trim()"
+                                            @click="sendChatMessage">
+                                            <span v-if="chatForm.processing"
+                                                class="spinner-border spinner-border-sm me-2"></span>
+                                            {{ t('admin.tenders.chat.send') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </AdminLayout>
 </template>
+
+<style scoped>
+.offcanvas-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1050;
+}
+
+.offcanvas-panel {
+    width: 50%;
+    max-width: 720px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.offcanvas-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.offcanvas-body {
+    padding: 1rem 1.25rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 7rem);
+}
+
+.chat-messages-admin {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.chat-message-admin {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #f5f5f5;
+}
+
+.chat-message-body-admin {
+    white-space: pre-wrap;
+}
+
+.btn-chat-blink {
+    animation: chat-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes chat-blink {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.6);
+    }
+
+    50% {
+        box-shadow: 0 0 0 0.5rem rgba(13, 110, 253, 0);
+    }
+}
+</style>

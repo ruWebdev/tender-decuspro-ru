@@ -15,6 +15,51 @@ return [
         'budget_savings' => 'Budget savings',
     ],
 
+    'suppliers' => [
+        'index_title' => 'Suppliers',
+        'index_empty' => 'No suppliers found',
+        'card_title' => 'Supplier card',
+
+        'filters' => [
+            'requires_moderation' => 'Requires moderation',
+        ],
+
+        'table' => [
+            'col_document' => 'Document',
+            'col_moderation' => 'Moderation status',
+        ],
+
+        'actions' => [
+            'view_card' => 'Supplier card',
+            'approve' => 'Approve',
+            'reject' => 'Reject',
+            'reject_comment_prompt' => 'Please provide a reason for rejection:',
+        ],
+
+        'profile_empty' => 'Company profile has not been filled in yet.',
+        'documents_title' => 'Supplier documents',
+        'documents_empty' => 'No documents uploaded yet.',
+
+        'moderation' => [
+            'waiting_documents' => 'Waiting for documents',
+            'in_review' => 'Under review',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+            'unknown' => 'Status unknown',
+        ],
+
+        'activity' => [
+            'recent_proposals' => 'Recent tender responses',
+            'wins' => 'Won tenders',
+            'no_proposals' => 'No responses yet.',
+            'no_wins' => 'No won tenders yet.',
+            'col_tender' => 'Tender',
+            'col_status' => 'Status',
+            'col_submitted_at' => 'Submitted at',
+            'col_finished_at' => 'Finished at',
+        ],
+    ],
+
     'sections' => [
         'users' => 'User Management',
         'tenders' => 'Tender Management',
@@ -94,11 +139,14 @@ return [
             'col_valid_until' => 'Valid Until',
             'col_created_at' => 'Created',
             'col_items' => 'Items',
+            'col_chat' => 'Chat',
+            'col_actions' => 'Actions',
         ],
 
         'filters' => [
             'title' => 'Filters',
             'status' => 'Status',
+            'is_finished' => 'Finished status',
             'finished' => 'Finished',
             'active' => 'Active',
             'customer' => 'Customer',
@@ -107,11 +155,13 @@ return [
 
         'form' => [
             'customer_id' => 'Customer',
+            'customer' => 'Customer',
             'title' => 'Tender Title',
             'description' => 'Description',
             'hidden_comment' => 'Hidden Comment',
             'valid_until' => 'Valid Until',
             'status' => 'Status',
+            'auto_rebid' => 'Automatic rebidding',
         ],
 
         'statuses' => [
@@ -131,7 +181,6 @@ return [
         ],
 
         'no_items' => 'No items',
-
         'messages' => [
             'created' => 'Tender created successfully',
             'updated' => 'Tender updated successfully',
@@ -139,6 +188,36 @@ return [
         ],
 
         'round_label' => 'Bidding round',
+
+        'chat' => [
+            'button_title' => 'Chat with suppliers',
+            'offcanvas_title' => 'Tender chats',
+            'list_title' => 'Suppliers',
+            'messages_title' => 'Messages',
+            'empty' => 'No messages yet.',
+            'unread_badge' => 'Unread',
+            'translate_to_ru' => 'Translate chat to Russian',
+            'input_placeholder' => 'Enter a message to the supplier...',
+            'send' => 'Send',
+            'supplier_label' => 'Supplier',
+            'customer_label' => 'Customer',
+        ],
+    ],
+
+    'applications' => [
+        'index_title' => 'Tender applications',
+        'empty' => 'No applications yet.',
+        'table' => [
+            'col_tender' => 'Tender',
+            'col_supplier' => 'Supplier',
+            'col_status' => 'Status',
+            'col_created_at' => 'Application date',
+        ],
+        'offcanvas' => [
+            'title' => 'Application details',
+            'proposal_info' => 'Application information',
+            'supplier_info' => 'Supplier information',
+        ],
     ],
 
     'content' => [

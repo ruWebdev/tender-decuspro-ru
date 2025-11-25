@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\TranslateTenderJob;
 use App\Models\Tender;
+use App\Models\TenderChat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -108,15 +109,55 @@ class TenderController extends Controller
 
         $user = request()->user();
         $myProposal = null;
+        $chatData = null;
+
         if ($user && method_exists($user, 'isSupplier') && $user->isSupplier()) {
             $p = $tender->proposals()
                 ->where('user_id', $user->id)
                 ->select('id', 'status')
                 ->first();
+
             if ($p) {
                 $myProposal = [
                     'id' => $p->id,
                     'status' => $p->status,
+                ];
+            }
+
+            $chat = TenderChat::query()
+                ->where('tender_id', $tender->id)
+                ->where('supplier_id', $user->id)
+                ->with([
+                    'customer:id,name',
+                    'supplier:id,name',
+                    'messages' => function ($query) {
+                        $query->orderBy('created_at');
+                    },
+                ])
+                ->first();
+
+            if ($chat) {
+                $chatData = [
+                    'id' => $chat->id,
+                    'translate_to_ru' => (bool) $chat->translate_to_ru,
+                    'customer' => [
+                        'id' => $chat->customer_id,
+                        'name' => $chat->customer?->name,
+                    ],
+                    'supplier' => [
+                        'id' => $chat->supplier_id,
+                        'name' => $chat->supplier?->name,
+                    ],
+                    'messages' => $chat->messages->map(function ($message) {
+                        return [
+                            'id' => $message->id,
+                            'sender_id' => $message->sender_id,
+                            'body' => $message->body,
+                            'translated_body_ru' => $message->translated_body_ru,
+                            'translated_body_supplier' => $message->translated_body_supplier,
+                            'created_at' => optional($message->created_at)->toIso8601String(),
+                        ];
+                    })->all(),
                 ];
             }
         }
@@ -125,6 +166,7 @@ class TenderController extends Controller
             'tender' => $tender,
             'questions' => $publicQuestions,
             'my_proposal' => $myProposal,
+            'chat' => $chatData,
         ]);
     }
 

@@ -22,6 +22,7 @@ class TranslatorService
         }
 
         $langMap = [
+            'ru' => 'Russian',
             'en' => 'English',
             'zh' => 'Chinese',
             'cn' => 'Chinese',

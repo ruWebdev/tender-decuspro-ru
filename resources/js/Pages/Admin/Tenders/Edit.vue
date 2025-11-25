@@ -19,6 +19,7 @@ const form = useForm({
     valid_until: props.tender.valid_until,
     valid_until_time: props.tender.valid_until_time || '',
     status: props.tender.status,
+    auto_rebid: !!props.tender.auto_rebid,
     items: props.tender.items?.map(item => ({
         title: item.title,
         quantity: item.quantity,
@@ -119,11 +120,20 @@ const submit = () => {
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">{{ t('tenders.label_valid_until_time', 'Время окончания')
-                                }}</label>
+                            }}</label>
                             <input type="time" v-model="form.valid_until_time" class="form-control"
                                 :class="{ 'is-invalid': form.errors.valid_until_time }">
                             <div v-if="form.errors.valid_until_time" class="invalid-feedback">
                                 {{ form.errors.valid_until_time }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check mt-2">
+                                <input id="auto_rebid" v-model="form.auto_rebid" class="form-check-input"
+                                    type="checkbox">
+                                <label class="form-check-label" for="auto_rebid">
+                                    {{ t('admin.tenders.form.auto_rebid') }}
+                                </label>
                             </div>
                         </div>
                     </div>

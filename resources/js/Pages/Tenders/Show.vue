@@ -9,6 +9,7 @@ const { t } = useTranslations();
 
 const tender = computed(() => page.props.tender);
 const authUser = computed(() => page.props.auth?.user || null);
+const authUserId = computed(() => authUser.value?.id || null);
 const roleNames = computed(() => authUser.value?.role_names || []);
 const hasRole = (role) => roleNames.value.includes(role);
 const isSupplier = computed(() => hasRole('supplier'));
@@ -114,6 +115,25 @@ const submitQuestion = () => {
   });
 };
 const myProposal = computed(() => page.props.my_proposal || null);
+
+const chat = computed(() => page.props.chat || null);
+
+const chatForm = useForm({
+  body: '',
+});
+
+const submitChatMessage = () => {
+  if (!tender.value) return;
+  if (!isSupplier.value) return;
+  if (!chatForm.body || !chatForm.body.trim()) return;
+
+  chatForm.post(route('tenders.chat.messages.store', { tender: tender.value.id }), {
+    preserveScroll: true,
+    onSuccess: () => {
+      chatForm.reset('body');
+    },
+  });
+};
 
 </script>
 
@@ -274,8 +294,53 @@ const myProposal = computed(() => page.props.my_proposal || null);
           </div>
         </div>
 
-
         <div class="col-12 col-lg-3">
+          <div v-if="isSupplier && tender && !tender.is_finished" class="card mb-4">
+            <div class="card-header">
+              <h3 class="h5 mb-0">{{ t('tenders.chat.title') }}</h3>
+            </div>
+            <div class="card-body">
+              <div v-if="!chat || !chat.messages || chat.messages.length === 0" class="text-muted small mb-3">
+                {{ t('tenders.chat.empty') }}
+              </div>
+
+              <div v-else class="mb-3">
+                <div v-for="message in chat.messages" :key="message.id" class="mb-2">
+                  <div class="small fw-semibold mb-1">
+                    <span v-if="message.sender_id === authUserId">
+                      {{ t('tenders.chat.me_label') }}
+                    </span>
+                    <span v-else>
+                      {{ t('tenders.chat.customer_label') }}
+                    </span>
+                  </div>
+                  <div>
+                    <span v-if="message.sender_id === authUserId">
+                      {{ message.body }}
+                    </span>
+                    <span v-else>
+                      {{ message.translated_body_supplier || message.body }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                <label class="form-label small">{{ t('tenders.chat.input_label') }}</label>
+                <textarea v-model="chatForm.body" class="form-control mb-2" rows="3"
+                  :placeholder="t('tenders.chat.input_placeholder')" :disabled="chatForm.processing"></textarea>
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn-primary btn-sm"
+                    :disabled="chatForm.processing || !chatForm.body || !chatForm.body.trim()"
+                    @click="submitChatMessage">
+                    <span v-if="chatForm.processing" class="spinner-border spinner-border-sm me-2"></span>
+                    {{ t('tenders.chat.send') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div v-if="isGuest" class="card mb-4">
             <div class="card-body">
               <h3 class="h5 mb-3">

@@ -34,6 +34,7 @@ class Tender extends Model
         'finished_at',
         'winner_proposal_id',
         'round_number',
+        'auto_rebid',
     ];
 
     /**
@@ -48,6 +49,7 @@ class Tender extends Model
             'valid_until_time' => 'string',
             'finished_at' => 'datetime',
             'is_finished' => 'boolean',
+            'auto_rebid' => 'boolean',
         ];
     }
 
@@ -79,6 +81,11 @@ class Tender extends Model
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class);
+    }
+
+    public function chats(): HasMany
+    {
+        return $this->hasMany(TenderChat::class);
     }
 
     public function winnerProposal(): BelongsTo

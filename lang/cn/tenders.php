@@ -56,6 +56,8 @@ return [
     'label_valid_until_time' => '结束时间',
     'positions_block_title' => '项目',
     'button_add_item' => '+ 添加项目',
+    'button_import_from_file' => '从文件粘贴',
+    'button_import_apply' => '添加',
     'autofill_block_title' => '从文本自动填充',
     'autofill_placeholder' => '输入商品列表（名称 - 数量）',
     'button_autofill' => '自动填充',
@@ -91,4 +93,14 @@ return [
     'best_prices_title' => '各项目最佳价格',
     'col_my_price' => '您的价格',
     'no_best_prices' => '没有最佳价格数据。',
+
+    'chat' => [
+        'title' => '与客户聊天',
+        'empty' => '目前还没有消息。',
+        'me_label' => '您',
+        'customer_label' => '客户',
+        'input_label' => '给客户的消息',
+        'input_placeholder' => '请输入给客户的消息…',
+        'send' => '发送',
+    ],
 ];

@@ -15,6 +15,51 @@ return [
         'budget_savings' => '预算节省',
     ],
 
+    'suppliers' => [
+        'index_title' => '供应商',
+        'index_empty' => '未找到供应商',
+        'card_title' => '供应商卡片',
+
+        'filters' => [
+            'requires_moderation' => '需要审核',
+        ],
+
+        'table' => [
+            'col_document' => '资料',
+            'col_moderation' => '审核状态',
+        ],
+
+        'actions' => [
+            'view_card' => '供应商卡片',
+            'approve' => '通过',
+            'reject' => '拒绝',
+            'reject_comment_prompt' => '请输入拒绝原因：',
+        ],
+
+        'profile_empty' => '公司资料尚未填写。',
+        'documents_title' => '供应商资料',
+        'documents_empty' => '尚未上传任何资料。',
+
+        'moderation' => [
+            'waiting_documents' => '等待上传资料',
+            'in_review' => '审核中',
+            'approved' => '已通过',
+            'rejected' => '已拒绝',
+            'unknown' => '状态未知',
+        ],
+
+        'activity' => [
+            'recent_proposals' => '最近的投标记录',
+            'wins' => '中标记录',
+            'no_proposals' => '暂无投标记录。',
+            'no_wins' => '暂无中标记录。',
+            'col_tender' => '招标',
+            'col_status' => '状态',
+            'col_submitted_at' => '投标时间',
+            'col_finished_at' => '完成时间',
+        ],
+    ],
+
     'sections' => [
         'users' => '用户管理',
         'tenders' => '招标管理',
@@ -94,11 +139,14 @@ return [
             'col_valid_until' => '有效期至',
             'col_created_at' => '创建时间',
             'col_items' => '项目',
+            'col_chat' => '聊天',
+            'col_actions' => '操作',
         ],
 
         'filters' => [
             'title' => '筛选',
             'status' => '状态',
+            'is_finished' => '完成状态',
             'finished' => '已完成',
             'active' => '活跃',
             'customer' => '客户',
@@ -107,11 +155,13 @@ return [
 
         'form' => [
             'customer_id' => '客户',
+            'customer' => '客户',
             'title' => '招标标题',
             'description' => '描述',
             'hidden_comment' => '隐藏评论',
             'valid_until' => '有效期至',
             'status' => '状态',
+            'auto_rebid' => '自动二次竞价',
         ],
 
         'statuses' => [
@@ -132,6 +182,36 @@ return [
 
         'no_items' => '无项目',
         'round_label' => '竞价轮次',
+
+        'chat' => [
+            'button_title' => '与供应商聊天',
+            'offcanvas_title' => '招标聊天',
+            'list_title' => '供应商',
+            'messages_title' => '消息',
+            'empty' => '目前还没有消息。',
+            'unread_badge' => '未读',
+            'translate_to_ru' => '将聊天翻译为俄语',
+            'input_placeholder' => '输入发送给供应商的消息…',
+            'send' => '发送',
+            'supplier_label' => '供应商',
+            'customer_label' => '客户',
+        ],
+    ],
+
+    'applications' => [
+        'index_title' => '招标申请',
+        'empty' => '暂无申请。',
+        'table' => [
+            'col_tender' => '招标',
+            'col_supplier' => '供应商',
+            'col_status' => '状态',
+            'col_created_at' => '申请日期',
+        ],
+        'offcanvas' => [
+            'title' => '申请详情',
+            'proposal_info' => '申请信息',
+            'supplier_info' => '供应商信息',
+        ],
     ],
 
     'content' => [

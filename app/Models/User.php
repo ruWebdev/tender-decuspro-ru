@@ -90,6 +90,11 @@ class User extends Authenticatable
         return $this->hasMany(Proposal::class, 'user_id');
     }
 
+    public function supplierDocuments(): HasMany
+    {
+        return $this->hasMany(SupplierDocument::class, 'user_id');
+    }
+
     public function isCustomer(): bool
     {
         return $this->hasRole(self::ROLE_CUSTOMER);

@@ -29,6 +29,10 @@ const isActive = (path) => {
     }
 };
 
+const isActiveAny = (paths) => {
+    return paths.some((p) => isActive(p));
+};
+
 // Content section is active for /admin/content and its subsections
 // EXCEPT the dedicated static-pages editor route.
 const isActiveContent = () => {
@@ -53,27 +57,68 @@ const isActiveContent = () => {
         <header class="admin-header">
             <div class="container py-4 text-dark">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex gap-2 flex-wrap">
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
                         <Link v-if="canAccessAdmin" href="/admin"
                             :class="['btn btn-sm', isActive('/admin') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('nav.dashboard') }}
                         </Link>
-                        <Link v-if="canAccessAdmin" href="/admin/users"
-                            :class="['btn btn-sm', isActive('/admin/users') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.users.title') }}
-                        </Link>
-                        <Link v-if="canAccessAdmin" href="/admin/tenders"
-                            :class="['btn btn-sm', isActive('/admin/tenders') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.tenders.title') }}
-                        </Link>
-                        <Link v-if="canAccessAdmin" href="/admin/content"
-                            :class="['btn btn-sm', isActiveContent() ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.content.title') }}
-                        </Link>
-                        <Link v-if="canAccessAdmin" :href="route('admin.content.static_pages')"
-                            :class="['btn btn-sm', isActive('/admin/content/static-pages') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.content.static_pages.title') }}
-                        </Link>
+
+                        <div v-if="canAccessAdmin" class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                :class="isActiveAny(['/admin/content', '/admin/content/static-pages']) ? 'btn-dark' : 'btn-outline-dark'">
+                                {{ t('admin.content.menu', 'Контент') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <Link class="dropdown-item" href="/admin/content">
+                                    {{ t('admin.content.home', 'Главная') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.content.static_pages')">
+                                    {{ t('admin.content.static_pages.title') }}
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div v-if="canAccessAdmin" class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                :class="isActive('/admin/users') || isActive('/admin/suppliers') ? 'btn-dark' : 'btn-outline-dark'">
+                                {{ t('admin.users.menu', 'Пользователи') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <Link class="dropdown-item" href="/admin/users">
+                                    {{ t('admin.users.title') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" href="/admin/suppliers">
+                                    {{ t('admin.users.suppliers', 'Поставщики') }}
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div v-if="canAccessAdmin" class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                :class="isActive('/admin/tenders') || isActive('/admin/applications') ? 'btn-dark' : 'btn-outline-dark'">
+                                {{ t('admin.tenders.menu', 'Тендеры') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <Link class="dropdown-item" href="/admin/tenders">
+                                    {{ t('admin.tenders.all', 'Все тендеры') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" href="/admin/applications">
+                                    {{ t('admin.tenders.applications', 'Заявки') }}
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
                         <Link v-if="isAdmin" href="/admin/backup"
                             :class="['btn btn-sm', isActive('/admin/backup') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.backup.title') }}
@@ -83,7 +128,7 @@ const isActiveContent = () => {
                         {{ t('admin.system_logs.title') }}
                         </Link>
                         <Link v-if="isAdmin" href="/admin/ai"
-                            :class="['btn', isActive('/admin/ai') ? 'btn-dark' : 'btn-outline-dark']">
+                            :class="['btn btn-sm', isActive('/admin/ai') ? 'btn-dark' : 'btn-outline-dark']">
                         {{ t('admin.ai.title') }}
                         </Link>
                         <Link v-if="isAdmin" href="/admin/smtp"

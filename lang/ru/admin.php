@@ -15,6 +15,51 @@ return [
         'budget_savings' => 'Экономия бюджета',
     ],
 
+    'suppliers' => [
+        'index_title' => 'Поставщики',
+        'index_empty' => 'Поставщики не найдены',
+        'card_title' => 'Карточка поставщика',
+
+        'filters' => [
+            'requires_moderation' => 'Требует модерации',
+        ],
+
+        'table' => [
+            'col_document' => 'Документ',
+            'col_moderation' => 'Статус модерации',
+        ],
+
+        'actions' => [
+            'view_card' => 'Карточка поставщика',
+            'approve' => 'Одобрить',
+            'reject' => 'Отклонить',
+            'reject_comment_prompt' => 'Укажите причину отказа в модерации:',
+        ],
+
+        'profile_empty' => 'Профиль компании пока не заполнен.',
+        'documents_title' => 'Документы поставщика',
+        'documents_empty' => 'Документы пока не загружены.',
+
+        'moderation' => [
+            'waiting_documents' => 'Ожидает документов',
+            'in_review' => 'На проверке',
+            'approved' => 'Проверено',
+            'rejected' => 'Отклонено',
+            'unknown' => 'Статус неизвестен',
+        ],
+
+        'activity' => [
+            'recent_proposals' => 'Последние отклики на тендеры',
+            'wins' => 'Выигранные тендеры',
+            'no_proposals' => 'Отклики пока отсутствуют.',
+            'no_wins' => 'Выигранные тендеры пока отсутствуют.',
+            'col_tender' => 'Тендер',
+            'col_status' => 'Статус',
+            'col_submitted_at' => 'Дата отклика',
+            'col_finished_at' => 'Дата завершения',
+        ],
+    ],
+
     'sections' => [
         'users' => 'Управление пользователями',
         'tenders' => 'Управление тендерами',
@@ -43,8 +88,8 @@ return [
 
         'filters' => [
             'title' => 'Фильтры',
-            'role' => 'Роль',
-            'status' => 'Статус',
+            'role' => 'Все роли',
+            'status' => 'Все статусы',
             'all' => 'Все',
             'active' => 'Активные',
             'blocked' => 'Заблокированные',
@@ -94,6 +139,7 @@ return [
             'col_valid_until' => 'Действует до',
             'col_created_at' => 'Создан',
             'col_items' => 'Позиции',
+            'col_chat' => 'Чат',
             'col_actions' => 'Действия',
         ],
 
@@ -109,11 +155,13 @@ return [
 
         'form' => [
             'customer_id' => 'Заказчик',
+            'customer' => 'Заказчик',
             'title' => 'Название тендера',
             'description' => 'Описание',
             'hidden_comment' => 'Скрытый комментарий',
             'valid_until' => 'Действует до',
             'status' => 'Статус',
+            'auto_rebid' => 'Автоматическая переторжка',
         ],
 
         'statuses' => [
@@ -134,6 +182,36 @@ return [
 
         'no_items' => 'Нет позиций',
         'round_label' => 'Раунд торгов',
+
+        'chat' => [
+            'button_title' => 'Чат с поставщиками',
+            'offcanvas_title' => 'Чаты по тендеру',
+            'list_title' => 'Поставщики',
+            'messages_title' => 'Сообщения',
+            'empty' => 'Сообщений пока нет.',
+            'unread_badge' => 'Непрочитанные',
+            'translate_to_ru' => 'Переводить чат на русский',
+            'input_placeholder' => 'Введите сообщение поставщику...',
+            'send' => 'Отправить',
+            'supplier_label' => 'Поставщик',
+            'customer_label' => 'Заказчик',
+        ],
+    ],
+
+    'applications' => [
+        'index_title' => 'Заявки на тендеры',
+        'empty' => 'Заявки пока отсутствуют.',
+        'table' => [
+            'col_tender' => 'Тендер',
+            'col_supplier' => 'Поставщик',
+            'col_status' => 'Статус',
+            'col_created_at' => 'Дата заявки',
+        ],
+        'offcanvas' => [
+            'title' => 'Детали заявки',
+            'proposal_info' => 'Информация о заявке',
+            'supplier_info' => 'Информация о поставщике',
+        ],
     ],
 
     'content' => [

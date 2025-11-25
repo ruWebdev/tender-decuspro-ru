@@ -55,6 +55,8 @@ return [
     'label_valid_until_time' => 'End time',
     'positions_block_title' => 'Items',
     'button_add_item' => '+ Add item',
+    'button_import_from_file' => 'Insert from file',
+    'button_import_apply' => 'Add',
     'autofill_block_title' => 'Autofill from text',
     'autofill_placeholder' => 'Enter the list of goods (name - quantity)',
     'button_autofill' => 'Autofill',
@@ -90,4 +92,14 @@ return [
     'best_prices_title' => 'Best prices per item',
     'col_my_price' => 'Your price',
     'no_best_prices' => 'No data on best prices.',
+
+    'chat' => [
+        'title' => 'Chat with customer',
+        'empty' => 'No messages yet.',
+        'me_label' => 'You',
+        'customer_label' => 'Customer',
+        'input_label' => 'Message to customer',
+        'input_placeholder' => 'Write a message to the customer...',
+        'send' => 'Send',
+    ],
 ];

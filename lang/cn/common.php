@@ -41,4 +41,39 @@ return [
     'reset' => '重置',
     'unknown' => '未知',
     'info' => '信息',
+    'status' => '状态',
+
+    // 供应商审核
+    'moderation_status' => '审核状态',
+    'moderation_waiting_documents' => '等待上传资料',
+    'moderation_in_review' => '审核中',
+    'moderation_approved' => '已通过',
+    'moderation_rejected' => '已拒绝',
+    'moderation_unknown' => '状态未知',
+    'moderation_rejection_reason' => '拒绝原因',
+    'moderation_rejection_hint' => '请查看审核意见，并在下方上传修正后的资料。',
+
+    // 供应商资料
+    'documents' => '资料',
+    'documents_card_title' => '用于审核的公司资料',
+    'documents_card_intro' => '请上传用于签约和尽职调查的公司基础资料。',
+    'upload_documents' => '上传资料',
+    'current_file' => '当前文件',
+
+    'doc_business_license' => '公司营业执照 (Business License, 营业执照)',
+    'doc_business_license_hint' => '公司最重要的注册文件，应为最新版本，包含公司名称、注册地址、注册资金、经营范围和有效期等信息。',
+    'doc_tax_certificate' => '税务登记证 (Tax Registration Certificate)',
+    'doc_tax_certificate_hint' => '证明公司已在税务机关完成登记。',
+    'doc_power_of_attorney' => '授权书 / 任职证明 (Power of Attorney / Certificate of Incumbency)',
+    'doc_power_of_attorney_hint' => '如合同并非由法定代表人签署，则需提供授权该员工签署合同的文件。',
+    'doc_board_resolution' => '董事会任命决议 (Board Resolution)',
+    'doc_board_resolution_hint' => '证明谁是公司的法定代表人。',
+    'doc_passport_director' => '法定代表人护照复印件',
+    'doc_passport_director_hint' => '用于识别公司法定代表人身份。',
+    'doc_passport_signatory' => '合同签字人护照复印件',
+    'doc_passport_signatory_hint' => '用于识别合同签字人身份（如不同于法定代表人）。',
+
+    'doc_status_pending' => '审核中',
+    'doc_status_approved' => '已通过',
+    'doc_status_rejected' => '已拒绝',
 ];

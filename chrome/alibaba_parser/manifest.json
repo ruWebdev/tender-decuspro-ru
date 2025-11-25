@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Alibaba контакты (парсер)",
+    "description": "Автоматический сбор контактов поставщиков с Alibaba по списку ключевых фраз.",
+    "version": "0.1.0",
+    "permissions": [
+        "tabs",
+        "scripting",
+        "activeTab",
+        "downloads",
+        "storage"
+    ],
+    "host_permissions": [
+        "https://www.alibaba.com/*",
+        "https://*.alibaba.com/*",
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Запустить парсер Alibaba",
+        "default_popup": "popup.html"
+    }
+}

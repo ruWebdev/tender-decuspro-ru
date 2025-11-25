@@ -97,27 +97,23 @@ const blockedBadgeClass = (isBlocked) => {
             <!-- Фильтры -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">{{ t('admin.users.filters.title', 'Фильтры') }}</h5>
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label">{{ t('admin.users.filters.role') }}</label>
                             <select v-model="searchParams.role" class="form-select" @change="applyFilters">
-                                <option value="">{{ t('admin.users.filters.all') }}</option>
+                                <option value="">{{ t('admin.users.filters.role') }}</option>
                                 <option v-for="(label, value) in roles" :key="value" :value="value">
                                     {{ label }}
                                 </option>
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ t('admin.users.filters.status') }}</label>
                             <select v-model="searchParams.is_blocked" class="form-select" @change="applyFilters">
-                                <option value="">{{ t('admin.users.filters.all') }}</option>
+                                <option value="">{{ t('admin.users.filters.status') }}</option>
                                 <option value="1">{{ t('admin.users.filters.blocked') }}</option>
                                 <option value="0">{{ t('admin.users.filters.active') }}</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">&nbsp;</label>
+                        <div class="col-md-4 text-end">
                             <div class="d-flex gap-2">
                                 <button @click="applyFilters" class="btn btn-outline-primary">
                                     {{ t('common.apply', 'Применить') }}

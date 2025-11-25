@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminTendersController;
+use App\Http\Controllers\Admin\AdminTenderChatController;
 use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminSystemLogController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ProposalTotalController;
 use App\Http\Controllers\SupplierProfileController;
 use App\Http\Controllers\TenderAutofillController;
+use App\Http\Controllers\TenderChatController;
 use App\Http\Controllers\TenderComparisonController;
 use App\Http\Controllers\TenderController;
 use App\Http\Controllers\TenderFinishController;
@@ -72,6 +74,8 @@ Route::middleware(['auth', 'role:supplier'])->group(function () {
     Route::post('/tenders/{tender}/proposal', [ProposalController::class, 'store'])
         ->name('proposals.store');
 
+    Route::post('/tenders/{tender}/chat/messages', [TenderChatController::class, 'storeSupplierMessage'])
+        ->name('tenders.chat.messages.store');
     Route::put('/proposal/{proposal}', [ProposalController::class, 'update'])
         ->name('proposals.update');
 
@@ -101,6 +105,9 @@ Route::middleware(['auth'])->group(function () {
         // Вопросы по тендерам (поставщики могут задавать)
         Route::post('/tenders/{tender}/questions', [\App\Http\Controllers\TenderQuestionController::class, 'store'])
             ->name('tenders.questions.store');
+
+        Route::post('/profile/supplier/documents', [SupplierProfileController::class, 'uploadDocuments'])
+            ->name('profile.supplier.documents.upload');
     });
 
 
@@ -120,11 +127,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/tenders', [AdminTendersController::class, 'index'])->name('tenders.index');
             Route::get('/tenders/create', [AdminTendersController::class, 'create'])->name('tenders.create');
             Route::post('/tenders', [AdminTendersController::class, 'store'])->name('tenders.store');
+            Route::post('/tenders/autofill', [TenderAutofillController::class, 'autofill'])->name('tenders.autofill');
             Route::get('/tenders/{tender}', [AdminTendersController::class, 'show'])->name('tenders.show');
             Route::get('/tenders/{tender}/edit', [AdminTendersController::class, 'edit'])->name('tenders.edit');
             Route::put('/tenders/{tender}', [AdminTendersController::class, 'update'])->name('tenders.update');
             Route::post('/tenders/{tender}/retender', [AdminTendersController::class, 'retender'])->name('tenders.retender');
             Route::delete('/tenders/{tender}', [AdminTendersController::class, 'destroy'])->name('tenders.destroy');
+
+            // Чаты по тендеру (админ)
+            Route::post('/tenders/{tender}/chats/{chat}/messages', [AdminTenderChatController::class, 'storeMessage'])->name('tenders.chats.messages.store');
+            Route::post('/tenders/{tender}/chats/{chat}/read', [AdminTenderChatController::class, 'markAsRead'])->name('tenders.chats.read');
+            Route::post('/tenders/{tender}/chats/{chat}/toggle-translate', [AdminTenderChatController::class, 'toggleTranslate'])->name('tenders.chats.toggle_translate');
 
             Route::get('/content', [\App\Http\Controllers\Admin\AdminContentController::class, 'index'])->name('content.index');
             Route::post('/content/home/save', [\App\Http\Controllers\Admin\AdminContentController::class, 'saveHome'])->name('content.home.save');
@@ -162,6 +175,19 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/tenders/{tender}/questions/{question}/publish', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'publish'])->name('tenders.questions.publish');
             Route::post('/tenders/{tender}/questions/{question}/unpublish', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'unpublish'])->name('tenders.questions.unpublish');
             Route::post('/tenders/{tender}/questions/{question}/answer', [\App\Http\Controllers\Admin\AdminTenderQuestionController::class, 'answer'])->name('tenders.questions.answer');
+
+            // Поставщики (админ)
+            Route::get('/suppliers', [\App\Http\Controllers\Admin\AdminSuppliersController::class, 'index'])->name('suppliers.index');
+            Route::get('/suppliers/{user}', [\App\Http\Controllers\Admin\AdminSuppliersController::class, 'show'])->name('suppliers.show');
+            Route::get('/suppliers/{user}/documents', [\App\Http\Controllers\Admin\AdminSuppliersController::class, 'documents'])->name('suppliers.documents');
+            Route::post('/supplier-documents/{document}/approve', [\App\Http\Controllers\Admin\AdminSuppliersController::class, 'approveDocument'])->name('suppliers.documents.approve');
+            Route::post('/supplier-documents/{document}/reject', [\App\Http\Controllers\Admin\AdminSuppliersController::class, 'rejectDocument'])->name('suppliers.documents.reject');
+            Route::get('/suppliers/{user}/logs', [\App\Http\Controllers\Admin\AdminSuppliersController::class, 'logs'])->name('suppliers.logs');
+
+            // Заявки (админ)
+            Route::get('/applications', [\App\Http\Controllers\Admin\AdminApplicationsController::class, 'index'])->name('applications.index');
+            Route::post('/applications/{proposal}/approve', [\App\Http\Controllers\ProposalController::class, 'approve'])->name('applications.approve');
+            Route::post('/applications/{proposal}/reject', [\App\Http\Controllers\ProposalController::class, 'reject'])->name('applications.reject');
         });
     });
 });

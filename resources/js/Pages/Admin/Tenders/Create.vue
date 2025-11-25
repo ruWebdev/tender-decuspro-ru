@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
+import axios from 'axios';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -18,9 +19,38 @@ const form = useForm({
     valid_until: '',
     valid_until_time: '',
     status: 'open',
+    auto_rebid: false,
     items: [
         { title: '', quantity: '', unit: '' },
     ],
+});
+
+const isImportModalOpen = ref(false);
+const importRawText = ref('');
+const importLoading = ref(false);
+const importMessage = ref('');
+
+const setDefaultValidUntil = () => {
+    if (form.valid_until) {
+        return;
+    }
+
+    const now = new Date();
+    const weekLater = new Date(now.getTime());
+    weekLater.setDate(weekLater.getDate() + 7);
+
+    const year = weekLater.getFullYear();
+    const month = String(weekLater.getMonth() + 1).padStart(2, '0');
+    const day = String(weekLater.getDate()).padStart(2, '0');
+    const hours = String(weekLater.getHours()).padStart(2, '0');
+    const minutes = String(weekLater.getMinutes()).padStart(2, '0');
+
+    form.valid_until = `${year}-${month}-${day}`;
+    form.valid_until_time = `${hours}:${minutes}`;
+};
+
+onMounted(() => {
+    setDefaultValidUntil();
 });
 
 const addItem = () => {
@@ -32,6 +62,52 @@ const removeItem = (index) => {
         return;
     }
     form.items.splice(index, 1);
+};
+
+const openImportModal = () => {
+    importMessage.value = '';
+    isImportModalOpen.value = true;
+};
+
+const closeImportModal = () => {
+    if (importLoading.value) {
+        return;
+    }
+    isImportModalOpen.value = false;
+};
+
+const importFromText = async () => {
+    if (!importRawText.value.trim()) {
+        importMessage.value = t('tenders.autofill_failed');
+        return;
+    }
+
+    importMessage.value = '';
+    importLoading.value = true;
+
+    try {
+        const response = await axios.post(route('admin.tenders.autofill'), {
+            text: importRawText.value,
+        });
+
+        const items = response.data?.items ?? [];
+
+        if (Array.isArray(items) && items.length > 0) {
+            form.items = items.map((item) => ({
+                title: item.title ?? '',
+                quantity: item.quantity ?? '',
+                unit: item.unit ?? '',
+            }));
+
+            importMessage.value = t('tenders.autofill_filled');
+        } else {
+            importMessage.value = t('tenders.autofill_failed');
+        }
+    } catch (e) {
+        importMessage.value = t('tenders.autofill_error');
+    } finally {
+        importLoading.value = false;
+    }
 };
 
 const submit = () => {
@@ -116,18 +192,32 @@ const submit = () => {
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">{{ t('tenders.label_valid_until_time', 'Время окончания')
-                                }}</label>
+                            }}</label>
                             <input type="time" v-model="form.valid_until_time" class="form-control"
                                 :class="{ 'is-invalid': form.errors.valid_until_time }">
                             <div v-if="form.errors.valid_until_time" class="invalid-feedback">
                                 {{ form.errors.valid_until_time }}
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="form-check mt-2">
+                                <input id="auto_rebid" v-model="form.auto_rebid" class="form-check-input"
+                                    type="checkbox">
+                                <label class="form-check-label" for="auto_rebid">
+                                    {{ t('admin.tenders.form.auto_rebid') }}
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Позиции тендера -->
                     <div class="mt-4">
-                        <h5 class="mb-3">{{ t('tenders.positions_block_title', 'Позиции тендера') }}</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">{{ t('tenders.positions_block_title', 'Позиции тендера') }}</h5>
+                            <button type="button" class="btn btn-sm btn-outline-primary" @click="openImportModal">
+                                {{ t('tenders.button_import_from_file', 'Вставить из файла') }}
+                            </button>
+                        </div>
 
                         <div v-if="form.errors.items" class="alert alert-danger">
                             {{ form.errors.items }}
@@ -195,6 +285,39 @@ const submit = () => {
                     </button>
                 </div>
             </form>
+
+            <!-- Модальное окно "Вставить из файла" -->
+            <div v-if="isImportModalOpen" class="modal fade show d-block" tabindex="-1"
+                style="background: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog modal-lg" @click.stop>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{ t('tenders.autofill_block_title') }}</h5>
+                            <button type="button" class="btn-close" aria-label="Close"
+                                @click="closeImportModal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted mb-2">{{ t('tenders.autofill_placeholder') }}</p>
+                            <textarea v-model="importRawText" class="form-control" rows="8"></textarea>
+
+                            <div v-if="importMessage" class="alert alert-info mt-3">
+                                {{ importMessage }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" @click="closeImportModal"
+                                :disabled="importLoading">
+                                {{ t('common.cancel', 'Отмена') }}
+                            </button>
+                            <button type="button" class="btn btn-primary" @click="importFromText"
+                                :disabled="importLoading">
+                                <span v-if="importLoading" class="spinner-border spinner-border-sm me-2"></span>
+                                {{ t('tenders.button_import_apply', 'Добавить') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </AdminLayout>
 </template>

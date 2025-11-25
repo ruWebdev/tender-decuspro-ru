@@ -57,6 +57,8 @@ return [
     'label_valid_until_time' => 'Время окончания',
     'positions_block_title' => 'Позиции',
     'button_add_item' => '+ Добавить позицию',
+    'button_import_from_file' => 'Вставить из файла',
+    'button_import_apply' => 'Добавить',
     'autofill_block_title' => 'Автозаполнить из текста',
     'autofill_placeholder' => 'Введите список товаров (название - количество)',
     'button_autofill' => 'Автозаполнение',
@@ -92,4 +94,14 @@ return [
     'best_prices_title' => 'Лучшие цены по позициям',
     'col_my_price' => 'Ваша цена',
     'no_best_prices' => 'Нет данных по лучшим ценам.',
+
+    'chat' => [
+        'title' => 'Чат с заказчиком',
+        'empty' => 'Сообщений пока нет.',
+        'me_label' => 'Вы',
+        'customer_label' => 'Заказчик',
+        'input_label' => 'Сообщение заказчику',
+        'input_placeholder' => 'Напишите сообщение заказчику...',
+        'send' => 'Отправить',
+    ],
 ];

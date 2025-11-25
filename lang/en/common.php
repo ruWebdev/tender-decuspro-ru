@@ -41,4 +41,39 @@ return [
     'reset' => 'Reset',
     'unknown' => 'Unknown',
     'info' => 'Info',
+    'status' => 'Status',
+
+    // Supplier moderation
+    'moderation_status' => 'Moderation status',
+    'moderation_waiting_documents' => 'Waiting for documents',
+    'moderation_in_review' => 'Under review',
+    'moderation_approved' => 'Approved',
+    'moderation_rejected' => 'Rejected',
+    'moderation_unknown' => 'Status unknown',
+    'moderation_rejection_reason' => 'Rejection reason',
+    'moderation_rejection_hint' => 'Please read the comments and upload corrected documents below.',
+
+    // Supplier documents
+    'documents' => 'Documents',
+    'documents_card_title' => 'Documents for counterparty verification',
+    'documents_card_intro' => 'Upload your company\'s basic documents for contracting and counterparty checks.',
+    'upload_documents' => 'Upload documents',
+    'current_file' => 'Current file',
+
+    'doc_business_license' => 'Business license (营业执照)',
+    'doc_business_license_hint' => 'Main company registration document. Should be valid and contain name, registered address, share capital, business scope and validity period.',
+    'doc_tax_certificate' => 'Tax registration certificate',
+    'doc_tax_certificate_hint' => 'Confirms that the company is registered with the tax authorities.',
+    'doc_power_of_attorney' => 'Power of attorney / Certificate of incumbency',
+    'doc_power_of_attorney_hint' => 'Required if the contract is signed by a person other than the legal representative.',
+    'doc_board_resolution' => 'Board resolution on appointment of the legal representative',
+    'doc_board_resolution_hint' => 'Confirms who is the official legal representative of the company.',
+    'doc_passport_director' => 'Passport of the general director',
+    'doc_passport_director_hint' => 'Used to identify the director of the company.',
+    'doc_passport_signatory' => 'Passport of the contract signatory',
+    'doc_passport_signatory_hint' => 'Used to identify the authorized signatory if different from the director.',
+
+    'doc_status_pending' => 'Under review',
+    'doc_status_approved' => 'Approved',
+    'doc_status_rejected' => 'Rejected',
 ];

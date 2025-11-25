@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\TranslateTenderJob;
 use App\Models\Tender;
+use App\Models\TenderChat;
 use App\Models\TenderItem;
 use App\Models\User;
 use App\Services\SystemLogService;
@@ -36,6 +37,15 @@ class AdminTendersController extends Controller
         $tenders = $query
             ->select('id', 'title', 'title_en', 'title_cn', 'status', 'valid_until', 'created_at', 'customer_id', 'is_finished')
             ->withCount('items')
+            ->withCount('chats as chats_count')
+            ->withCount([
+                'chats as chats_with_unread_count' => function ($q) {
+                    $q->whereHas('messages', function ($m) {
+                        $m->whereColumn('tender_chat_messages.sender_id', 'tender_chats.supplier_id')
+                            ->where('tender_chat_messages.is_read_by_customer', false);
+                    });
+                },
+            ])
             ->orderByDesc('created_at')
             ->paginate(20)
             ->withQueryString();
@@ -81,6 +91,7 @@ class AdminTendersController extends Controller
             'valid_until' => ['required', 'date'],
             'valid_until_time' => ['nullable', 'date_format:H:i'],
             'status' => ['required', 'string', Rule::in(['open', 'closed', 'review'])],
+            'auto_rebid' => ['nullable', 'boolean'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.title' => ['required', 'string'],
             'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
@@ -98,6 +109,7 @@ class AdminTendersController extends Controller
                 'valid_until' => $validated['valid_until'],
                 'valid_until_time' => $validated['valid_until_time'] ?? null,
                 'status' => $validated['status'],
+                'auto_rebid' => (bool) ($validated['auto_rebid'] ?? false),
             ]);
 
             $items = collect($validated['items'])
@@ -126,9 +138,55 @@ class AdminTendersController extends Controller
     public function show(Tender $tender): Response
     {
         $tender->load(['customer:id,name,email', 'items']);
+        $chatModels = TenderChat::query()
+            ->where('tender_id', $tender->id)
+            ->with([
+                'supplier:id,name,email',
+                'messages' => function ($query) {
+                    $query->orderBy('created_at');
+                },
+            ])
+            ->get();
+
+        $chats = [];
+        $hasUnreadChatMessages = false;
+
+        foreach ($chatModels as $chat) {
+            $unreadCount = $chat->messages
+                ->where('sender_id', $chat->supplier_id)
+                ->where('is_read_by_customer', false)
+                ->count();
+
+            if ($unreadCount > 0) {
+                $hasUnreadChatMessages = true;
+            }
+
+            $chats[] = [
+                'id' => $chat->id,
+                'supplier' => [
+                    'id' => $chat->supplier_id,
+                    'name' => $chat->supplier?->name,
+                    'email' => $chat->supplier?->email,
+                ],
+                'translate_to_ru' => (bool) $chat->translate_to_ru,
+                'unread_count' => $unreadCount,
+                'messages' => $chat->messages->map(function ($message) {
+                    return [
+                        'id' => $message->id,
+                        'sender_id' => $message->sender_id,
+                        'body' => $message->body,
+                        'translated_body_ru' => $message->translated_body_ru,
+                        'translated_body_supplier' => $message->translated_body_supplier,
+                        'created_at' => optional($message->created_at)->toIso8601String(),
+                    ];
+                })->all(),
+            ];
+        }
 
         return Inertia::render('Admin/Tenders/Show', [
             'tender' => $tender,
+            'chats' => $chats,
+            'hasUnreadChatMessages' => $hasUnreadChatMessages,
         ]);
     }
 
@@ -157,6 +215,7 @@ class AdminTendersController extends Controller
             'valid_until' => ['required', 'date'],
             'valid_until_time' => ['nullable', 'date_format:H:i'],
             'status' => ['required', 'string', Rule::in(['open', 'closed', 'review'])],
+            'auto_rebid' => ['nullable', 'boolean'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.title' => ['required', 'string'],
             'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
@@ -172,6 +231,7 @@ class AdminTendersController extends Controller
                 'valid_until' => $validated['valid_until'],
                 'valid_until_time' => $validated['valid_until_time'] ?? null,
                 'status' => $validated['status'],
+                'auto_rebid' => (bool) ($validated['auto_rebid'] ?? false),
             ]);
 
             $tender->items()->delete();

@@ -153,6 +153,7 @@ const customerLabel = (customerId) => {
                                 <th>{{ t('admin.tenders.table.col_valid_until') }}</th>
                                 <th>{{ t('admin.tenders.table.col_created_at') }}</th>
                                 <th>{{ t('admin.tenders.table.col_items') }}</th>
+                                <th>{{ t('admin.tenders.table.col_chat') }}</th>
                                 <th class="w-150">{{ t('admin.tenders.table.col_actions') }}</th>
                             </tr>
                         </thead>
@@ -182,6 +183,18 @@ const customerLabel = (customerId) => {
                                     <span class="badge bg-info text-light">
                                         {{ tender.items_count || 0 }}
                                     </span>
+                                </td>
+                                <td>
+                                    <div v-if="tender.chats_count && tender.chats_count > 0"
+                                        class="position-relative d-inline-block">
+                                        <span class="badge text-light"
+                                            :class="tender.chats_with_unread_count > 0 ? 'bg-danger chat-indicator-blink' : 'bg-success'">
+                                            <i class="ti ti-message-circle"></i>
+                                        </span>
+                                        <span v-if="tender.chats_with_unread_count > 0"
+                                            class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                    </div>
+                                    <span v-else class="text-muted">-</span>
                                 </td>
                                 <td>
                                     <div class="btn-list flex-nowrap">
@@ -268,5 +281,21 @@ const customerLabel = (customerId) => {
 .btn-ghost-danger:hover {
     color: #fff;
     background-color: #ef4444;
+}
+
+.chat-indicator-blink {
+    animation: chat-indicator-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes chat-indicator-blink {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
+    }
+
+    50% {
+        box-shadow: 0 0 0 0.45rem rgba(220, 53, 69, 0);
+    }
 }
 </style>
