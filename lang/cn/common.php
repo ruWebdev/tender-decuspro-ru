@@ -42,6 +42,8 @@ return [
     'unknown' => '未知',
     'info' => '信息',
     'status' => '状态',
+    'create' => '创建',
+    'delete' => '删除',
 
     // 供应商审核
     'moderation_status' => '审核状态',

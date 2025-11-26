@@ -63,6 +63,54 @@ function setupControls() {
     const messageText = document.getElementById("messageText");
     const maxLinksInput = document.getElementById("maxLinksInput");
     const maxCompaniesPerKeywordInput = document.getElementById("maxCompaniesPerKeywordInput");
+    const apiBaseUrlInput = document.getElementById("apiBaseUrlInput");
+
+    // Загрузка всех сохранённых настроек
+    chrome.storage.sync.get(["apiBaseUrl", "maxLinks", "maxCompaniesPerKeyword"], (result) => {
+        if (chrome.runtime.lastError) {
+            console.error("Ошибка чтения настроек:", chrome.runtime.lastError);
+            return;
+        }
+        if (apiBaseUrlInput && typeof result.apiBaseUrl === "string") {
+            apiBaseUrlInput.value = result.apiBaseUrl;
+        }
+        if (maxLinksInput && typeof result.maxLinks === "number" && result.maxLinks > 0) {
+            maxLinksInput.value = String(result.maxLinks);
+        }
+        if (maxCompaniesPerKeywordInput && typeof result.maxCompaniesPerKeyword === "number" && result.maxCompaniesPerKeyword > 0) {
+            maxCompaniesPerKeywordInput.value = String(result.maxCompaniesPerKeyword);
+        }
+    });
+
+    // Сохранение настроек при изменении
+    if (apiBaseUrlInput) {
+        apiBaseUrlInput.addEventListener("change", () => {
+            const value = apiBaseUrlInput.value.trim();
+            chrome.storage.sync.set({ apiBaseUrl: value });
+        });
+    }
+
+    if (maxLinksInput) {
+        maxLinksInput.addEventListener("change", () => {
+            const parsed = parseInt(maxLinksInput.value, 10);
+            if (!Number.isNaN(parsed) && parsed > 0) {
+                chrome.storage.sync.set({ maxLinks: parsed });
+            } else {
+                chrome.storage.sync.remove("maxLinks");
+            }
+        });
+    }
+
+    if (maxCompaniesPerKeywordInput) {
+        maxCompaniesPerKeywordInput.addEventListener("change", () => {
+            const parsed = parseInt(maxCompaniesPerKeywordInput.value, 10);
+            if (!Number.isNaN(parsed) && parsed > 0) {
+                chrome.storage.sync.set({ maxCompaniesPerKeyword: parsed });
+            } else {
+                chrome.storage.sync.remove("maxCompaniesPerKeyword");
+            }
+        });
+    }
 
     startBtn.addEventListener("click", () => {
         messageText.textContent = "";
@@ -83,7 +131,12 @@ function setupControls() {
             }
         }
 
-        chrome.runtime.sendMessage({ type: "start", maxLinks, maxCompaniesPerKeyword }, (response) => {
+        let apiBaseUrl = null;
+        if (apiBaseUrlInput && apiBaseUrlInput.value.trim() !== "") {
+            apiBaseUrl = apiBaseUrlInput.value.trim();
+        }
+
+        chrome.runtime.sendMessage({ type: "start", maxLinks, maxCompaniesPerKeyword, apiBaseUrl }, (response) => {
             if (chrome.runtime.lastError) {
                 console.error("Ошибка запуска парсера:", chrome.runtime.lastError);
                 messageText.textContent = "Ошибка запуска парсера. См. консоль.";

@@ -69,6 +69,12 @@ return [
         'shortcuts_title' => '快捷链接',
     ],
 
+    'menu' => [
+        'platform_suppliers' => '供应商（目录）',
+        'backups_logs' => '备份和日志',
+        'platform_settings' => '平台设置',
+    ],
+
     'users' => [
         'title' => '用户',
         'index_title' => '用户管理',
@@ -318,6 +324,67 @@ return [
             'size' => '大小',
             'created_at' => '创建时间',
             'actions' => '操作',
+        ],
+    ],
+
+    'platform_suppliers' => [
+        'index_title' => '供应商（目录）',
+        'index_empty' => '未找到供应商',
+        'total_count' => '记录总数',
+        'create_title' => '创建供应商',
+        'edit_title' => '编辑供应商',
+        'actions' => [
+            'create' => '添加供应商',
+            'confirm_delete' => '确定要删除此供应商吗？',
+        ],
+        'filters' => [
+            'search' => '搜索供应商',
+            'search_placeholder' => '按名称、邮箱或电话搜索',
+        ],
+        'table' => [
+            'col_name' => '名称',
+            'col_phone' => '电话',
+            'col_email' => '邮箱',
+            'col_website' => '网站',
+            'col_comment' => '备注',
+            'col_actions' => '操作',
+        ],
+        'form' => [
+            'name' => '名称',
+            'phone' => '电话',
+            'email' => '邮箱',
+            'website' => '网站',
+            'comment' => '备注',
+        ],
+    ],
+
+    'notification_templates' => [
+        'index_title' => '通知模板',
+        'index_empty' => '暂无通知模板',
+        'create_title' => '创建通知模板',
+        'edit_title' => '编辑通知模板',
+        'actions' => [
+            'create' => '添加模板',
+        ],
+        'table' => [
+            'col_name' => '名称',
+            'col_type' => '类型',
+            'col_actions' => '操作',
+        ],
+        'form' => [
+            'name' => '名称',
+            'type' => '通知类型',
+            'body_ru' => '文本（俄语）',
+            'body_en' => '文本（英语）',
+            'body_cn' => '文本（中文）',
+        ],
+        'types' => [
+            'new_tender' => '新招标',
+            'better_price' => '出现更低报价',
+            'tender_closed' => '招标已关闭',
+            'won' => '您已中标',
+            'lost' => '您未中标',
+            'retender' => '招标进入二次竞价',
         ],
     ],
 

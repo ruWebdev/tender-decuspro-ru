@@ -6,8 +6,10 @@ use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminSystemLogController;
 use App\Http\Controllers\CabinetController;
+use App\Http\Controllers\ContentPageController;
 use App\Http\Controllers\DeepSeekController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ParserPlatformSuppliersController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ProposalTotalController;
 use App\Http\Controllers\SupplierProfileController;
@@ -16,11 +18,17 @@ use App\Http\Controllers\TenderChatController;
 use App\Http\Controllers\TenderComparisonController;
 use App\Http\Controllers\TenderController;
 use App\Http\Controllers\TenderFinishController;
-use App\Http\Controllers\ContentPageController;
 use App\Http\Controllers\Admin\AdminStaticPagesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::prefix('parser')->group(function () {
+    Route::post('/platform-suppliers/check', [ParserPlatformSuppliersController::class, 'check'])
+        ->name('parser.platform_suppliers.check');
+    Route::post('/platform-suppliers/store', [ParserPlatformSuppliersController::class, 'store'])
+        ->name('parser.platform_suppliers.store');
+});
 
 Route::get('/dashboard', [CabinetController::class, 'index'])
     ->middleware(['auth'])
@@ -168,6 +176,22 @@ Route::middleware(['auth'])->group(function () {
 
                 // Системные логи (только для администратора)
                 Route::get('/system-logs', [AdminSystemLogController::class, 'index'])->name('system_logs.index');
+
+                // Поставщики площадки (справочник, только для администратора)
+                Route::get('/platform-suppliers', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'index'])->name('platform_suppliers.index');
+                Route::get('/platform-suppliers/create', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'create'])->name('platform_suppliers.create');
+                Route::post('/platform-suppliers', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'store'])->name('platform_suppliers.store');
+                Route::get('/platform-suppliers/{platformSupplier}/edit', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'edit'])->name('platform_suppliers.edit');
+                Route::put('/platform-suppliers/{platformSupplier}', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'update'])->name('platform_suppliers.update');
+                Route::delete('/platform-suppliers/{platformSupplier}', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'destroy'])->name('platform_suppliers.destroy');
+
+                // Шаблоны уведомлений (только для администратора)
+                Route::get('/notification-templates', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'index'])->name('notification_templates.index');
+                Route::get('/notification-templates/create', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'create'])->name('notification_templates.create');
+                Route::post('/notification-templates', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'store'])->name('notification_templates.store');
+                Route::get('/notification-templates/{notificationTemplate}/edit', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'edit'])->name('notification_templates.edit');
+                Route::put('/notification-templates/{notificationTemplate}', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'update'])->name('notification_templates.update');
+                Route::delete('/notification-templates/{notificationTemplate}', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'destroy'])->name('notification_templates.destroy');
             });
 
             // Модерация вопросов по тендерам

@@ -42,6 +42,8 @@ return [
     'unknown' => 'Unknown',
     'info' => 'Info',
     'status' => 'Status',
+    'create' => 'Create',
+    'delete' => 'Delete',
 
     // Supplier moderation
     'moderation_status' => 'Moderation status',

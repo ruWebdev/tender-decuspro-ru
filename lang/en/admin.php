@@ -69,6 +69,12 @@ return [
         'shortcuts_title' => 'Shortcuts',
     ],
 
+    'menu' => [
+        'platform_suppliers' => 'Suppliers (directory)',
+        'backups_logs' => 'Backups & Logs',
+        'platform_settings' => 'Platform settings',
+    ],
+
     'users' => [
         'title' => 'Users',
         'index_title' => 'User Management',
@@ -324,6 +330,67 @@ return [
             'size' => 'Size',
             'created_at' => 'Created at',
             'actions' => 'Actions',
+        ],
+    ],
+
+    'platform_suppliers' => [
+        'index_title' => 'Suppliers (directory)',
+        'index_empty' => 'No suppliers found',
+        'total_count' => 'Total records',
+        'create_title' => 'Create supplier',
+        'edit_title' => 'Edit supplier',
+        'actions' => [
+            'create' => 'Add supplier',
+            'confirm_delete' => 'Delete this supplier?',
+        ],
+        'filters' => [
+            'search' => 'Search suppliers',
+            'search_placeholder' => 'Search by name, email or phone',
+        ],
+        'table' => [
+            'col_name' => 'Name',
+            'col_phone' => 'Phone',
+            'col_email' => 'Email',
+            'col_website' => 'Website',
+            'col_comment' => 'Comment',
+            'col_actions' => 'Actions',
+        ],
+        'form' => [
+            'name' => 'Name',
+            'phone' => 'Phone',
+            'email' => 'Email',
+            'website' => 'Website',
+            'comment' => 'Comment',
+        ],
+    ],
+
+    'notification_templates' => [
+        'index_title' => 'Notification templates',
+        'index_empty' => 'No notification templates found',
+        'create_title' => 'Create notification template',
+        'edit_title' => 'Edit notification template',
+        'actions' => [
+            'create' => 'Add template',
+        ],
+        'table' => [
+            'col_name' => 'Name',
+            'col_type' => 'Type',
+            'col_actions' => 'Actions',
+        ],
+        'form' => [
+            'name' => 'Name',
+            'type' => 'Notification type',
+            'body_ru' => 'Text (Russian)',
+            'body_en' => 'Text (English)',
+            'body_cn' => 'Text (Chinese)',
+        ],
+        'types' => [
+            'new_tender' => 'New tender',
+            'better_price' => 'Better price appeared',
+            'tender_closed' => 'Tender closed',
+            'won' => 'You won the tender',
+            'lost' => 'You lost the tender',
+            'retender' => 'Tender sent to rebidding',
         ],
     ],
 

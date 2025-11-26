@@ -119,22 +119,53 @@ const isActiveContent = () => {
                                 </li>
                             </ul>
                         </div>
-                        <Link v-if="isAdmin" href="/admin/backup"
-                            :class="['btn btn-sm', isActive('/admin/backup') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.backup.title') }}
+                        <Link v-if="isAdmin" :href="route('admin.platform_suppliers.index')"
+                            :class="['btn btn-sm', isActive('/admin/platform-suppliers') ? 'btn-dark' : 'btn-outline-dark']">
+                        {{ t('admin.menu.platform_suppliers', 'Поставщики (справочник)') }}
                         </Link>
-                        <Link v-if="isAdmin" href="/admin/system-logs"
-                            :class="['btn btn-sm', isActive('/admin/system-logs') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.system_logs.title') }}
-                        </Link>
-                        <Link v-if="isAdmin" href="/admin/ai"
-                            :class="['btn btn-sm', isActive('/admin/ai') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.ai.title') }}
-                        </Link>
-                        <Link v-if="isAdmin" href="/admin/smtp"
-                            :class="['btn btn-sm', isActive('/admin/smtp') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.smtp.title') }}
-                        </Link>
+
+                        <div v-if="isAdmin" class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                :class="isActiveAny(['/admin/backup', '/admin/system-logs']) ? 'btn-dark' : 'btn-outline-dark'">
+                                {{ t('admin.menu.backups_logs', 'Копии и Логи') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.backup.index')">
+                                    {{ t('admin.backup.title') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.system_logs.index')">
+                                    {{ t('admin.system_logs.title') }}
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div v-if="isAdmin" class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                :class="isActiveAny(['/admin/ai', '/admin/smtp', '/admin/notification-templates']) ? 'btn-dark' : 'btn-outline-dark'">
+                                {{ t('admin.menu.platform_settings', 'Настройки площадки') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.ai.index')">
+                                    {{ t('admin.ai.title') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.smtp.index')">
+                                    {{ t('admin.smtp.title') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.notification_templates.index')">
+                                    {{ t('admin.notification_templates.index_title') }}
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
                         <Link :href="route('logout')" method="post" class="btn btn-sm btn-outline-dark">
                         {{ t('nav.logout') }}
                         </Link>
