@@ -13,6 +13,7 @@ use App\Http\Controllers\ParserPlatformSuppliersController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ProposalTotalController;
 use App\Http\Controllers\SupplierProfileController;
+use App\Http\Controllers\SystemBlockController;
 use App\Http\Controllers\TenderAutofillController;
 use App\Http\Controllers\TenderChatController;
 use App\Http\Controllers\TenderComparisonController;
@@ -20,6 +21,10 @@ use App\Http\Controllers\TenderController;
 use App\Http\Controllers\TenderFinishController;
 use App\Http\Controllers\Admin\AdminStaticPagesController;
 use Illuminate\Support\Facades\Route;
+
+// Скрытая страница управления блокировкой проекта
+Route::get('/system/block', [SystemBlockController::class, 'index'])->name('system.block');
+Route::post('/system/block/toggle', [SystemBlockController::class, 'toggle'])->name('system.block.toggle');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SystemSetting;
 use App\Models\Tender;
 use App\Models\UiContent;
+use Illuminate\Http\Response as HttpResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,8 +14,12 @@ class HomeController extends Controller
     /**
      * Отображение главной страницы.
      */
-    public function index(): Response
+    public function index(): Response|HttpResponse
     {
+        // Проверка блокировки проекта
+        if (SystemSetting::isProjectBlocked()) {
+            return response()->view('system.blocked');
+        }
         $tenders = Tender::query()
             ->where('status', 'open')
             ->where('is_finished', false)
