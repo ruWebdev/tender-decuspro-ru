@@ -15,6 +15,7 @@ function applyState(state) {
     const linksProcessed = document.getElementById("linksProcessed");
     const linksPlanned = document.getElementById("linksPlanned");
     const emailsFound = document.getElementById("emailsFound");
+    const phonesFound = document.getElementById("phonesFound");
     const messageText = document.getElementById("messageText");
 
     const running = !!state.isRunning;
@@ -34,6 +35,7 @@ function applyState(state) {
     linksPlanned.textContent = state.totalCompaniesPlanned || 0;
 
     emailsFound.textContent = state.foundEmails || 0;
+    phonesFound.textContent = state.foundPhones || 0;
 
     if (maxLinksInput && typeof state.maxLinks === "number" && state.maxLinks > 0) {
         maxLinksInput.value = String(state.maxLinks);
@@ -71,6 +73,7 @@ function requestState() {
                     processedCompanies: 0,
                     totalCompaniesPlanned: 0,
                     foundEmails: 0,
+                    foundPhones: 0,
                     maxLinks: null,
                     maxCompaniesPerKeyword: null,
                     lastMessage: "",

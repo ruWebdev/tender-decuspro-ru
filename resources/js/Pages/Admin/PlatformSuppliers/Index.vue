@@ -62,7 +62,8 @@ const totalCount = computed(() => suppliers.value?.total || 0);
                             </button>
                         </div>
                         <div class="col-md-5 text-end">
-                            <span class="text-muted">{{ t('admin.platform_suppliers.total_count', 'Всего записей') }}: {{ totalCount }}</span>
+                            <span class="text-muted">{{ t('admin.platform_suppliers.total_count', 'Всего записей') }}:
+                                {{ totalCount }}</span>
                         </div>
                     </div>
                 </div>
@@ -96,8 +97,10 @@ const totalCount = computed(() => suppliers.value?.total || 0);
                                     </a>
                                     <span v-else>-</span>
                                 </td>
-                                <td>
-                                    <a v-if="supplier.website" :href="supplier.website" target="_blank" rel="noopener noreferrer">
+                                <td class="w-25">
+                                    <a v-if="supplier.website" :href="supplier.website" :title="supplier.website"
+                                        target="_blank" rel="noopener noreferrer" class="text-truncate d-inline-block"
+                                        style="max-width: 220px;">
                                         {{ supplier.website }}
                                     </a>
                                     <span v-else>-</span>

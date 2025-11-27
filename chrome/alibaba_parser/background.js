@@ -30,6 +30,7 @@ const progressState = {
     processedCompanies: 0,
     totalCompaniesPlanned: 0,
     foundEmails: 0,
+    foundPhones: 0,
     maxLinks: null,
     maxCompaniesPerKeyword: null,
     lastMessage: "",
@@ -46,6 +47,7 @@ function getPublicProgressState() {
         processedCompanies: progressState.processedCompanies,
         totalCompaniesPlanned: progressState.totalCompaniesPlanned,
         foundEmails: progressState.foundEmails,
+        foundPhones: progressState.foundPhones,
         maxLinks: progressState.maxLinks,
         maxCompaniesPerKeyword: progressState.maxCompaniesPerKeyword,
         lastMessage: progressState.lastMessage,
@@ -173,7 +175,7 @@ async function apiCheckCompany(name, website, email) {
     return callParserApi("/parser/platform-suppliers/check", payload);
 }
 
-async function apiStoreCompany(name, website, email) {
+async function apiStoreCompany(name, website, email, phone) {
     if (!name) {
         return null;
     }
@@ -186,6 +188,10 @@ async function apiStoreCompany(name, website, email) {
 
     if (email) {
         payload.email = email;
+    }
+
+    if (phone) {
+        payload.phone = phone;
     }
 
     return callParserApi("/parser/platform-suppliers/store", payload);
@@ -243,6 +249,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             processedCompanies: 0,
             totalCompaniesPlanned: 0,
             foundEmails: 0,
+            foundPhones: 0,
             maxLinks,
             maxCompaniesPerKeyword,
             lastMessage: "Запуск парсера...",
@@ -790,10 +797,12 @@ async function extractCompanySiteOnContactInfo(tabId, fallbackName) {
     return result;
 }
 
-async function extractEmailOnCompanySite(tabId) {
+async function extractContactsOnCompanySite(tabId) {
     const result = await safeExecuteScript(tabId, () => {
         const emails = new Set();
+        const phones = new Set();
 
+        // Поиск email в mailto: ссылках
         const mailtoLinks = Array.from(document.querySelectorAll("a[href^='mailto:']"));
         for (const a of mailtoLinks) {
             const href = a.getAttribute("href") || "";
@@ -802,26 +811,67 @@ async function extractEmailOnCompanySite(tabId) {
             if (email) emails.add(email);
         }
 
-        const emailRe = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+        // Поиск телефонов в tel: ссылках
+        const telLinks = Array.from(document.querySelectorAll("a[href^='tel:']"));
+        for (const a of telLinks) {
+            const href = a.getAttribute("href") || "";
+            const raw = href.replace(/^tel:/i, "");
+            const phone = raw.split(/[?;]/)[0].trim();
+            if (phone) phones.add(phone);
+        }
+
         const text = document.body
             ? document.body.innerText
             : document.documentElement.innerText || "";
+
+        // Поиск email в тексте
+        const emailRe = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
         let match;
         while ((match = emailRe.exec(text)) !== null) {
             const value = match[0].trim().replace(/^[\s,;:()<>]+|[\s,;:()<>]+$/g, "");
             if (value) emails.add(value);
         }
 
-        const arr = Array.from(emails);
-        return { email: arr.length ? arr[0] : null };
-    }, [], { email: null });
+        // Поиск телефонов в тексте (международные форматы)
+        // Поддерживаемые форматы: +1234567890, +1 234 567 890, (123) 456-7890, 123-456-7890 и т.д.
+        const phonePatterns = [
+            /\+\d{1,4}[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{1,4}[\s.-]?\d{1,4}[\s.-]?\d{1,9}/g,
+            /\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/g,
+            /\d{3}[\s.-]\d{3}[\s.-]\d{4}/g,
+            /\+\d{10,15}/g,
+        ];
+
+        for (const phoneRe of phonePatterns) {
+            phoneRe.lastIndex = 0;
+            while ((match = phoneRe.exec(text)) !== null) {
+                let phone = match[0].trim();
+                // Очищаем от лишних символов по краям
+                phone = phone.replace(/^[\s,;:()<>]+|[\s,;:()<>]+$/g, "");
+                // Проверяем минимальную длину (минимум 7 цифр для телефона)
+                const digitsOnly = phone.replace(/\D/g, "");
+                if (digitsOnly.length >= 7 && digitsOnly.length <= 15) {
+                    phones.add(phone);
+                }
+            }
+        }
+
+        const emailArr = Array.from(emails);
+        const phoneArr = Array.from(phones);
+
+        return {
+            email: emailArr.length ? emailArr[0] : null,
+            phone: phoneArr.length ? phoneArr[0] : null,
+            allEmails: emailArr,
+            allPhones: phoneArr,
+        };
+    }, [], { email: null, phone: null, allEmails: [], allPhones: [] });
 
     return result;
 }
 
 async function saveResultsToFile(rows) {
-    const header = "# Название компании; сайт; e-mail\n";
-    const lines = rows.map((row) => `${row.name}; ${row.site}; ${row.email}`);
+    const header = "# Название компании; сайт; e-mail; телефон\n";
+    const lines = rows.map((row) => `${row.name}; ${row.site}; ${row.email}; ${row.phone || "-"}`);
     const content = header + lines.join("\n");
 
     // В сервис-воркере Manifest V3 нельзя использовать URL.createObjectURL,
@@ -859,6 +909,7 @@ async function processCompanyInternal(tabId, company) {
     let siteUrl = "";
     let companyName = company.name || "";
     let email = "";
+    let phone = "";
 
     if (!contactUrl) {
         console.warn("Не удалось построить URL contactinfo для компании:", company.profileUrl);
@@ -901,31 +952,40 @@ async function processCompanyInternal(tabId, company) {
         return null; // Пропускаем компанию
     }
 
-    // Переход на сайт компании для поиска email
+    // Переход на сайт компании для поиска email и телефона
     if (siteUrl) {
         try {
             const navSuccess = await navigateTo(tabId, siteUrl);
             if (navSuccess) {
                 await delay(DELAY_BETWEEN_STEPS_MS);
 
-                const emailInfo = await extractEmailOnCompanySite(tabId);
-                if (emailInfo && emailInfo.email) {
-                    email = emailInfo.email;
-                    updateProgress({
-                        foundEmails: progressState.foundEmails + 1,
-                    });
+                const contacts = await extractContactsOnCompanySite(tabId);
+                if (contacts) {
+                    if (contacts.email) {
+                        email = contacts.email;
+                        updateProgress({
+                            foundEmails: progressState.foundEmails + 1,
+                        });
+                    }
+                    if (contacts.phone) {
+                        phone = contacts.phone;
+                        updateProgress({
+                            foundPhones: (progressState.foundPhones || 0) + 1,
+                        });
+                    }
                 }
             }
         } catch (e) {
-            console.error("Ошибка при переходе на сайт компании или поиске e-mail", e);
+            console.error("Ошибка при переходе на сайт компании или поиске контактов", e);
         }
     }
 
     const safeName = companyName || "-";
     const safeSite = siteUrl || "-";
     const safeEmail = email || "-";
+    const safePhone = phone || "-";
 
-    console.log("Результат для компании:", safeName, safeSite, safeEmail);
+    console.log("Результат для компании:", safeName, safeSite, safeEmail, safePhone);
 
     // Сохранение через API
     if (apiBaseUrl && safeName && safeName !== "-") {
@@ -933,14 +993,15 @@ async function processCompanyInternal(tabId, company) {
             await apiStoreCompany(
                 safeName,
                 safeSite !== "-" ? safeSite : "",
-                safeEmail !== "-" ? safeEmail : ""
+                safeEmail !== "-" ? safeEmail : "",
+                safePhone !== "-" ? safePhone : ""
             );
         } catch (e) {
             console.warn("Ошибка при сохранении компании через API", e);
         }
     }
 
-    return { name: safeName, site: safeSite, email: safeEmail };
+    return { name: safeName, site: safeSite, email: safeEmail, phone: safePhone };
 }
 
 async function runAlibabaParser() {
