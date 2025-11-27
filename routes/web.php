@@ -28,7 +28,11 @@ Route::post('/system/block/toggle', [SystemBlockController::class, 'toggle'])->n
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('parser')->group(function () {
+Route::prefix('parser')->middleware('parser.cors')->group(function () {
+    // OPTIONS preflight для CORS
+    Route::options('/platform-suppliers/check', fn() => response('', 204));
+    Route::options('/platform-suppliers/store', fn() => response('', 204));
+
     Route::post('/platform-suppliers/check', [ParserPlatformSuppliersController::class, 'check'])
         ->name('parser.platform_suppliers.check');
     Route::post('/platform-suppliers/store', [ParserPlatformSuppliersController::class, 'store'])

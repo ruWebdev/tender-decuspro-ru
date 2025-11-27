@@ -193,18 +193,18 @@ async function apiStoreCompany(name, website, email) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!message || typeof message.type !== "string") {
-        return;
+        return false;
     }
 
     if (message.type === "get_state") {
         sendResponse({ ok: true, state: getPublicProgressState() });
-        return;
+        return true; // Указываем, что ответ будет отправлен синхронно
     }
 
     if (message.type === "start") {
         if (isRunning) {
             sendResponse({ ok: false, error: "Парсер уже запущен" });
-            return;
+            return true;
         }
 
         let maxLinks = null;
@@ -258,13 +258,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
 
         sendResponse({ ok: true });
-        return;
+        return true;
     }
 
     if (message.type === "stop") {
         if (!isRunning) {
             sendResponse({ ok: false, error: "Парсер не запущен" });
-            return;
+            return true;
         }
 
         stopRequested = true;
@@ -273,8 +273,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             lastMessage: "Остановка по запросу пользователя...",
         });
         sendResponse({ ok: true });
-        return;
+        return true;
     }
+
+    return false;
 });
 
 function delay(ms) {

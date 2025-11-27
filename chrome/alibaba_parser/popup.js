@@ -45,15 +45,42 @@ function applyState(state) {
     messageText.textContent = state.lastMessage || "";
 }
 
+async function ensureServiceWorkerActive() {
+    // В Manifest V3 service worker может "засыпать", пробуем его разбудить
+    try {
+        await chrome.runtime.getBackgroundPage?.();
+    } catch (e) {
+        // getBackgroundPage недоступен в Manifest V3, это нормально
+    }
+}
+
 function requestState() {
-    chrome.runtime.sendMessage({ type: "get_state" }, (response) => {
-        if (chrome.runtime.lastError) {
-            console.error("Ошибка запроса состояния:", chrome.runtime.lastError);
-            return;
-        }
-        if (response && response.ok && response.state) {
-            applyState(response.state);
-        }
+    ensureServiceWorkerActive().then(() => {
+        chrome.runtime.sendMessage({ type: "get_state" }, (response) => {
+            if (chrome.runtime.lastError) {
+                // Service worker может быть неактивен, это не критично
+                console.warn("Ошибка запроса состояния:", chrome.runtime.lastError.message);
+                // Показываем состояние по умолчанию
+                applyState({
+                    isRunning: false,
+                    stopRequested: false,
+                    currentKeywordIndex: 0,
+                    totalKeywords: 0,
+                    currentCompanyIndex: 0,
+                    totalCompaniesCurrentKeyword: 0,
+                    processedCompanies: 0,
+                    totalCompaniesPlanned: 0,
+                    foundEmails: 0,
+                    maxLinks: null,
+                    maxCompaniesPerKeyword: null,
+                    lastMessage: "",
+                });
+                return;
+            }
+            if (response && response.ok && response.state) {
+                applyState(response.state);
+            }
+        });
     });
 }
 

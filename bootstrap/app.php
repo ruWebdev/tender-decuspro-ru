@@ -19,6 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'parser.cors' => \App\Http\Middleware\ParserCors::class,
+        ]);
+
+        // Исключаем маршруты парсера из CSRF-защиты
+        $middleware->validateCsrfTokens(except: [
+            'parser/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Alibaba контакты (парсер)",
     "description": "Автоматический сбор контактов поставщиков с Alibaba по списку ключевых фраз.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "permissions": [
         "tabs",
         "scripting",
