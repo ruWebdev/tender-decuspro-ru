@@ -65,13 +65,18 @@ const isActiveContent = () => {
 
                         <div v-if="canAccessAdmin" class="dropdown">
                             <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                :class="isActiveAny(['/admin/content', '/admin/content/static-pages']) ? 'btn-dark' : 'btn-outline-dark'">
+                                :class="isActiveAny(['/admin/content', '/admin/content/static-pages', '/admin/content/site-settings']) ? 'btn-dark' : 'btn-outline-dark'">
                                 {{ t('admin.content.menu', 'Контент') }}
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
                                     <Link class="dropdown-item" href="/admin/content">
-                                    {{ t('admin.content.home', 'Главная') }}
+                                    {{ t('admin.content.home', 'Переводы') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.content.site_settings')">
+                                    {{ t('admin.content.site_settings', 'Настройки сайта') }}
                                     </Link>
                                 </li>
                                 <li>

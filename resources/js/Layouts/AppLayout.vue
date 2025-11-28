@@ -6,6 +6,9 @@ import { useTranslations } from '@/Composables/useTranslations';
 const page = usePage();
 const { t } = useTranslations();
 
+const siteSettings = computed(() => page.props.site_settings || {});
+const siteName = computed(() => siteSettings.value.site_name || 'QBS Tenders');
+
 const authUser = computed(() => page.props.auth?.user || null);
 const userRoles = computed(() => authUser.value?.role_names || []);
 const hasRole = (role) => userRoles.value.includes(role);
@@ -28,21 +31,6 @@ const logout = () => {
   router.post(route('logout'));
 };
 
-const footerLinks = computed(() => [
-  {
-    label: t('home.footer.links.user_agreement.label'),
-    url: t('home.footer.links.user_agreement.url'),
-  },
-  {
-    label: t('home.footer.links.privacy.label'),
-    url: t('home.footer.links.privacy.url'),
-  },
-  {
-    label: t('home.footer.links.regulations.label'),
-    url: t('home.footer.links.regulations.url'),
-  },
-]);
-
 const currentYear = new Date().getFullYear();
 
 onMounted(() => {
@@ -56,15 +44,15 @@ onUpdated(() => {
 
 <template>
   <div class="app-layout d-flex flex-column min-vh-100">
-    <header>
-      <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom mb-4">
+    <header class="site-header sticky-top">
+      <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-          <div style="display:none">
-            <Link href="/" class="navbar-brand d-flex align-items-center">
-            Tender
-            </Link>
+          <Link href="/" class="navbar-brand d-flex align-items-center">
+          <div class="brand-icon">
+            <span class="brand-icon-text">📄</span>
           </div>
-
+          <span class="brand-text ms-2 fw-bold">{{ siteName }}</span>
+          </Link>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
             aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,21 +60,17 @@ onUpdated(() => {
           </button>
 
           <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <ul class="navbar-nav mx-auto mb-2 mb-md-0">
               <li class="nav-item">
                 <Link href="/" class="nav-link">{{ t('nav.home') }}</Link>
               </li>
 
+              <li class="nav-item">
+                <Link :href="route('tenders.index')" class="nav-link">{{ t('nav.tenders') }}</Link>
+              </li>
+
               <li v-if="isCustomer" class="nav-item">
                 <Link :href="route('tenders.create')" class="nav-link">{{ t('nav.create_tender') }}</Link>
-              </li>
-
-              <li v-if="isCustomer" class="nav-item">
-                <Link :href="route('tenders.index')" class="nav-link">{{ t('nav.supplier_proposals') }}</Link>
-              </li>
-
-              <li v-if="isSupplier" class="nav-item">
-                <Link :href="route('tenders.index')" class="nav-link">{{ t('nav.all_tenders', 'Все тендеры') }}</Link>
               </li>
 
               <li v-if="isSupplier" class="nav-item">
@@ -94,15 +78,16 @@ onUpdated(() => {
               </li>
             </ul>
 
-            <div class="d-flex align-items-center gap-2">
-              <select v-model="locale" @change="changeLocale" class="form-select form-select-sm">
-                <option value="ru">Русский</option>
-                <option value="en">English</option>
+            <div class="d-flex align-items-center gap-3">
+              <select v-model="locale" @change="changeLocale" class="form-select form-select-sm locale-select">
                 <option value="cn">中文</option>
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
               </select>
 
               <div v-if="authUser" class="dropdown">
-                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                  data-bs-toggle="dropdown">
                   {{ authUser.name }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -123,8 +108,9 @@ onUpdated(() => {
                   </li>
                 </ul>
               </div>
-              <div v-else>
-                <Link :href="route('login')" class="btn btn-primary btn-sm">{{ t('nav.login') }}</Link>
+              <div v-else class="d-flex align-items-center gap-2">
+                <Link :href="route('login')" class="btn btn-link btn-sm text-dark">{{ t('nav.login') }}</Link>
+                <Link :href="route('register')" class="btn btn-primary btn-sm px-3">{{ t('nav.register') }}</Link>
               </div>
             </div>
           </div>
@@ -136,22 +122,70 @@ onUpdated(() => {
       <slot />
     </main>
 
-    <footer class="border-top py-4 mt-4">
-      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        <div class="d-flex align-items-center gap-3">
-          <div
-            class="footer-logo rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center">
-            QBS
+    <footer class="site-footer bg-dark text-white">
+      <div class="container py-5">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="brand-icon brand-icon-footer">
+                <span class="brand-icon-text">📄</span>
+              </div>
+              <span class="brand-text ms-2 fw-bold fs-5 text-light">{{ siteName }}</span>
+            </div>
+            <p class="text-white-50 mb-4">{{ t('home.footer.description') }}</p>
+            <div class="d-flex gap-3" style="display:none !important;">
+              <a href="#" class="footer-social-link">
+                <span>🐦</span>
+              </a>
+              <a href="#" class="footer-social-link">
+                <span>💼</span>
+              </a>
+            </div>
           </div>
-          <div>
-            <p class="mb-0 fw-semibold">{{ t('home.footer.logo_alt') }}</p>
-            <small class="text-muted">© {{ currentYear }} · {{ t('home.footer.note') }}</small>
+
+          <div class="col-6 col-lg-2">
+            <h6 class="fw-semibold mb-3">{{ t('home.footer.quick_links.title') }}</h6>
+            <ul class="list-unstyled footer-links">
+              <li><a href="#">{{ t('home.footer.quick_links.about') }}</a></li>
+              <li><a href="#">{{ t('home.footer.quick_links.how_it_works') }}</a></li>
+              <li><a href="#">{{ t('home.footer.quick_links.pricing') }}</a></li>
+              <li><a href="#">{{ t('home.footer.quick_links.support') }}</a></li>
+            </ul>
+          </div>
+
+          <div class="col-6 col-lg-2">
+            <h6 class="fw-semibold mb-3">{{ t('home.footer.legal.title') }}</h6>
+            <ul class="list-unstyled footer-links">
+              <li><a href="#">{{ t('home.footer.legal.privacy') }}</a></li>
+              <li><a href="#">{{ t('home.footer.legal.terms') }}</a></li>
+              <li><a href="#">{{ t('home.footer.legal.cookies') }}</a></li>
+              <li><a href="#">{{ t('home.footer.legal.compliance') }}</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-4">
+            <h6 class="fw-semibold mb-3">{{ t('home.footer.contact.title') }}</h6>
+            <ul class="list-unstyled footer-contact">
+              <li class="d-flex align-items-center mb-2">
+                <span class="footer-contact-icon me-2">📞</span>
+                <span>{{ t('home.contacts.phone.value') }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-2">
+                <span class="footer-contact-icon me-2">✉️</span>
+                <span>{{ t('home.contacts.technical.value') }}</span>
+              </li>
+              <li class="d-flex align-items-center">
+                <span class="footer-contact-icon me-2">📍</span>
+                <span>{{ t('home.footer.contact.address') }}</span>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="d-flex flex-wrap gap-3">
-          <a v-for="link in footerLinks" :key="link.label" :href="link.url" class="text-decoration-none">
-            {{ link.label }}
-          </a>
+      </div>
+      <div class="border-top border-secondary">
+        <div class="container py-3">
+          <p class="text-white-50 text-center mb-0">© {{ currentYear }} {{ siteName }}. {{ t('home.footer.rights') }}
+          </p>
         </div>
       </div>
     </footer>
@@ -159,16 +193,90 @@ onUpdated(() => {
 </template>
 
 <style scoped>
-.footer-logo {
-  width: 48px;
-  height: 48px;
+.site-header {
+  z-index: 1030;
 }
 
-footer a {
-  color: inherit;
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: #2563eb;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-footer a:hover {
-  color: #0d6efd;
+.brand-icon-text {
+  font-size: 1rem;
+  filter: grayscale(1) brightness(10);
+}
+
+.brand-icon-footer {
+  background: #3b82f6;
+}
+
+.brand-text {
+  font-size: 1.125rem;
+  color: #111827;
+}
+
+.locale-select {
+  width: auto;
+  min-width: 90px;
+}
+
+.navbar .nav-link {
+  color: #374151;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar .nav-link:hover {
+  color: #2563eb;
+}
+
+.site-footer {
+  margin-top: auto;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #fff;
+}
+
+.footer-contact {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-social-link {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.footer-social-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.text-white-50 {
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 </style>

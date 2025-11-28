@@ -158,6 +158,8 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/content', [\App\Http\Controllers\Admin\AdminContentController::class, 'index'])->name('content.index');
             Route::post('/content/home/save', [\App\Http\Controllers\Admin\AdminContentController::class, 'saveHome'])->name('content.home.save');
+            Route::get('/content/site-settings', [\App\Http\Controllers\Admin\AdminContentController::class, 'siteSettings'])->name('content.site_settings');
+            Route::post('/content/site-settings', [\App\Http\Controllers\Admin\AdminContentController::class, 'saveSiteSettings'])->name('content.site_settings.save');
             Route::get('/content/pages', [\App\Http\Controllers\Admin\AdminContentController::class, 'pages'])->name('content.pages');
             Route::get('/content/articles', [\App\Http\Controllers\Admin\AdminContentController::class, 'articles'])->name('content.articles');
             Route::get('/content/news', [\App\Http\Controllers\Admin\AdminContentController::class, 'news'])->name('content.news');
