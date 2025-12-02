@@ -24,6 +24,7 @@ class NotificationTemplate extends Model
     public const TYPE_WON = 'won';
     public const TYPE_LOST = 'lost';
     public const TYPE_RETENDER = 'retender';
+    public const TYPE_PLATFORM_INVITATION = 'platform_invitation';
 
     public static function types(): array
     {
@@ -34,6 +35,7 @@ class NotificationTemplate extends Model
             self::TYPE_WON,
             self::TYPE_LOST,
             self::TYPE_RETENDER,
+            self::TYPE_PLATFORM_INVITATION,
         ];
     }
 }

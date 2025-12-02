@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\NotificationTemplate;
+use App\Services\NotificationTemplateTranslateService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -68,6 +70,35 @@ class AdminNotificationTemplatesController extends Controller
         $notificationTemplate->delete();
 
         return redirect()->route('admin.notification_templates.index');
+    }
+
+    public function translate(Request $request, NotificationTemplateTranslateService $translator): JsonResponse
+    {
+        $data = $request->validate([
+            'body_ru' => ['nullable', 'string'],
+            'body_en' => ['nullable', 'string'],
+            'body_cn' => ['nullable', 'string'],
+        ]);
+
+        $result = $translator->translate(
+            $data['body_ru'] ?? null,
+            $data['body_en'] ?? null,
+            $data['body_cn'] ?? null,
+        );
+
+        if (! $result) {
+            return response()->json([
+                'success' => false,
+                'error' => 'translation_failed',
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'body_ru' => $result['body_ru'],
+            'body_en' => $result['body_en'],
+            'body_cn' => $result['body_cn'],
+        ]);
     }
 
     protected function validatedData(Request $request): array

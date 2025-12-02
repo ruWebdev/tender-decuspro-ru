@@ -376,6 +376,8 @@ return [
             'col_email' => 'Email',
             'col_website' => 'Сайт',
             'col_comment' => 'Комментарий',
+            'col_language' => 'Язык',
+            'col_invitation_sent' => 'Приглашение отправлено',
             'col_actions' => 'Действия',
         ],
         'form' => [
@@ -384,6 +386,12 @@ return [
             'email' => 'Email',
             'website' => 'Сайт',
             'comment' => 'Комментарий',
+            'language' => 'Язык',
+            'invitation_sent' => 'Приглашение отправлено',
+        ],
+        'badges' => [
+            'yes' => 'Да',
+            'no' => 'Нет',
         ],
     ],
 
@@ -394,6 +402,7 @@ return [
         'edit_title' => 'Редактирование шаблона уведомления',
         'actions' => [
             'create' => 'Добавить шаблон',
+            'translate' => 'Перевести',
         ],
         'table' => [
             'col_name' => 'Название',
@@ -414,6 +423,7 @@ return [
             'won' => 'Вы выиграли тендер',
             'lost' => 'Вы проиграли тендер',
             'retender' => 'Тендер отправлен на переторжку',
+            'platform_invitation' => 'Приглашение на площадку',
         ],
     ],
 

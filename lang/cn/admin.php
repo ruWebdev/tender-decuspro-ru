@@ -367,6 +367,8 @@ return [
             'col_email' => '邮箱',
             'col_website' => '网站',
             'col_comment' => '备注',
+            'col_language' => '语言',
+            'col_invitation_sent' => '邀请已发送',
             'col_actions' => '操作',
         ],
         'form' => [
@@ -375,6 +377,12 @@ return [
             'email' => '邮箱',
             'website' => '网站',
             'comment' => '备注',
+            'language' => '语言',
+            'invitation_sent' => '邀请已发送',
+        ],
+        'badges' => [
+            'yes' => '是',
+            'no' => '否',
         ],
     ],
 
@@ -385,6 +393,7 @@ return [
         'edit_title' => '编辑通知模板',
         'actions' => [
             'create' => '添加模板',
+            'translate' => '翻译',
         ],
         'table' => [
             'col_name' => '名称',
@@ -405,6 +414,7 @@ return [
             'won' => '您已中标',
             'lost' => '您未中标',
             'retender' => '招标进入二次竞价',
+            'platform_invitation' => '平台邀请',
         ],
     ],
 

@@ -373,6 +373,8 @@ return [
             'col_email' => 'Email',
             'col_website' => 'Website',
             'col_comment' => 'Comment',
+            'col_language' => 'Language',
+            'col_invitation_sent' => 'Invitation sent',
             'col_actions' => 'Actions',
         ],
         'form' => [
@@ -381,6 +383,12 @@ return [
             'email' => 'Email',
             'website' => 'Website',
             'comment' => 'Comment',
+            'language' => 'Language',
+            'invitation_sent' => 'Invitation sent',
+        ],
+        'badges' => [
+            'yes' => 'Yes',
+            'no' => 'No',
         ],
     ],
 
@@ -391,6 +399,7 @@ return [
         'edit_title' => 'Edit notification template',
         'actions' => [
             'create' => 'Add template',
+            'translate' => 'Translate',
         ],
         'table' => [
             'col_name' => 'Name',
@@ -411,6 +420,7 @@ return [
             'won' => 'You won the tender',
             'lost' => 'You lost the tender',
             'retender' => 'Tender sent to rebidding',
+            'platform_invitation' => 'Platform invitation',
         ],
     ],
 

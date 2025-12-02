@@ -14,7 +14,7 @@ class AdminPlatformSuppliersController extends Controller
     public function index(Request $request): Response
     {
         $query = PlatformSupplier::query()
-            ->select('id', 'name', 'phone', 'email', 'website', 'comment', 'created_at');
+            ->select('id', 'name', 'phone', 'email', 'website', 'comment', 'language', 'invitation_sent', 'created_at');
 
         if ($search = $request->string('search')->toString()) {
             $query->where(function ($q) use ($search) {
@@ -52,6 +52,8 @@ class AdminPlatformSuppliersController extends Controller
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
             'comment' => ['nullable', 'string'],
+            'language' => ['nullable', 'string', 'max:5'],
+            'invitation_sent' => ['nullable', 'boolean'],
         ]);
 
         PlatformSupplier::create($data);
@@ -69,6 +71,8 @@ class AdminPlatformSuppliersController extends Controller
                 'email' => $platformSupplier->email,
                 'website' => $platformSupplier->website,
                 'comment' => $platformSupplier->comment,
+                'language' => $platformSupplier->language,
+                'invitation_sent' => (bool) $platformSupplier->invitation_sent,
             ],
         ]);
     }
@@ -81,6 +85,8 @@ class AdminPlatformSuppliersController extends Controller
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
             'comment' => ['nullable', 'string'],
+            'language' => ['nullable', 'string', 'max:5'],
+            'invitation_sent' => ['nullable', 'boolean'],
         ]);
 
         $platformSupplier->update($data);

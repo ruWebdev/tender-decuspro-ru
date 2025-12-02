@@ -16,5 +16,7 @@ class PlatformSupplier extends Model
         'email',
         'website',
         'comment',
+        'language',
+        'invitation_sent',
     ];
 }

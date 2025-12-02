@@ -79,12 +79,14 @@ const totalCount = computed(() => suppliers.value?.total || 0);
                                 <th>{{ t('admin.platform_suppliers.table.col_email') }}</th>
                                 <th>{{ t('admin.platform_suppliers.table.col_website') }}</th>
                                 <th>{{ t('admin.platform_suppliers.table.col_comment') }}</th>
+                                <th>{{ t('admin.platform_suppliers.table.col_language') }}</th>
+                                <th>{{ t('admin.platform_suppliers.table.col_invitation_sent') }}</th>
                                 <th class="w-150 text-end">{{ t('admin.platform_suppliers.table.col_actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-if="!hasSuppliers">
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="8" class="text-center text-muted py-4">
                                     {{ t('admin.platform_suppliers.index_empty') }}
                                 </td>
                             </tr>
@@ -111,6 +113,15 @@ const totalCount = computed(() => suppliers.value?.total || 0);
                                         {{ supplier.comment }}
                                     </span>
                                     <span v-else class="text-muted">-</span>
+                                </td>
+                                <td>{{ supplier.language || '-' }}</td>
+                                <td>
+                                    <span v-if="supplier.invitation_sent" class="badge bg-success">
+                                        {{ t('admin.platform_suppliers.badges.yes') }}
+                                    </span>
+                                    <span v-else class="badge bg-secondary">
+                                        {{ t('admin.platform_suppliers.badges.no') }}
+                                    </span>
                                 </td>
                                 <td class="text-end">
                                     <div class="btn-list flex-nowrap justify-content-end">

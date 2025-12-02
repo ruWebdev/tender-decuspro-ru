@@ -219,6 +219,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/notification-templates/{notificationTemplate}/edit', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'edit'])->name('notification_templates.edit');
                 Route::put('/notification-templates/{notificationTemplate}', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'update'])->name('notification_templates.update');
                 Route::delete('/notification-templates/{notificationTemplate}', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'destroy'])->name('notification_templates.destroy');
+                Route::post('/notification-templates/translate', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'translate'])->name('notification_templates.translate');
 
                 // WeChat интеграция (только для администратора)
                 Route::get('/wechat', [AdminWeChatController::class, 'index'])->name('wechat.index');

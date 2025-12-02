@@ -1,8 +1,9 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useForm, usePage, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
+import axios from 'axios';
 
 const page = usePage();
 const { t } = useTranslations();
@@ -28,11 +29,43 @@ const form = useForm({
     body_cn: props.template?.body_cn || '',
 });
 
+const isTranslating = ref(false);
+const translateError = ref(false);
+
 const submit = () => {
     if (isEdit.value && props.template) {
         form.put(route('admin.notification_templates.update', props.template.id));
     } else {
         form.post(route('admin.notification_templates.store'));
+    }
+};
+
+const translateTemplate = async () => {
+    if (!form.body_ru && !form.body_en && !form.body_cn) {
+        return;
+    }
+
+    isTranslating.value = true;
+    translateError.value = false;
+
+    try {
+        const response = await axios.post(route('admin.notification_templates.translate'), {
+            body_ru: form.body_ru,
+            body_en: form.body_en,
+            body_cn: form.body_cn,
+        });
+
+        if (response.data && response.data.success) {
+            form.body_ru = response.data.body_ru || form.body_ru;
+            form.body_en = response.data.body_en || form.body_en;
+            form.body_cn = response.data.body_cn || form.body_cn;
+        } else {
+            translateError.value = true;
+        }
+    } catch (e) {
+        translateError.value = true;
+    } finally {
+        isTranslating.value = false;
     }
 };
 
@@ -51,15 +84,28 @@ const typeLabel = (type) => {
                     {{ isEdit ? t('admin.notification_templates.edit_title') :
                         t('admin.notification_templates.create_title') }}
                 </h1>
-                <Link :href="route('admin.notification_templates.index')" class="btn btn-outline-secondary">
-                {{ t('common.back', 'Назад') }}
-                </Link>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary" @click="translateTemplate"
+                        :disabled="isTranslating">
+                        <span v-if="isTranslating" class="spinner-border spinner-border-sm me-2" role="status" />
+                        {{ t('admin.notification_templates.actions.translate') }}
+                    </button>
+                    <Link :href="route('admin.notification_templates.index')" class="btn btn-outline-secondary">
+                    {{ t('common.back', 'Назад') }}
+                    </Link>
+                </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
                     <form @submit.prevent="submit" novalidate>
                         <div class="row g-3">
+                            <div v-if="translateError" class="col-12">
+                                <div class="alert alert-warning mb-0">
+                                    {{ t('admin.notification_templates.translate_error', 'Не удалось выполнить перевод.
+                                    Попробуйте еще раз.') }}
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ t('admin.notification_templates.form.name') }}</label>
                                 <input v-model="form.name" type="text" class="form-control"

@@ -22,6 +22,8 @@ const form = useForm({
     email: props.supplier?.email || '',
     website: props.supplier?.website || '',
     comment: props.supplier?.comment || '',
+    language: props.supplier?.language || '',
+    invitation_sent: props.supplier?.invitation_sent || false,
 });
 
 const submit = () => {
@@ -82,6 +84,25 @@ const submit = () => {
                                     :class="{ 'is-invalid': form.errors.website }" />
                                 <div v-if="form.errors.website" class="invalid-feedback">
                                     {{ form.errors.website }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">{{ t('admin.platform_suppliers.form.language') }}</label>
+                                <input v-model="form.language" type="text" class="form-control"
+                                    :class="{ 'is-invalid': form.errors.language }" />
+                                <div v-if="form.errors.language" class="invalid-feedback">
+                                    {{ form.errors.language }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 d-flex align-items-center">
+                                <div class="form-check mt-4">
+                                    <input id="invitation_sent" v-model="form.invitation_sent" class="form-check-input"
+                                        type="checkbox">
+                                    <label class="form-check-label" for="invitation_sent">
+                                        {{ t('admin.platform_suppliers.form.invitation_sent') }}
+                                    </label>
                                 </div>
                             </div>
 
