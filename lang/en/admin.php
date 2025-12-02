@@ -313,6 +313,17 @@ return [
             'from_address' => 'From email',
             'from_name' => 'From name',
         ],
+        'test' => [
+            'title' => 'Test',
+            'description' => 'Send a test email to verify the current SMTP settings.',
+            'email' => 'Test E-mail',
+            'email_placeholder' => 'test@example.com',
+            'button' => 'Check',
+            'subject' => 'SMTP test email',
+            'body' => 'This is a test email to verify the SMTP settings of the platform.',
+            'success' => 'Test email has been sent. Please check the inbox.',
+            'error' => 'Failed to send test email. Please check SMTP settings.',
+        ],
     ],
 
     'backup' => [

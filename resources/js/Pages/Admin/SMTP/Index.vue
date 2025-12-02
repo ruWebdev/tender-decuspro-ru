@@ -24,6 +24,20 @@ const save = () => {
         preserveScroll: true,
     });
 };
+
+const testForm = useForm({
+    email: '',
+});
+
+const sendTest = () => {
+    if (!testForm.email) {
+        return;
+    }
+
+    testForm.post(route('admin.smtp.test'), {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -32,7 +46,7 @@ const save = () => {
             <h1 class="h3 mb-0">{{ t('admin.smtp.title') }}</h1>
         </div>
 
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <form @submit.prevent="save">
                     <div class="row g-3">
@@ -90,6 +104,37 @@ const save = () => {
                             <button type="submit" class="btn btn-primary" :disabled="form.processing">
                                 <span v-if="form.processing" class="spinner-border spinner-border-sm me-2"></span>
                                 {{ t('common.save') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">{{ t('admin.smtp.test.title') }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    {{ t('admin.smtp.test.description') }}
+                </p>
+                <form @submit.prevent="sendTest">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ t('admin.smtp.test.email') }}</label>
+                            <input v-model="testForm.email" type="email" class="form-control"
+                                :class="{ 'is-invalid': testForm.errors.email }"
+                                :placeholder="t('admin.smtp.test.email_placeholder')">
+                            <div v-if="testForm.errors.email" class="invalid-feedback">
+                                {{ testForm.errors.email }}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-outline-primary w-100"
+                                :disabled="testForm.processing || !testForm.email">
+                                <span v-if="testForm.processing" class="spinner-border spinner-border-sm me-2"></span>
+                                {{ t('admin.smtp.test.button') }}
                             </button>
                         </div>
                     </div>

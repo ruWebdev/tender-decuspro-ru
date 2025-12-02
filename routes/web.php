@@ -192,6 +192,7 @@ Route::middleware(['auth'])->group(function () {
                 // Настройки SMTP (только для администратора)
                 Route::get('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'index'])->name('smtp.index');
                 Route::post('/smtp', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'save'])->name('smtp.save');
+                Route::post('/smtp/test', [\App\Http\Controllers\Admin\AdminSMTPController::class, 'test'])->name('smtp.test');
 
                 // Резервные копии (только для администратора)
                 Route::get('/backup', [AdminBackupController::class, 'index'])->name('backup.index');

@@ -5,6 +5,7 @@ return [
     'my_tenders' => 'Мои закупки',
     'active_tenders' => 'Активные закупки',
     'all_tenders' => 'Все тендеры',
+    'nav_tenders' => 'Все тендеры',
     'my_proposals' => 'Мои предложения',
     'create_tender' => 'Создать тендер',
     'supplier_proposals' => 'Предложения поставщиков',

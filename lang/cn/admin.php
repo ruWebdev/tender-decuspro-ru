@@ -307,6 +307,17 @@ return [
             'from_address' => '发件邮箱',
             'from_name' => '发件人名称',
         ],
+        'test' => [
+            'title' => '测试',
+            'description' => '向指定邮箱发送测试邮件，以验证当前SMTP设置是否正确。',
+            'email' => '测试邮箱',
+            'email_placeholder' => 'test@example.com',
+            'button' => '检查',
+            'subject' => 'SMTP测试邮件',
+            'body' => '这是一封用于验证平台SMTP设置的测试邮件。',
+            'success' => '测试邮件已发送，请检查收件箱。',
+            'error' => '无法发送测试邮件，请检查SMTP设置。',
+        ],
     ],
 
     'backup' => [

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,7 +28,7 @@ class AdminSMTPController extends Controller
         ]);
     }
 
-    public function save(Request $request)
+    public function save(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'mail_host' => 'required|string',
@@ -46,5 +49,32 @@ class AdminSMTPController extends Controller
         Setting::set('mail_from_name', $validated['mail_from_name']);
 
         return back()->with('success', 'Настройки SMTP сохранены');
+    }
+
+    /**
+     * Отправка тестового письма для проверки SMTP-настроек
+     */
+    public function test(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $to = $data['email'];
+
+        try {
+            Mail::raw(__('admin.smtp.test.body'), function ($message) use ($to): void {
+                $message->to($to)
+                    ->subject(__('admin.smtp.test.subject'));
+            });
+
+            return back()->with('success', __('admin.smtp.test.success'));
+        } catch (\Throwable $e) {
+            Log::error('SMTP test email failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', __('admin.smtp.test.error'));
+        }
     }
 }
