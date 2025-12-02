@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\AdminTenderChatController;
 use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminSystemLogController;
+use App\Http\Controllers\Admin\AdminWeChatController;
+use App\Http\Controllers\WeChatWebhookController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\ContentPageController;
 use App\Http\Controllers\DeepSeekController;
@@ -151,6 +153,18 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/tenders/{tender}/retender', [AdminTendersController::class, 'retender'])->name('tenders.retender');
             Route::delete('/tenders/{tender}', [AdminTendersController::class, 'destroy'])->name('tenders.destroy');
 
+            // Просмотр предложений по тендеру и выбор победителя (админ действует как заказчик)
+            Route::get('/tenders/{tender}/proposals', [ProposalController::class, 'indexCustomer'])
+                ->name('tenders.proposals');
+            Route::get('/proposals/{proposal}', [ProposalController::class, 'viewCustomer'])
+                ->name('proposals.show');
+            Route::get('/tenders/{tender}/comparison', [TenderComparisonController::class, 'index'])
+                ->name('tenders.comparison');
+            Route::get('/tenders/{tender}/finish', [TenderFinishController::class, 'index'])
+                ->name('tenders.finish');
+            Route::post('/tenders/{tender}/finish', [TenderFinishController::class, 'finish'])
+                ->name('tenders.finish.submit');
+
             // Чаты по тендеру (админ)
             Route::post('/tenders/{tender}/chats/{chat}/messages', [AdminTenderChatController::class, 'storeMessage'])->name('tenders.chats.messages.store');
             Route::post('/tenders/{tender}/chats/{chat}/read', [AdminTenderChatController::class, 'markAsRead'])->name('tenders.chats.read');
@@ -203,6 +217,17 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/notification-templates/{notificationTemplate}/edit', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'edit'])->name('notification_templates.edit');
                 Route::put('/notification-templates/{notificationTemplate}', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'update'])->name('notification_templates.update');
                 Route::delete('/notification-templates/{notificationTemplate}', [\App\Http\Controllers\Admin\AdminNotificationTemplatesController::class, 'destroy'])->name('notification_templates.destroy');
+
+                // WeChat интеграция (только для администратора)
+                Route::get('/wechat', [AdminWeChatController::class, 'index'])->name('wechat.index');
+                Route::get('/wechat/{conversation}', [AdminWeChatController::class, 'show'])->name('wechat.show');
+                Route::post('/wechat/{conversation}/send', [AdminWeChatController::class, 'sendMessage'])->name('wechat.send');
+                Route::post('/wechat/{conversation}/link', [AdminWeChatController::class, 'linkSupplier'])->name('wechat.link');
+                Route::post('/wechat/{conversation}/remark', [AdminWeChatController::class, 'updateRemark'])->name('wechat.remark');
+                Route::post('/wechat/messages/{message}/translate', [AdminWeChatController::class, 'translateMessage'])->name('wechat.translate');
+                Route::post('/wechat/settings', [AdminWeChatController::class, 'saveSettings'])->name('wechat.settings.save');
+                Route::post('/wechat/test', [AdminWeChatController::class, 'testConnection'])->name('wechat.test');
+                Route::delete('/wechat/{conversation}', [AdminWeChatController::class, 'destroy'])->name('wechat.destroy');
             });
 
             // Модерация вопросов по тендерам
@@ -232,6 +257,10 @@ Route::get('/lang/{locale}', function (string $locale) {
 
     return back();
 })->name('lang.switch');
+
+// WeChat Webhook (публичный endpoint для приёма сообщений от WeChat)
+Route::get('/wechat/webhook', [WeChatWebhookController::class, 'verify'])->name('wechat.webhook');
+Route::post('/wechat/webhook', [WeChatWebhookController::class, 'handle']);
 
 // Публичные документы
 Route::get('/docs/{slug}', [ContentPageController::class, 'show'])

@@ -71,7 +71,12 @@ class TenderComparisonController extends Controller
             $proposalTotals[$proposal->id] = $total;
         }
 
-        return Inertia::render('Tenders/Comparison', [
+        $user = $request->user();
+        $component = ($user && method_exists($user, 'isAdmin') && ($user->isAdmin() || $user->isModerator()))
+            ? 'Admin/Tenders/Comparison'
+            : 'Tenders/Comparison';
+
+        return Inertia::render($component, [
             'tender' => [
                 'id' => $tender->id,
                 'title' => $tender->title,

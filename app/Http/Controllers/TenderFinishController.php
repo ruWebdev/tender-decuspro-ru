@@ -27,7 +27,12 @@ class TenderFinishController extends Controller
             ->with(['user:id,name', 'items'])
             ->get();
 
-        return Inertia::render('Tenders/Finish', [
+        $user = request()->user();
+        $component = ($user && method_exists($user, 'isAdmin') && ($user->isAdmin() || $user->isModerator()))
+            ? 'Admin/Tenders/Finish'
+            : 'Tenders/Finish';
+
+        return Inertia::render($component, [
             'tender' => $tender,
             'proposals' => $proposals,
         ]);
@@ -116,6 +121,11 @@ class TenderFinishController extends Controller
             Notification::send($customer, new WinnerSelected($tender, $supplierName, $winnerTotal));
         }
 
-        return redirect()->route('proposals.index.customer', ['tender' => $tender->id]);
+        $user = $request->user();
+        $routeName = ($user && method_exists($user, 'isAdmin') && ($user->isAdmin() || $user->isModerator()))
+            ? 'admin.tenders.proposals'
+            : 'proposals.index.customer';
+
+        return redirect()->route($routeName, ['tender' => $tender->id]);
     }
 }

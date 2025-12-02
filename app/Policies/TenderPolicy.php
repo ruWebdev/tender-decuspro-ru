@@ -12,6 +12,10 @@ class TenderPolicy
      */
     public function create(User $user): bool
     {
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+
         return $user->isCustomer();
     }
 
@@ -20,6 +24,10 @@ class TenderPolicy
      */
     public function store(User $user): bool
     {
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+
         return $user->isCustomer();
     }
 
@@ -30,6 +38,10 @@ class TenderPolicy
     {
         if ($tender->is_finished) {
             return false;
+        }
+
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
         }
 
         return $user->id === $tender->customer_id;
@@ -44,6 +56,10 @@ class TenderPolicy
             return false;
         }
 
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+
         return $user->id === $tender->customer_id;
     }
 
@@ -52,6 +68,10 @@ class TenderPolicy
      */
     public function view(User $user, Tender $tender): bool
     {
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+
         return $user->id === $tender->customer_id;
     }
 
@@ -68,6 +88,10 @@ class TenderPolicy
      */
     public function viewProposals(User $user, Tender $tender): bool
     {
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+
         return $user->id === $tender->customer_id;
     }
 }

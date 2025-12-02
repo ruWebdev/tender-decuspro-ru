@@ -22,9 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'parser.cors' => \App\Http\Middleware\ParserCors::class,
         ]);
 
-        // Исключаем маршруты парсера из CSRF-защиты
+        // Исключаем маршруты парсера и WeChat webhook из CSRF-защиты
         $middleware->validateCsrfTokens(except: [
             'parser/*',
+            'wechat/webhook',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

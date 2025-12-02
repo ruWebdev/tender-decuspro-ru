@@ -171,6 +171,12 @@ const isActiveContent = () => {
                                 </li>
                             </ul>
                         </div>
+
+                        <Link v-if="isAdmin" :href="route('admin.wechat.index')"
+                            :class="['btn btn-sm', isActive('/admin/wechat') ? 'btn-dark' : 'btn-outline-dark']">
+                        <i class="bi bi-wechat me-1"></i>{{ t('admin.wechat.title', 'WeChat') }}
+                        </Link>
+
                         <Link :href="route('logout')" method="post" class="btn btn-sm btn-outline-dark">
                         {{ t('nav.logout') }}
                         </Link>

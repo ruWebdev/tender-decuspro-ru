@@ -63,6 +63,10 @@ class ProposalPolicy
         if ($tender->is_finished) {
             return false;
         }
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+
         return $user->id === $tender->customer_id;
     }
 

@@ -40,7 +40,12 @@ class ProposalController extends Controller
             ->orderByDesc('submitted_at')
             ->get();
 
-        return Inertia::render('Proposals/IndexCustomer', [
+        $user = request()->user();
+        $component = ($user && method_exists($user, 'isAdmin') && ($user->isAdmin() || $user->isModerator()))
+            ? 'Admin/Tenders/Proposals'
+            : 'Proposals/IndexCustomer';
+
+        return Inertia::render($component, [
             'tender' => $tender,
             'proposals' => $proposals,
         ]);
@@ -52,7 +57,12 @@ class ProposalController extends Controller
 
         $this->authorize('viewProposals', $proposal->tender);
 
-        return Inertia::render('Proposals/ViewCustomer', [
+        $user = request()->user();
+        $component = ($user && method_exists($user, 'isAdmin') && ($user->isAdmin() || $user->isModerator()))
+            ? 'Admin/Tenders/ProposalShow'
+            : 'Proposals/ViewCustomer';
+
+        return Inertia::render($component, [
             'proposal' => $proposal,
         ]);
     }

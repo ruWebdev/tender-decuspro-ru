@@ -178,6 +178,15 @@ const retender = () => {
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">{{ t('admin.tenders.show_title') }}</h1>
                 <div class="d-flex gap-2">
+                    <Link :href="route('admin.tenders.proposals', tender.id)" class="btn btn-outline-info">
+                    {{ t('tenders.action_view_proposals') }}
+                    </Link>
+                    <Link :href="route('admin.tenders.comparison', tender.id)" class="btn btn-outline-info">
+                    {{ t('tenders.action_compare_tender') }}
+                    </Link>
+                    <Link :href="route('admin.tenders.finish', tender.id)" class="btn btn-outline-success">
+                    {{ t('tenders.finish_title') }}
+                    </Link>
                     <button v-if="chatList.length" type="button" class="btn btn-outline-info position-relative"
                         :class="{ 'btn-chat-blink': hasUnreadChat }" @click="openChat">
                         <i class="ti ti-message-circle me-1"></i>
