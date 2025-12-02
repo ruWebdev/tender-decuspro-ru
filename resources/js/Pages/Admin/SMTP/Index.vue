@@ -2,11 +2,16 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { useTranslations } from '@/Composables/useTranslations';
+import { computed } from 'vue';
 
 const { t } = useTranslations();
 
 const props = defineProps({
     settings: Object,
+    smtp_bz_test_response: {
+        type: String,
+        default: null,
+    },
 });
 
 const form = useForm({
@@ -25,6 +30,10 @@ const save = () => {
     });
 };
 
+const smtpBzForm = useForm({
+    api_key: props.settings?.smtp_bz_api_key || '',
+});
+
 const testForm = useForm({
     email: '',
 });
@@ -38,6 +47,8 @@ const sendTest = () => {
         preserveScroll: true,
     });
 };
+
+const smtpBzResponse = computed(() => props.smtp_bz_test_response);
 </script>
 
 <template>
@@ -111,6 +122,37 @@ const sendTest = () => {
             </div>
         </div>
 
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">{{ t('admin.smtp.smtp_bz.title') }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    {{ t('admin.smtp.smtp_bz.description') }}
+                </p>
+                <form @submit.prevent="smtpBzForm.post(route('admin.smtp.smtp_bz.save'), { preserveScroll: true })">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ t('admin.smtp.smtp_bz.api_key') }}</label>
+                            <input v-model="smtpBzForm.api_key" type="text" class="form-control"
+                                :class="{ 'is-invalid': smtpBzForm.errors.api_key }"
+                                :placeholder="t('admin.smtp.smtp_bz.api_key_placeholder')">
+                            <div v-if="smtpBzForm.errors.api_key" class="invalid-feedback">
+                                {{ smtpBzForm.errors.api_key }}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-outline-primary w-100"
+                                :disabled="smtpBzForm.processing">
+                                <span v-if="smtpBzForm.processing" class="spinner-border spinner-border-sm me-2"></span>
+                                {{ t('admin.smtp.smtp_bz.button') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">{{ t('admin.smtp.test.title') }}</h5>
@@ -139,6 +181,14 @@ const sendTest = () => {
                         </div>
                     </div>
                 </form>
+
+                <div v-if="smtpBzResponse" class="mt-3">
+                    <label class="form-label">{{ t('admin.smtp.smtp_bz.test_response_title') }}</label>
+                    <pre class="small bg-light p-2 border rounded"
+                        style="white-space: pre-wrap; word-break: break-all;">
+{{ smtpBzResponse }}
+                    </pre>
+                </div>
             </div>
         </div>
     </AdminLayout>

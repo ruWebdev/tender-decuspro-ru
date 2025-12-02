@@ -324,6 +324,15 @@ return [
             'success' => 'Test email has been sent. Please check the inbox.',
             'error' => 'Failed to send test email. Please check SMTP settings.',
         ],
+        'smtp_bz' => [
+            'title' => 'SMTP.bz API key',
+            'description' => 'Specify your SMTP.bz API key. If set, emails will be sent via the SMTP.bz API.',
+            'api_key' => 'SMTP.bz API key',
+            'api_key_placeholder' => 'Enter SMTP.bz API key',
+            'button' => 'Save',
+            'saved' => 'SMTP.bz key has been saved.',
+            'test_response_title' => 'SMTP.bz API response',
+        ],
     ],
 
     'backup' => [

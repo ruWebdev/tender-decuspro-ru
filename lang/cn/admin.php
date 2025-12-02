@@ -318,6 +318,15 @@ return [
             'success' => '测试邮件已发送，请检查收件箱。',
             'error' => '无法发送测试邮件，请检查SMTP设置。',
         ],
+        'smtp_bz' => [
+            'title' => 'SMTP.bz API密钥',
+            'description' => '请输入SMTP.bz API密钥。如已设置，邮件将通过SMTP.bz API发送。',
+            'api_key' => 'SMTP.bz API密钥',
+            'api_key_placeholder' => '输入SMTP.bz API密钥',
+            'button' => '保存',
+            'saved' => 'SMTP.bz密钥已保存。',
+            'test_response_title' => 'SMTP.bz API响应',
+        ],
     ],
 
     'backup' => [

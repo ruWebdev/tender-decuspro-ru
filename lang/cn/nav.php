@@ -5,6 +5,7 @@ return [
     'my_tenders' => '我的招标',
     'active_tenders' => '进行中的招标',
     'all_tenders' => '全部招标',
+    'tenders' => '全部招标',
     'my_proposals' => '我的报价',
     'create_tender' => '创建招标',
     'supplier_proposals' => '供应商报价',
@@ -13,5 +14,6 @@ return [
     'admin_panel' => '管理面板',
     'logout' => '退出',
     'login' => '登录',
+    'register' => '注册',
     'current_language' => '当前语言',
 ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\SmtpBzService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,7 @@ use Inertia\Response;
 
 class AdminSMTPController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return Inertia::render('Admin/SMTP/Index', [
             'settings' => [
@@ -24,7 +25,9 @@ class AdminSMTPController extends Controller
                 'mail_encryption' => Setting::get('mail_encryption') ?? config('mail.mailers.smtp.encryption'),
                 'mail_from_address' => Setting::get('mail_from_address') ?? config('mail.from.address'),
                 'mail_from_name' => Setting::get('mail_from_name') ?? config('mail.from.name'),
+                'smtp_bz_api_key' => Setting::get('smtp_bz_api_key'),
             ],
+            'smtp_bz_test_response' => $request->session()->get('smtp_bz_test_response'),
         ]);
     }
 
@@ -51,16 +54,42 @@ class AdminSMTPController extends Controller
         return back()->with('success', 'Настройки SMTP сохранены');
     }
 
-    /**
-     * Отправка тестового письма для проверки SMTP-настроек
-     */
-    public function test(Request $request): RedirectResponse
+    public function saveSmtpBz(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'smtp_bz_api_key' => ['nullable', 'string'],
+        ]);
+
+        Setting::set('smtp_bz_api_key', $validated['smtp_bz_api_key'] ?: null);
+
+        return back()->with('success', __('admin.smtp.smtp_bz.saved'));
+    }
+
+    public function test(Request $request, SmtpBzService $smtpBzService): RedirectResponse
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
         ]);
 
         $to = $data['email'];
+
+        if ($smtpBzService->hasApiKey()) {
+            $result = $smtpBzService->send(
+                $to,
+                __('admin.smtp.test.subject'),
+                '<html><body><p>' . e(__('admin.smtp.test.body')) . '</p></body></html>',
+                __('admin.smtp.test.body')
+            );
+
+            $flashKey = $result['success'] ? 'success' : 'error';
+            $flashMessage = $result['success']
+                ? __('admin.smtp.test.success')
+                : __('admin.smtp.test.error');
+
+            return back()
+                ->with($flashKey, $flashMessage)
+                ->with('smtp_bz_test_response', $result['raw'] ?? ($result['error'] ?? null));
+        }
 
         try {
             Mail::raw(__('admin.smtp.test.body'), function ($message) use ($to): void {

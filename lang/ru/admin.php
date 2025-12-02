@@ -327,6 +327,15 @@ return [
             'success' => 'Тестовое письмо отправлено. Проверьте почтовый ящик.',
             'error' => 'Не удалось отправить тестовое письмо. Проверьте настройки SMTP.',
         ],
+        'smtp_bz' => [
+            'title' => 'SMTP.bz API ключ',
+            'description' => 'Укажите API ключ SMTP.bz. При его наличии письма будут отправляться через API SMTP.bz.',
+            'api_key' => 'API ключ SMTP.bz',
+            'api_key_placeholder' => 'Введите API ключ SMTP.bz',
+            'button' => 'Сохранить',
+            'saved' => 'Ключ SMTP.bz сохранён.',
+            'test_response_title' => 'Ответ SMTP.bz API',
+        ],
     ],
 
     'backup' => [
