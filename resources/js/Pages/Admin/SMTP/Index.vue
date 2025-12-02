@@ -31,7 +31,7 @@ const save = () => {
 };
 
 const smtpBzForm = useForm({
-    api_key: props.settings?.smtp_bz_api_key || '',
+    smtp_bz_api_key: props.settings?.smtp_bz_api_key || '',
 });
 
 const testForm = useForm({
@@ -134,11 +134,11 @@ const smtpBzResponse = computed(() => props.smtp_bz_test_response);
                     <div class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label class="form-label">{{ t('admin.smtp.smtp_bz.api_key') }}</label>
-                            <input v-model="smtpBzForm.api_key" type="text" class="form-control"
-                                :class="{ 'is-invalid': smtpBzForm.errors.api_key }"
+                            <input v-model="smtpBzForm.smtp_bz_api_key" type="text" class="form-control"
+                                :class="{ 'is-invalid': smtpBzForm.errors.smtp_bz_api_key }"
                                 :placeholder="t('admin.smtp.smtp_bz.api_key_placeholder')">
-                            <div v-if="smtpBzForm.errors.api_key" class="invalid-feedback">
-                                {{ smtpBzForm.errors.api_key }}
+                            <div v-if="smtpBzForm.errors.smtp_bz_api_key" class="invalid-feedback">
+                                {{ smtpBzForm.errors.smtp_bz_api_key }}
                             </div>
                         </div>
                         <div class="col-md-3">
