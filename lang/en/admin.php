@@ -422,6 +422,7 @@ return [
             'retender' => 'Tender sent to rebidding',
             'platform_invitation' => 'Platform invitation',
         ],
+        'translate_error' => 'Failed to translate. Please try again.',
     ],
 
     'analytics' => [

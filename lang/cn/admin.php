@@ -416,6 +416,7 @@ return [
             'retender' => '招标进入二次竞价',
             'platform_invitation' => '平台邀请',
         ],
+        'translate_error' => '无法完成翻译，请重试。',
     ],
 
     'analytics' => [

@@ -102,8 +102,7 @@ const typeLabel = (type) => {
                         <div class="row g-3">
                             <div v-if="translateError" class="col-12">
                                 <div class="alert alert-warning mb-0">
-                                    {{ t('admin.notification_templates.translate_error', 'Не удалось выполнить перевод.
-                                    Попробуйте еще раз.') }}
+                                    {{ t('admin.notification_templates.translate_error') }}
                                 </div>
                             </div>
                             <div class="col-md-6">
