@@ -64,6 +64,14 @@ const sendInvitation = (supplier) => {
         preserveScroll: true,
     });
 };
+
+const deleteSupplier = (supplier) => {
+    if (!confirm(t('admin.platform_suppliers.actions.confirm_delete'))) {
+        return;
+    }
+
+    router.delete(route('admin.platform_suppliers.destroy', supplier.id));
+};
 </script>
 
 <template>
@@ -166,7 +174,7 @@ const sendInvitation = (supplier) => {
                                         {{ t('common.edit', 'Редактировать') }}
                                         </Link>
                                         <button type="button" class="btn btn-sm btn-ghost-danger"
-                                            @click="() => { if (confirm(t('admin.platform_suppliers.actions.confirm_delete'))) { router.delete(route('admin.platform_suppliers.destroy', supplier.id)); } }">
+                                            @click="deleteSupplier(supplier)">
                                             {{ t('common.delete', 'Удалить') }}
                                         </button>
                                     </div>
