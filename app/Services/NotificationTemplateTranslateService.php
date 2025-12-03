@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -17,7 +18,7 @@ class NotificationTemplateTranslateService
      */
     public function translate(?string $bodyRu, ?string $bodyEn, ?string $bodyCn): ?array
     {
-        $token = config('services.deepseek.token');
+        $token = Setting::get('deepseek_api_key') ?: config('services.deepseek.token');
         $baseUrl = config('services.deepseek.base_url', 'https://api.deepseek.com');
 
         if (! $token) {

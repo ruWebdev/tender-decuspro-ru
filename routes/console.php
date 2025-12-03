@@ -3,6 +3,7 @@
 use App\Jobs\GenerateAutoTenderJob;
 use App\Jobs\AutoRetenderJob;
 use App\Jobs\TranslateTendersJob;
+use App\Jobs\TranslateNotificationTemplatesJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -23,3 +24,4 @@ Artisan::command('tenders:generate-auto {count=1}', function (int $count) {
 Schedule::job(GenerateAutoTenderJob::class)->hourly();
 Schedule::job(AutoRetenderJob::class)->everyFiveMinutes();
 Schedule::job(TranslateTendersJob::class)->hourly();
+Schedule::job(TranslateNotificationTemplatesJob::class)->hourly();

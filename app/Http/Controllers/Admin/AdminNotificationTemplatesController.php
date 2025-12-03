@@ -36,6 +36,8 @@ class AdminNotificationTemplatesController extends Controller
     {
         $data = $this->validatedData($request);
 
+        $data['needs_translation'] = true;
+
         NotificationTemplate::create($data);
 
         return redirect()->route('admin.notification_templates.index');
@@ -59,6 +61,8 @@ class AdminNotificationTemplatesController extends Controller
     public function update(Request $request, NotificationTemplate $notificationTemplate): RedirectResponse
     {
         $data = $this->validatedData($request);
+
+        $data['needs_translation'] = true;
 
         $notificationTemplate->update($data);
 
@@ -107,8 +111,8 @@ class AdminNotificationTemplatesController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:50'],
             'body_ru' => ['required', 'string'],
-            'body_en' => ['required', 'string'],
-            'body_cn' => ['required', 'string'],
+            'body_en' => ['nullable', 'string'],
+            'body_cn' => ['nullable', 'string'],
         ]);
     }
 }

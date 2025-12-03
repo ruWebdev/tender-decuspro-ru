@@ -16,6 +16,11 @@ class NotificationTemplate extends Model
         'body_ru',
         'body_en',
         'body_cn',
+        'needs_translation',
+    ];
+
+    protected $casts = [
+        'needs_translation' => 'bool',
     ];
 
     public const TYPE_NEW_TENDER = 'new_tender';
