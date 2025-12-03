@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 
 class TranslatorService
@@ -34,7 +35,7 @@ class TranslatorService
 
         try {
             $baseUrl = config('services.deepseek.base_url', 'https://api.deepseek.com');
-            $token = config('services.deepseek.token');
+            $token = Setting::get('deepseek_api_key') ?? config('services.deepseek.token');
 
             if (! $token) {
                 return null;

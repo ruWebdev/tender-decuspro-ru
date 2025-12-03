@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
-use Illuminate\Support\Facades\Http;
+use App\Jobs\TranslateTendersJob;
 use App\Models\Setting;
 use App\Services\TenderGeneratorService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminAIController extends Controller
 {
@@ -57,19 +58,13 @@ class AdminAIController extends Controller
         $apiKey = Setting::get('deepseek_api_key') ?? config('services.deepseek.token');
 
         try {
-            // Получаем все тендеры, которые нужно перевести
-            // $tenders = Tender::whereDoesntHave('translations', function($query) {
-            //     $query->whereIn('locale', ['en', 'cn']);
-            // })->get();
+            if (! $apiKey) {
+                return back()->withErrors(['error' => 'API-ключ DeepSeek не настроен. Укажите ключ на странице настроек ИИ.']);
+            }
 
-            // if ($tenders->isEmpty()) {
-            //     return back()->with('message', 'Все тендеры уже переведены на все языки');
-            // }
+            TranslateTendersJob::dispatch();
 
-            // Запускаем фоновую задачу для перевода
-            // TranslateTendersJob::dispatch($tenders, $apiKey);
-
-            return back()->with('message', 'Все тендеры уже переведены на все языки');
+            return back()->with('message', 'Задача перевода тендеров поставлена в очередь. Перевод будет выполнен в фоне.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }

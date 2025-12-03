@@ -25,7 +25,7 @@ class TenderGeneratorService
             return null;
         }
 
-        $token = config('services.deepseek.token');
+        $token = Setting::get('deepseek_api_key') ?? config('services.deepseek.token');
         $baseUrl = config('services.deepseek.base_url', 'https://api.deepseek.com');
 
         if (! $token) {
