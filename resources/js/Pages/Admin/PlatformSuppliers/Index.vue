@@ -147,11 +147,11 @@ const sendInvitation = (supplier) => {
                                     <span v-else class="text-muted">-</span>
                                 </td>
                                 <td>{{ languageLabel(supplier.language) }}</td>
-                                <td>
+                                <td class="text-nowrap">
                                     <span v-if="supplier.invitation_sent" class="badge bg-success">
                                         {{ t('admin.platform_suppliers.badges.yes') }}
                                     </span>
-                                    <span v-else class="badge bg-secondary">
+                                    <span v-else class="badge bg-secondary text-light">
                                         {{ t('admin.platform_suppliers.badges.no') }}
                                     </span>
                                     <button type="button" class="btn btn-sm btn-outline-primary ms-2"
