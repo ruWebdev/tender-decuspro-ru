@@ -62,6 +62,8 @@ return [
     'col_comment' => 'Комментарий',
     'button_save_draft' => 'Сохранить черновик',
     'button_submit' => 'Отправить коммерческое предложение',
+    'submit_success_title' => 'Спасибо за ваше предложение',
+    'submit_success_ok' => 'ОК',
     'results_title' => 'Результаты торгов',
     'results_final_price' => 'Финальная цена победителя:',
     'col_winner_price' => 'Цена победителя',

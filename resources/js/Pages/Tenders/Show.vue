@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -139,6 +139,8 @@ const submitChatMessage = () => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('tenders.show_title')" />
     <div class="container mb-4">
       <div class="row g-4">
         <div class="col-12 col-lg-9">
@@ -247,7 +249,7 @@ const submitChatMessage = () => {
                   :placeholder="t('tenders.qa_ask_placeholder')"
                   :class="{ 'is-invalid': questionForm.errors.question }"></textarea>
                 <div v-if="questionForm.errors.question" class="invalid-feedback">{{ questionForm.errors.question
-                }}</div>
+                  }}</div>
                 <div class="mt-2 d-flex justify-content-end">
                   <button class="btn btn-primary" :disabled="questionForm.processing || !questionForm.question.trim()"
                     @click="submitQuestion">
@@ -279,7 +281,7 @@ const submitChatMessage = () => {
               :action="route('proposals.withdraw', { proposal: myProposal.id })" method="post" class="d-inline">
               <input type="hidden" name="_method" value="POST" />
               <button type="submit" class="btn btn-outline-danger">{{ t('proposals.action_withdraw', 'Отозвать')
-              }}</button>
+                }}</button>
             </form>
 
             <Link v-if="isCustomer" :href="route('tenders.comparison', { tender: tender.id })"

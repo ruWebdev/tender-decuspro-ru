@@ -118,7 +118,7 @@ onUpdated(() => {
       </nav>
     </header>
 
-    <main class="flex-fill">
+    <main class="flex-fill pt-4 pt-md-5">
       <slot />
     </main>
 
@@ -143,23 +143,24 @@ onUpdated(() => {
             </div>
           </div>
 
-          <div class="col-6 col-lg-2">
-            <h6 class="fw-semibold mb-3">{{ t('home.footer.quick_links.title') }}</h6>
+          <div class="col-6 col-lg-4">
+            <h6 class="fw-semibold mb-3">{{ t('home.footer.links_title', t('home.footer.logo_alt')) }}</h6>
             <ul class="list-unstyled footer-links">
-              <li><a href="#">{{ t('home.footer.quick_links.about') }}</a></li>
-              <li><a href="#">{{ t('home.footer.quick_links.how_it_works') }}</a></li>
-              <li><a href="#">{{ t('home.footer.quick_links.pricing') }}</a></li>
-              <li><a href="#">{{ t('home.footer.quick_links.support') }}</a></li>
-            </ul>
-          </div>
-
-          <div class="col-6 col-lg-2">
-            <h6 class="fw-semibold mb-3">{{ t('home.footer.legal.title') }}</h6>
-            <ul class="list-unstyled footer-links">
-              <li><a href="#">{{ t('home.footer.legal.privacy') }}</a></li>
-              <li><a href="#">{{ t('home.footer.legal.terms') }}</a></li>
-              <li><a href="#">{{ t('home.footer.legal.cookies') }}</a></li>
-              <li><a href="#">{{ t('home.footer.legal.compliance') }}</a></li>
+              <li>
+                <Link :href="route('docs.show', { slug: 'user-agreement' })">
+                {{ t('home.footer.links.user_agreement.label') }}
+                </Link>
+              </li>
+              <li>
+                <Link :href="route('docs.show', { slug: 'privacy-policy' })">
+                {{ t('home.footer.links.privacy.label') }}
+                </Link>
+              </li>
+              <li>
+                <Link :href="route('docs.show', { slug: 'procurement-rules' })">
+                {{ t('home.footer.links.regulations.label') }}
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -62,6 +62,8 @@ return [
     'col_comment' => 'Comment',
     'button_save_draft' => 'Save draft',
     'button_submit' => 'Submit commercial offer',
+    'submit_success_title' => 'Thank you for your proposal',
+    'submit_success_ok' => 'OK',
     'results_title' => 'Bidding results',
     'results_final_price' => 'Winner final price:',
     'col_winner_price' => 'Winner price',

@@ -44,6 +44,8 @@ return [
     'register_login_link' => 'Log in',
     'register_free_cta' => 'Free registration',
 
+    'back_to_home' => 'Back to home',
+
     'forgot_title' => 'Forgot password',
     'forgot_description' => 'Forgot your password? Enter your email and we will send you a password reset link.',
     'forgot_email_label' => 'Email',

@@ -77,7 +77,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label class="form-label">{{ t('auth.register_password_label') }}</label>
                         <div class="input-group input-group-flat">
                             <input :type="showPassword ? 'text' : 'password'" class="form-control"
@@ -102,7 +102,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label class="form-label">{{ t('auth.register_password_confirm_label') }}</label>
                         <div class="input-group input-group-flat">
                             <input :type="showPasswordConfirm ? 'text' : 'password'" class="form-control"
@@ -157,6 +157,10 @@ const submit = () => {
         <div class="text-center text-muted mt-3">
             {{ t('auth.register_already_have') }}
             <Link :href="route('login')" tabindex="-1">{{ t('auth.register_login_link') }}</Link>
+        </div>
+
+        <div class="text-center text-muted mt-1">
+            <Link href="/" tabindex="-1">{{ t('auth.back_to_home') }}</Link>
         </div>
     </GuestLayout>
 </template>

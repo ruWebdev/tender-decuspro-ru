@@ -44,6 +44,8 @@ return [
     'register_login_link' => 'Войти',
     'register_free_cta' => 'Бесплатная регистрация',
 
+    'back_to_home' => 'Вернуться на главную',
+
     'forgot_title' => 'Сброс пароля',
     'forgot_description' => 'Забыли пароль? Укажите ваш email, и мы отправим ссылку для сброса пароля.',
     'forgot_email_label' => 'Email',

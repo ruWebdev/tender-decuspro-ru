@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { usePage, Link, router } from '@inertiajs/vue3';
+import { Head, usePage, Link, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -40,6 +40,8 @@ const reject = () => {
 
 <template>
     <AppLayout>
+
+        <Head :title="t('proposals.view_customer_title')" />
         <div class="container mb-4">
             <h1 class="h2 mb-3">{{ t('proposals.view_customer_title') }}</h1>
 
@@ -81,7 +83,7 @@ const reject = () => {
                     'Назад к тендеру') }}</button>
                 <button class="btn btn-success" @click="approve">{{ t('proposals.action_approve', 'Принять') }}</button>
                 <button class="btn btn-outline-danger" @click="reject">{{ t('proposals.action_reject', 'Отклонить')
-                }}</button>
+                    }}</button>
             </div>
         </div>
     </AppLayout>

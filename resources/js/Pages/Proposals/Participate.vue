@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue';
-import { useForm, usePage, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -52,6 +52,8 @@ const form = useForm({
     items: buildItemsFromTender(),
 });
 
+const showSuccessModal = ref(false);
+
 const isExpired = computed(() => {
     if (!tender.value?.valid_until) {
         return false;
@@ -101,7 +103,11 @@ const submitProposal = () => {
     }
 
     form.transform((data) => ({ ...data, items: items.map(({ tender_item_id, price, comment }) => ({ tender_item_id, price, comment })) }))
-        .post(route('proposals.store', { tender: tender.value.id }));
+        .post(route('proposals.store', { tender: tender.value.id }), {
+            onSuccess: () => {
+                showSuccessModal.value = true;
+            },
+        });
 };
 
 const discardDraft = () => {
@@ -120,10 +126,17 @@ const withdraw = () => {
         onSuccess: () => router.visit(route('proposals.index')),
     });
 };
+
+const handleSuccessOk = () => {
+    showSuccessModal.value = false;
+    router.visit(route('proposals.index'));
+};
 </script>
 
 <template>
     <AppLayout>
+
+        <Head :title="t('proposals.participate_title')" />
         <div class="container mb-4">
             <h1 class="h2 mb-3">{{ t('proposals.participate_title') }}</h1>
 
@@ -220,12 +233,25 @@ const withdraw = () => {
                         {{ t('proposals.button_save_draft') }}
                     </button>
 
-                    <button type="button" @click="submitProposal" class="btn btn-primary"
+                    <button type="button" @click="submitProposal" class="btn btn-success"
                         :disabled="isFormDisabled || form.processing || !canSubmit">
                         {{ t('proposals.button_submit') }}
                     </button>
                 </div>
             </form>
+
+            <div v-if="showSuccessModal" class="modal-backdrop-custom">
+                <div class="modal-dialog-custom">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-3">{{ t('proposals.submit_success_title') }}</h5>
+                            <button type="button" class="btn btn-primary" @click="handleSuccessOk">
+                                {{ t('proposals.submit_success_ok') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div v-if="tender?.is_finished && winner" class="mt-4 card">
                 <div class="card-body">
@@ -257,3 +283,20 @@ const withdraw = () => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+.modal-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.modal-dialog-custom {
+    max-width: 400px;
+    width: 100%;
+}
+</style>

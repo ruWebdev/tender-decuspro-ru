@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useTranslations } from '@/Composables/useTranslations';
 
 const props = defineProps({
@@ -26,6 +26,8 @@ const formatDate = (value) => {
 
 <template>
     <AppLayout>
+
+        <Head :title="t('proposals.customer_index_title')" />
         <div class="container mb-4">
             <h1 class="h2 mb-3">{{ t('proposals.customer_index_title') }}</h1>
 

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'index_title' => 'Закупки',
+    'index_title' => 'Все тендеры',
     'index_total' => 'Всего закупок:',
     'index_empty' => 'Закупки пока не созданы.',
 

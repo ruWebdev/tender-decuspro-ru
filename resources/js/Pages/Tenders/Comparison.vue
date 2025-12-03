@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
@@ -80,6 +80,8 @@ const formatNumber = (value) => {
 
 <template>
     <AppLayout>
+
+        <Head :title="t('tenders.comparison_title')" />
         <div class="container mb-4">
             <h1 class="h2 mb-3">{{ t('tenders.comparison_title') }}</h1>
 

@@ -51,7 +51,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label class="form-label">
                             {{ t('auth.login_password_label') }}
                         </label>
@@ -60,7 +60,8 @@ const submit = () => {
                                 :placeholder="t('auth.login_password_placeholder')" autocomplete="off"
                                 v-model="form.password" :class="{ 'is-invalid': form.errors.password }" required>
                             <span class="input-group-text">
-                                <a href="#" class="link-secondary" data-bs-toggle="tooltip" @click.prevent="showPassword = !showPassword">
+                                <a href="#" class="link-secondary" data-bs-toggle="tooltip"
+                                    @click.prevent="showPassword = !showPassword">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                         stroke-linecap="round" stroke-linejoin="round">
@@ -77,7 +78,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="mb-2 mt-4">
+                    <div class="mb-3 mt-4">
                         <label class="form-check">
                             <input type="checkbox" class="form-check-input" v-model="form.remember" />
                             <span class="form-check-label">{{ t('auth.login_remember_me') }}</span>
@@ -98,6 +99,10 @@ const submit = () => {
         <div class="text-center text-muted mt-3">
             {{ t('auth.login_no_account') }}
             <Link :href="route('register')" tabindex="-1">{{ t('auth.login_register_link') }}</Link>
+        </div>
+
+        <div class="text-center text-muted mt-1">
+            <Link href="/" tabindex="-1">{{ t('auth.back_to_home') }}</Link>
         </div>
     </GuestLayout>
 </template>

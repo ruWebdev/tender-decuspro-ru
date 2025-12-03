@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Live procurement feed',
+    'title' => 'Welcome',
     'no_tenders' => 'No active tenders found.',
     'info_title' => 'Information',
     'info_text' => 'Welcome to the tender platform! Here you can create tenders and submit proposals.',

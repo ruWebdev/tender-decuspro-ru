@@ -48,7 +48,7 @@ class ProposalPolicy
             return false;
         }
 
-        return $proposal->status === 'draft';
+        return in_array($proposal->status, ['draft', 'withdrawn'], true);
     }
 
     /**

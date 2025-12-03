@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -81,25 +81,12 @@ const descriptionSnippet = (tender) => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('tenders.index_title')" />
     <div class="container mb-4">
-      <h1 class="h2 mb-3">{{ t('tenders.index_title') }}</h1>
+      <h1 class="h2 mb-4">{{ t('tenders.index_title') }}</h1>
 
-      <div class="mb-3 d-flex justify-content-between align-items-center">
-        <span class="text-muted" v-if="isCustomer">{{ t('tenders.index_total') }} {{ tendersPaginated.data.length
-          }}</span>
-        <span class="text-muted" v-else>{{ t('tenders.index_title') }}</span>
-        <Link v-if="isCustomer" :href="route('tenders.create')" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path d="M12 5l0 14" />
-          <path d="M5 12l14 0" />
-        </svg>
-        {{ t('tenders.button_create') }}
-        </Link>
-      </div>
-
-      <div v-if="tendersPaginated.data.length === 0" class="alert alert-info" role="alert">
+      <div v-if="tendersPaginated.data.length === 0" class="alert alert-info mb-4" role="alert">
         <div class="d-flex">
           <div>
             {{ t('tenders.index_empty') }}
@@ -108,7 +95,7 @@ const descriptionSnippet = (tender) => {
       </div>
 
       <div v-else class="table-responsive">
-        <div class="card">
+        <div class="card mb-4">
           <table class="table table-vcenter card-table">
             <thead>
               <tr>
@@ -137,7 +124,7 @@ const descriptionSnippet = (tender) => {
                 </td>
                 <td>
                   <span v-if="tender.is_finished" class="badge bg-success text-light">{{ t('tenders.status_finished')
-                  }}</span>
+                    }}</span>
                   <span v-else class="badge bg-primary text-light">{{ t('tenders.status_open') }}</span>
                 </td>
                 <td>{{ tender.items_count ?? 0 }}</td>

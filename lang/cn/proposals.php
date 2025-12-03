@@ -62,6 +62,8 @@ return [
     'col_comment' => '备注',
     'button_save_draft' => '保存草稿',
     'button_submit' => '提交商业报价',
+    'submit_success_title' => '感谢您的报价',
+    'submit_success_ok' => '确定',
     'results_title' => '竞价结果',
     'results_final_price' => '中标最终价格：',
     'col_winner_price' => '中标价格',

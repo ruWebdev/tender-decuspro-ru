@@ -1,5 +1,5 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
@@ -18,6 +18,8 @@ const formatDate = (value) => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('proposals.index_title')" />
     <div class="container mb-4">
       <h1 class="h2 mb-3">{{ t('proposals.index_title') }}</h1>
 

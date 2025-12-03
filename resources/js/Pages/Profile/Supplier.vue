@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -27,6 +27,8 @@ const submit = () => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('common.supplier_profile_title')" />
     <div class="container mb-4">
       <h1 class="h2 mb-3">{{ t('common.supplier_profile_title') }}</h1>
 

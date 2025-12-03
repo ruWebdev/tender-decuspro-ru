@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -114,6 +114,8 @@ const getCountdown = (targetDate) => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('home.title')" />
     <div class="home-page">
       <!-- Hero Section -->
       <section class="hero-section">
@@ -224,7 +226,7 @@ const getCountdown = (targetDate) => {
                   </div>
                   <h5 class="tender-card-title">{{ tender.title }}</h5>
                   <p class="tender-card-desc">{{ getTenderDescription(tender) || t('home.tenders.table.no_description')
-                    }}</p>
+                  }}</p>
                   <div class="countdown-box">
                     <div class="countdown-label">
                       <span class="me-1">⏱️</span>{{ t('home.closing_soon.closing_in') }}:

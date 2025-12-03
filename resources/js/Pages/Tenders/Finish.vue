@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
@@ -104,6 +104,8 @@ onMounted(() => {
 
 <template>
     <AppLayout>
+
+        <Head :title="t('tenders.finish_title')" />
         <div class="container mb-4">
             <h1 class="h2 mb-3">{{ t('tenders.finish_title') }}</h1>
 

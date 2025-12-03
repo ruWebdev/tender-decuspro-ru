@@ -61,6 +61,8 @@ return [
     'verify_resend_button' => '重新发送验证邮件',
     'verify_logout' => '退出',
 
+    'back_to_home' => '返回首页',
+
     'confirm_title' => '确认密码',
     'confirm_description' => '这是应用的安全区域。继续操作前，请确认您的密码。',
     'confirm_password_label' => '密码',

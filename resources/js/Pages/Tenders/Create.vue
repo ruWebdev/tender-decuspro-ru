@@ -1,6 +1,6 @@
 <script setup>
 import { onBeforeUnmount, ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
@@ -79,6 +79,8 @@ onBeforeUnmount(() => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('tenders.create_title')" />
     <div class="container mb-4">
       <h1 class="h2 mb-3">{{ t('tenders.create_title') }}</h1>
 

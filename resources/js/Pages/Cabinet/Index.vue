@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
@@ -125,6 +125,8 @@ const docStatusBadgeClass = (status) => {
 
 <template>
   <AppLayout>
+
+    <Head :title="t('common.cabinet_title')" />
     <div class="container mb-4">
       <h1 class="h2 mb-3">{{ t('common.cabinet_title') }}</h1>
 
@@ -255,15 +257,12 @@ const docStatusBadgeClass = (status) => {
               <h5 class="mb-0">{{ t('common.quick_links') }}</h5>
             </div>
             <div class="list-group list-group-flush">
-              <Link href="/" class="list-group-item list-group-item-action">
-              {{ t('common.main_page') }}
+              <Link href="/tenders" class="list-group-item list-group-item-action">
+              {{ t('nav.tenders') }}
               </Link>
               <Link href="/proposals" class="list-group-item list-group-item-action">
-              {{ t('common.all_proposals') }}
+              {{ t('nav.my_proposals') }}
               </Link>
-              <a href="#" class="list-group-item list-group-item-action">
-                {{ t('common.help') }}
-              </a>
             </div>
           </div>
         </div>
