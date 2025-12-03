@@ -210,6 +210,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/platform-suppliers', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'store'])->name('platform_suppliers.store');
                 Route::get('/platform-suppliers/{platformSupplier}/edit', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'edit'])->name('platform_suppliers.edit');
                 Route::put('/platform-suppliers/{platformSupplier}', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'update'])->name('platform_suppliers.update');
+                Route::post('/platform-suppliers/{platformSupplier}/invite', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'sendInvitation'])->name('platform_suppliers.invite');
                 Route::delete('/platform-suppliers/{platformSupplier}', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'destroy'])->name('platform_suppliers.destroy');
 
                 // Шаблоны уведомлений (только для администратора)

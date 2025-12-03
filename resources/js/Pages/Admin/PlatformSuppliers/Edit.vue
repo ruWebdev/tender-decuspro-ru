@@ -22,9 +22,15 @@ const form = useForm({
     email: props.supplier?.email || '',
     website: props.supplier?.website || '',
     comment: props.supplier?.comment || '',
-    language: props.supplier?.language || '',
+    language: props.supplier?.language || 'ru',
     invitation_sent: props.supplier?.invitation_sent || false,
 });
+
+const languageOptions = [
+    { value: 'ru', label: () => t('admin.platform_suppliers.languages.ru') },
+    { value: 'en', label: () => t('admin.platform_suppliers.languages.en') },
+    { value: 'cn', label: () => t('admin.platform_suppliers.languages.cn') },
+];
 
 const submit = () => {
     if (isEdit.value && props.supplier) {
@@ -89,8 +95,12 @@ const submit = () => {
 
                             <div class="col-md-3">
                                 <label class="form-label">{{ t('admin.platform_suppliers.form.language') }}</label>
-                                <input v-model="form.language" type="text" class="form-control"
-                                    :class="{ 'is-invalid': form.errors.language }" />
+                                <select v-model="form.language" class="form-select"
+                                    :class="{ 'is-invalid': form.errors.language }">
+                                    <option v-for="option in languageOptions" :key="option.value" :value="option.value">
+                                        {{ option.label() }}
+                                    </option>
+                                </select>
                                 <div v-if="form.errors.language" class="invalid-feedback">
                                     {{ form.errors.language }}
                                 </div>

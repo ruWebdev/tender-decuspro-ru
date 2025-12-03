@@ -32,6 +32,38 @@ const resetFilters = () => {
 const hasSuppliers = computed(() => suppliers.value && suppliers.value.data && suppliers.value.data.length > 0);
 
 const totalCount = computed(() => suppliers.value?.total || 0);
+
+const languageLabel = (code) => {
+    if (!code) {
+        return '-';
+    }
+
+    if (code === 'ru') {
+        return t('admin.platform_suppliers.languages.ru');
+    }
+
+    if (code === 'en') {
+        return t('admin.platform_suppliers.languages.en');
+    }
+
+    if (code === 'cn') {
+        return t('admin.platform_suppliers.languages.cn');
+    }
+
+    return code;
+};
+
+const sendInvitation = (supplier) => {
+    if (!supplier.email) {
+        alert(t('admin.platform_suppliers.invitation.no_email'));
+
+        return;
+    }
+
+    router.post(route('admin.platform_suppliers.invite', supplier.id), {}, {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -114,7 +146,7 @@ const totalCount = computed(() => suppliers.value?.total || 0);
                                     </span>
                                     <span v-else class="text-muted">-</span>
                                 </td>
-                                <td>{{ supplier.language || '-' }}</td>
+                                <td>{{ languageLabel(supplier.language) }}</td>
                                 <td>
                                     <span v-if="supplier.invitation_sent" class="badge bg-success">
                                         {{ t('admin.platform_suppliers.badges.yes') }}
@@ -122,6 +154,10 @@ const totalCount = computed(() => suppliers.value?.total || 0);
                                     <span v-else class="badge bg-secondary">
                                         {{ t('admin.platform_suppliers.badges.no') }}
                                     </span>
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2"
+                                        @click="sendInvitation(supplier)">
+                                        {{ t('admin.platform_suppliers.invitation.send') }}
+                                    </button>
                                 </td>
                                 <td class="text-end">
                                     <div class="btn-list flex-nowrap justify-content-end">

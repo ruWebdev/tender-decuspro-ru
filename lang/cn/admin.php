@@ -384,6 +384,19 @@ return [
             'yes' => '是',
             'no' => '否',
         ],
+        'languages' => [
+            'ru' => '俄语',
+            'en' => '英语',
+            'cn' => '中文',
+        ],
+        'invitation' => [
+            'send' => '发送',
+            'no_email' => '无法发送邀请：供应商邮箱未填写。',
+            'no_template' => '未找到“平台邀请”通知模板。',
+            'empty_body' => '邀请模板内容为空，无法发送邮件。',
+            'sent_success' => '已向供应商发送邀请。',
+            'sent_error' => '无法向供应商发送邀请，请检查SMTP设置。',
+        ],
     ],
 
     'notification_templates' => [

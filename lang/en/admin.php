@@ -390,6 +390,19 @@ return [
             'yes' => 'Yes',
             'no' => 'No',
         ],
+        'languages' => [
+            'ru' => 'Russian',
+            'en' => 'English',
+            'cn' => 'Chinese',
+        ],
+        'invitation' => [
+            'send' => 'Send',
+            'no_email' => 'Cannot send invitation: supplier email is not specified.',
+            'no_template' => 'Notification template "Platform invitation" not found.',
+            'empty_body' => 'Invitation template body is empty. Cannot send email.',
+            'sent_success' => 'Invitation has been sent to the supplier.',
+            'sent_error' => 'Failed to send invitation to the supplier. Please check SMTP settings.',
+        ],
     ],
 
     'notification_templates' => [

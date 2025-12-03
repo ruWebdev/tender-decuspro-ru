@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\NotificationTemplate;
 use App\Models\PlatformSupplier;
+use App\Services\SmtpBzService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -99,5 +103,89 @@ class AdminPlatformSuppliersController extends Controller
         $platformSupplier->delete();
 
         return redirect()->route('admin.platform_suppliers.index');
+    }
+
+    public function sendInvitation(PlatformSupplier $platformSupplier, SmtpBzService $smtpBzService): RedirectResponse
+    {
+        if (! $platformSupplier->email) {
+            return back()->with('error', __('admin.platform_suppliers.invitation.no_email'));
+        }
+
+        $locale = $platformSupplier->language ?: 'ru';
+
+        if (! in_array($locale, ['ru', 'en', 'cn'], true)) {
+            $locale = 'ru';
+        }
+
+        $template = NotificationTemplate::query()
+            ->where('type', NotificationTemplate::TYPE_PLATFORM_INVITATION)
+            ->first();
+
+        if (! $template) {
+            return back()->with('error', __('admin.platform_suppliers.invitation.no_template'));
+        }
+
+        $body = match ($locale) {
+            'en' => $template->body_en ?: ($template->body_ru ?? ''),
+            'cn' => $template->body_cn ?: ($template->body_ru ?? ''),
+            default => $template->body_ru ?? '',
+        };
+
+        if (trim($body) === '') {
+            return back()->with('error', __('admin.platform_suppliers.invitation.empty_body'));
+        }
+
+        $subject = trans('admin.notification_templates.types.platform_invitation', [], $locale);
+
+        $html = '<html><body><pre style="font-family: inherit; white-space: pre-wrap;">' . e($body) . '</pre></body></html>';
+
+        $success = false;
+
+        if ($smtpBzService->hasApiKey()) {
+            $result = $smtpBzService->send(
+                $platformSupplier->email,
+                $subject,
+                $html,
+                $body,
+            );
+
+            $success = $result['success'] ?? false;
+
+            if (! $success) {
+                Log::error('Platform supplier invitation via SMTP.bz failed', [
+                    'supplier_id' => $platformSupplier->id,
+                    'error' => $result['error'] ?? null,
+                    'status' => $result['status'] ?? null,
+                ]);
+            }
+        } else {
+            try {
+                Mail::send([], [], function ($message) use ($platformSupplier, $subject, $html, $body): void {
+                    $message->to($platformSupplier->email)
+                        ->subject($subject)
+                        ->setBody($html, 'text/html');
+
+                    if (trim($body) !== '') {
+                        $message->text($body);
+                    }
+                });
+
+                $success = true;
+            } catch (\Throwable $e) {
+                Log::error('Platform supplier invitation via SMTP failed', [
+                    'supplier_id' => $platformSupplier->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($success) {
+            $platformSupplier->invitation_sent = true;
+            $platformSupplier->save();
+
+            return back()->with('success', __('admin.platform_suppliers.invitation.sent_success'));
+        }
+
+        return back()->with('error', __('admin.platform_suppliers.invitation.sent_error'));
     }
 }
