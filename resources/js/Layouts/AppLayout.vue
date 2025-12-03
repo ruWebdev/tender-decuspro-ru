@@ -169,15 +169,15 @@ onUpdated(() => {
             <ul class="list-unstyled footer-contact">
               <li class="d-flex align-items-center mb-2">
                 <span class="footer-contact-icon me-2">📞</span>
-                <span>{{ t('home.contacts.phone.value') }}</span>
+                <span>{{ siteSettings.site_phone || t('home.contacts.phone.value') }}</span>
               </li>
               <li class="d-flex align-items-center mb-2">
                 <span class="footer-contact-icon me-2">✉️</span>
-                <span>{{ t('home.contacts.technical.value') }}</span>
+                <span>{{ siteSettings.site_email || t('home.contacts.technical.value') }}</span>
               </li>
               <li class="d-flex align-items-center">
                 <span class="footer-contact-icon me-2">📍</span>
-                <span>{{ t('home.footer.contact.address') }}</span>
+                <span>{{ siteSettings.site_address || t('home.footer.contact.address') }}</span>
               </li>
             </ul>
           </div>
