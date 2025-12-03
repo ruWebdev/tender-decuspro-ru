@@ -107,12 +107,18 @@ class AdminNotificationTemplatesController extends Controller
 
     protected function validatedData(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:50'],
             'body_ru' => ['required', 'string'],
             'body_en' => ['nullable', 'string'],
             'body_cn' => ['nullable', 'string'],
         ]);
+
+        // Колонки body_en/body_cn в БД NOT NULL, поэтому заменяем null на пустую строку
+        $data['body_en'] = $data['body_en'] ?? '';
+        $data['body_cn'] = $data['body_cn'] ?? '';
+
+        return $data;
     }
 }
