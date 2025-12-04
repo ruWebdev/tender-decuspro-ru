@@ -181,7 +181,7 @@ const isTenderSelected = (tenderId) => {
                                 <td>
                                     <div class="fw-bold">{{ mailing.name }}</div>
                                     <small class="text-muted">
-                                        <span class="badge" :class="statusClass(mailing.status)">
+                                        <span class="badge text-light" :class="statusClass(mailing.status)">
                                             {{ statusLabel(mailing.status) }}
                                         </span>
                                     </small>
@@ -262,9 +262,9 @@ const isTenderSelected = (tenderId) => {
                                 <input v-model.number="form.emails_limit" type="number" min="1" class="form-control"
                                     :class="{ 'is-invalid': formErrors.emails_limit }">
                                 <div v-if="formErrors.emails_limit" class="invalid-feedback">{{ formErrors.emails_limit
-                                    }}</div>
+                                }}</div>
                                 <small class="text-muted">{{ t('admin.platform_suppliers.mailing.emails_limit_hint')
-                                    }}</small>
+                                }}</small>
                             </div>
 
                             <div class="mb-3">
@@ -296,12 +296,12 @@ const isTenderSelected = (tenderId) => {
                                     {{ formErrors.language }}
                                 </div>
                                 <small class="text-muted">{{ t('admin.platform_suppliers.mailing.language_hint')
-                                    }}</small>
+                                }}</small>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">{{ t('admin.platform_suppliers.mailing.field_tenders')
-                                    }}</label>
+                                }}</label>
                                 <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
                                     <div v-if="!tenders || tenders.length === 0" class="text-muted">
                                         {{ t('admin.platform_suppliers.mailing.no_tenders') }}
@@ -315,19 +315,19 @@ const isTenderSelected = (tenderId) => {
                                     </div>
                                 </div>
                                 <small class="text-muted">{{ t('admin.platform_suppliers.mailing.tenders_hint')
-                                    }}</small>
+                                }}</small>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">{{ t('admin.platform_suppliers.mailing.field_company_filter')
-                                    }}</label>
+                                }}</label>
                                 <input v-model="form.company_filter" type="text" class="form-control"
                                     :class="{ 'is-invalid': formErrors.company_filter }"
                                     :placeholder="t('admin.platform_suppliers.mailing.company_filter_placeholder')">
                                 <div v-if="formErrors.company_filter" class="invalid-feedback">{{
                                     formErrors.company_filter }}</div>
                                 <small class="text-muted">{{ t('admin.platform_suppliers.mailing.company_filter_hint')
-                                    }}</small>
+                                }}</small>
                             </div>
 
                             <div class="alert alert-info mb-0">
