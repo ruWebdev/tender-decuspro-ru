@@ -141,10 +141,13 @@ class ProcessMailingJob implements ShouldQueue
             // Заменяем {{TendersList}} на список тендеров
             $body = str_replace('{{TendersList}}', $tendersHtml, $body);
 
+            // Тема письма берётся из названия рассылки, шаблон — как запасной вариант
+            $subject = $mailing->name ?: $template->name;
+
             // Отправляем письмо
             $result = $smtpBzService->send(
                 $supplier->email,
-                $template->name,
+                $subject,
                 $body
             );
 
