@@ -18,5 +18,11 @@ class PlatformSupplier extends Model
         'comment',
         'language',
         'invitation_sent',
+        'last_mailing_at',
+    ];
+
+    protected $casts = [
+        'invitation_sent' => 'boolean',
+        'last_mailing_at' => 'datetime',
     ];
 }

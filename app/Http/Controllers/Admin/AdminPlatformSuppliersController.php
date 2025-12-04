@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mailing;
 use App\Models\NotificationTemplate;
 use App\Models\PlatformSupplier;
+use App\Models\Tender;
 use App\Services\SmtpBzService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -103,6 +105,107 @@ class AdminPlatformSuppliersController extends Controller
         $platformSupplier->delete();
 
         return redirect()->route('admin.platform_suppliers.index');
+    }
+
+    public function mailing(): Response
+    {
+        $mailings = Mailing::with('notificationTemplate')
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        $templates = NotificationTemplate::select('id', 'name', 'type')->get();
+
+        $tenders = Tender::select('id', 'title')
+            ->where('status', 'active')
+            ->orderByDesc('created_at')
+            ->limit(100)
+            ->get();
+
+        // Подсчитываем потенциальных получателей
+        $totalSuppliers = PlatformSupplier::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->count();
+
+        return Inertia::render('Admin/PlatformSuppliers/Mailing', [
+            'mailings' => $mailings,
+            'templates' => $templates,
+            'tenders' => $tenders,
+            'total_suppliers' => $totalSuppliers,
+        ]);
+    }
+
+    public function storeMailing(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'emails_limit' => ['required', 'integer', 'min:1'],
+            'notification_template_id' => ['required', 'uuid', 'exists:notification_templates,id'],
+            'tender_ids' => ['nullable', 'array'],
+            'tender_ids.*' => ['uuid', 'exists:tenders,id'],
+            'company_filter' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        // Подсчитываем потенциальных получателей
+        $query = PlatformSupplier::whereNotNull('email')
+            ->where('email', '!=', '');
+
+        if (! empty($data['company_filter'])) {
+            $keywords = array_map('trim', explode(',', $data['company_filter']));
+            $keywords = array_filter($keywords);
+
+            if (! empty($keywords)) {
+                $query->where(function ($q) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        $q->orWhere('name', 'LIKE', '%' . $keyword . '%');
+                    }
+                });
+            }
+        }
+
+        $totalRecipients = $query->count();
+
+        Mailing::create([
+            'name' => $data['name'],
+            'emails_limit' => $data['emails_limit'],
+            'notification_template_id' => $data['notification_template_id'],
+            'tender_ids' => $data['tender_ids'] ?? [],
+            'company_filter' => $data['company_filter'] ?? null,
+            'status' => Mailing::STATUS_DRAFT,
+            'total_recipients' => $totalRecipients,
+        ]);
+
+        return redirect()->route('admin.platform_suppliers.mailing')
+            ->with('success', __('admin.platform_suppliers.mailing.created'));
+    }
+
+    public function startMailing(Mailing $mailing): RedirectResponse
+    {
+        if (! $mailing->canStart()) {
+            return back()->with('error', __('admin.platform_suppliers.mailing.cannot_start'));
+        }
+
+        $mailing->update(['status' => Mailing::STATUS_RUNNING]);
+
+        return back()->with('success', __('admin.platform_suppliers.mailing.started'));
+    }
+
+    public function stopMailing(Mailing $mailing): RedirectResponse
+    {
+        if (! $mailing->canStop()) {
+            return back()->with('error', __('admin.platform_suppliers.mailing.cannot_stop'));
+        }
+
+        $mailing->update(['status' => Mailing::STATUS_PAUSED]);
+
+        return back()->with('success', __('admin.platform_suppliers.mailing.stopped'));
+    }
+
+    public function destroyMailing(Mailing $mailing): RedirectResponse
+    {
+        $mailing->delete();
+
+        return redirect()->route('admin.platform_suppliers.mailing')
+            ->with('success', __('admin.platform_suppliers.mailing.deleted'));
     }
 
     public function sendInvitation(PlatformSupplier $platformSupplier, SmtpBzService $smtpBzService): RedirectResponse

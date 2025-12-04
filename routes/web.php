@@ -207,6 +207,11 @@ Route::middleware(['auth'])->group(function () {
                 // Поставщики площадки (справочник, только для администратора)
                 Route::get('/platform-suppliers', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'index'])->name('platform_suppliers.index');
                 Route::get('/platform-suppliers/create', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'create'])->name('platform_suppliers.create');
+                Route::get('/platform-suppliers/mailing', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'mailing'])->name('platform_suppliers.mailing');
+                Route::post('/platform-suppliers/mailing', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'storeMailing'])->name('platform_suppliers.mailing.store');
+                Route::post('/platform-suppliers/mailing/{mailing}/start', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'startMailing'])->name('platform_suppliers.mailing.start');
+                Route::post('/platform-suppliers/mailing/{mailing}/stop', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'stopMailing'])->name('platform_suppliers.mailing.stop');
+                Route::delete('/platform-suppliers/mailing/{mailing}', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'destroyMailing'])->name('platform_suppliers.mailing.destroy');
                 Route::post('/platform-suppliers', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'store'])->name('platform_suppliers.store');
                 Route::get('/platform-suppliers/{platformSupplier}/edit', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'edit'])->name('platform_suppliers.edit');
                 Route::put('/platform-suppliers/{platformSupplier}', [\App\Http\Controllers\Admin\AdminPlatformSuppliersController::class, 'update'])->name('platform_suppliers.update');

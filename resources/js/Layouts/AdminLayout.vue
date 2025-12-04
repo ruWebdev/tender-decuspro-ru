@@ -124,10 +124,24 @@ const isActiveContent = () => {
                                 </li>
                             </ul>
                         </div>
-                        <Link v-if="isAdmin" :href="route('admin.platform_suppliers.index')"
-                            :class="['btn btn-sm', isActive('/admin/platform-suppliers') ? 'btn-dark' : 'btn-outline-dark']">
-                        {{ t('admin.menu.platform_suppliers', 'Поставщики (справочник)') }}
-                        </Link>
+                        <div v-if="isAdmin" class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                :class="isActiveAny(['/admin/platform-suppliers', '/admin/platform-suppliers/mailing']) ? 'btn-dark' : 'btn-outline-dark'">
+                                {{ t('admin.menu.platform_suppliers', 'Справочник поставщиков') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.platform_suppliers.index')">
+                                    {{ t('admin.platform_suppliers.menu.catalog', 'Каталог') }}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link class="dropdown-item" :href="route('admin.platform_suppliers.mailing')">
+                                    {{ t('admin.platform_suppliers.menu.mailing', 'Рассылка') }}
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
 
                         <div v-if="isAdmin" class="dropdown">
                             <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"

@@ -27,3 +27,4 @@ Schedule::job(AutoRetenderJob::class)->everyFiveMinutes();
 Schedule::job(TranslateTendersJob::class)->hourly();
 Schedule::job(TranslateNotificationTemplatesJob::class)->hourly();
 Schedule::job(UpdateCnyRubRateJob::class)->daily();
+Schedule::job(\App\Jobs\ProcessMailingJob::class)->everyFiveMinutes();
