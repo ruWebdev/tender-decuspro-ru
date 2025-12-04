@@ -244,25 +244,11 @@ class AdminPlatformSuppliersController extends Controller
             $externalId = (string) ($item['ID'] ?? '');
             $parsedDate = trim((string) ($item['Parsed Date'] ?? ''));
 
-            // Поиск дубля: сначала по email, затем по website, затем по (name + location)
+            // Поиск дубля: только по email
             $existing = null;
 
             if ($email !== '') {
                 $existing = PlatformSupplier::where('email', $email)->first();
-            }
-
-            if (! $existing && $website !== '') {
-                $existing = PlatformSupplier::where('website', $website)->first();
-            }
-
-            if (! $existing && $name !== '') {
-                $query = PlatformSupplier::where('name', $name);
-
-                if ($location !== '') {
-                    $query->where('location', $location);
-                }
-
-                $existing = $query->first();
             }
 
             $attributes = [
