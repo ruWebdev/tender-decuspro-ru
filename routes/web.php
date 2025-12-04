@@ -266,9 +266,9 @@ Route::get('/lang/{locale}', function (string $locale) {
 Route::get('/wechat/webhook', [WeChatWebhookController::class, 'verify'])->name('wechat.webhook');
 Route::post('/wechat/webhook', [WeChatWebhookController::class, 'handle']);
 
-// Публичные документы
+// Публичный документ: общие условия для поставщиков
 Route::get('/docs/{slug}', [ContentPageController::class, 'show'])
-    ->whereIn('slug', ['user-agreement', 'privacy-policy', 'procurement-rules'])
+    ->whereIn('slug', ['supplier-terms'])
     ->name('docs.show');
 
 require __DIR__ . '/auth.php';

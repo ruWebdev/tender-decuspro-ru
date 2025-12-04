@@ -160,17 +160,9 @@ return [
         'logo_alt' => 'QBS · 招标平台',
         'note' => '版权所有',
         'links' => [
-            'user_agreement' => [
-                'label' => '用户协议',
-                'url' => '/docs/user-agreement',
-            ],
-            'privacy' => [
-                'label' => '隐私政策',
-                'url' => '/docs/privacy-policy',
-            ],
-            'regulations' => [
-                'label' => '采购规程',
-                'url' => '/docs/procurement-rules',
+            'supplier_terms' => [
+                'label' => 'LLC «QBS» 供应商通用条款、运营与隐私政策',
+                'url' => '/docs/supplier-terms',
             ],
         ],
     ],

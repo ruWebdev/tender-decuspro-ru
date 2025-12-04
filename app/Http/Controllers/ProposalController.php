@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Proposal;
 use App\Models\Tender;
+use App\Models\SystemSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -62,8 +63,11 @@ class ProposalController extends Controller
             ? 'Admin/Tenders/ProposalShow'
             : 'Proposals/ViewCustomer';
 
+        $cnyRubRate = (float) SystemSetting::getValue('cny_rub_rate', 0.0);
+
         return Inertia::render($component, [
             'proposal' => $proposal,
+            'cny_rub_rate' => $cnyRubRate,
         ]);
     }
 

@@ -220,6 +220,11 @@ return [
         ],
     ],
 
+    'proposals' => [
+        'price_rub_label' => 'рублей',
+        'price_cny_label' => 'юаней',
+    ],
+
     'content' => [
         'title' => 'Контент',
         'index_title' => 'Управление контентом',
@@ -243,9 +248,7 @@ return [
         'static_pages' => [
             'title' => 'Статические страницы',
             'pages' => [
-                'user_agreement' => 'Пользовательское соглашение',
-                'privacy_policy' => 'Политика конфиденциальности',
-                'procurement_rules' => 'Регламент проведения закупок',
+                'supplier_terms' => 'Общие условия, политика работы и конфиденциальности для поставщиков LLC «QBS».',
             ],
             'fields' => [
                 'title_ru' => 'Заголовок (RU)',

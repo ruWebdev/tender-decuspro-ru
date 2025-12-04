@@ -6,6 +6,15 @@ import { useTranslations } from '@/Composables/useTranslations';
 
 const page = usePage();
 const proposal = page.props.proposal;
+const cnyRubRate = computed(() => {
+    const raw = Number(page.props.cny_rub_rate ?? 0);
+
+    if (!Number.isFinite(raw) || raw <= 0) {
+        return 0;
+    }
+
+    return raw;
+});
 const { t } = useTranslations();
 
 const formatDate = (value) => {
@@ -24,6 +33,42 @@ const statusLabel = computed(() => {
     if (s === 'rejected') return t('proposals.status_rejected', 'Отклонено');
     return s || '-';
 });
+
+const formatNumber = (value) => {
+    const num = Number(value);
+
+    if (!Number.isFinite(num)) {
+        return '-';
+    }
+
+    return num.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+};
+
+const formatPriceCny = (item) => {
+    return formatNumber(item?.price ?? 0);
+};
+
+const formatPriceRub = (item) => {
+    const rate = cnyRubRate.value;
+
+    if (!rate) {
+        return '-';
+    }
+
+    const priceCny = Number(item?.price ?? 0);
+
+    if (!Number.isFinite(priceCny)) {
+        return '-';
+    }
+
+    const baseRub = priceCny * rate;
+    const withMarkup = baseRub * 1.31;
+
+    return formatNumber(withMarkup);
+};
 
 const backToTender = () => {
     if (proposal?.tender?.id) {
@@ -73,7 +118,17 @@ const reject = () => {
                                 <span class="badge bg-blue text-light">{{ item.tender_item?.quantity }}</span>
                             </td>
                             <td>{{ item.tender_item?.unit }}</td>
-                            <td><strong>{{ item.price }}</strong></td>
+                            <td>
+                                <strong>
+                                    <span v-if="cnyRubRate">
+                                        {{ formatPriceRub(item) }} {{ t('admin.proposals.price_rub_label') }}
+                                        ({{ formatPriceCny(item) }} {{ t('admin.proposals.price_cny_label') }})
+                                    </span>
+                                    <span v-else>
+                                        {{ formatPriceCny(item) }} {{ t('admin.proposals.price_cny_label') }}
+                                    </span>
+                                </strong>
+                            </td>
                             <td>{{ item.comment }}</td>
                         </tr>
                     </tbody>

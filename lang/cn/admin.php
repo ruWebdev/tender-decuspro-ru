@@ -220,6 +220,11 @@ return [
         ],
     ],
 
+    'proposals' => [
+        'price_rub_label' => '卢布',
+        'price_cny_label' => '元',
+    ],
+
     'content' => [
         'title' => '内容',
         'index_title' => '内容管理',
@@ -234,9 +239,7 @@ return [
         'static_pages' => [
             'title' => '静态页面',
             'pages' => [
-                'user_agreement' => '用户协议',
-                'privacy_policy' => '隐私政策',
-                'procurement_rules' => '采购规程',
+                'supplier_terms' => 'LLC «QBS» 供应商通用条款、运营与隐私政策',
             ],
             'fields' => [
                 'title_ru' => '标题 (RU)',

@@ -13,50 +13,23 @@ class AdminStaticPagesController extends Controller
 {
     public function edit(Request $request): Response
     {
-        $slugs = ['user-agreement', 'privacy-policy', 'procurement-rules'];
-        $pages = ContentPage::whereIn('slug', $slugs)->get()->keyBy('slug');
-
-        // Ensure pages exist
-        foreach ($slugs as $slug) {
-            if (!isset($pages[$slug])) {
-                $pages[$slug] = ContentPage::create([
-                    'slug' => $slug,
-                    'published' => true,
-                ]);
-            }
-        }
+        $slug = 'supplier-terms';
+        $page = ContentPage::firstOrCreate(
+            ['slug' => $slug],
+            ['published' => true],
+        );
 
         return Inertia::render('Admin/Content/StaticPages', [
             'pages' => [
-                'user_agreement' => [
-                    'slug' => 'user-agreement',
-                    'title_ru' => $pages['user-agreement']->title_ru,
-                    'title_en' => $pages['user-agreement']->title_en,
-                    'title_cn' => $pages['user-agreement']->title_cn,
-                    'body_ru' => $pages['user-agreement']->body_ru,
-                    'body_en' => $pages['user-agreement']->body_en,
-                    'body_cn' => $pages['user-agreement']->body_cn,
-                    'published' => $pages['user-agreement']->published,
-                ],
-                'privacy_policy' => [
-                    'slug' => 'privacy-policy',
-                    'title_ru' => $pages['privacy-policy']->title_ru,
-                    'title_en' => $pages['privacy-policy']->title_en,
-                    'title_cn' => $pages['privacy-policy']->title_cn,
-                    'body_ru' => $pages['privacy-policy']->body_ru,
-                    'body_en' => $pages['privacy-policy']->body_en,
-                    'body_cn' => $pages['privacy-policy']->body_cn,
-                    'published' => $pages['privacy-policy']->published,
-                ],
-                'procurement_rules' => [
-                    'slug' => 'procurement-rules',
-                    'title_ru' => $pages['procurement-rules']->title_ru,
-                    'title_en' => $pages['procurement-rules']->title_en,
-                    'title_cn' => $pages['procurement-rules']->title_cn,
-                    'body_ru' => $pages['procurement-rules']->body_ru,
-                    'body_en' => $pages['procurement-rules']->body_en,
-                    'body_cn' => $pages['procurement-rules']->body_cn,
-                    'published' => $pages['procurement-rules']->published,
+                'supplier_terms' => [
+                    'slug' => $slug,
+                    'title_ru' => $page->title_ru,
+                    'title_en' => $page->title_en,
+                    'title_cn' => $page->title_cn,
+                    'body_ru' => $page->body_ru,
+                    'body_en' => $page->body_en,
+                    'body_cn' => $page->body_cn,
+                    'published' => $page->published,
                 ],
             ],
         ]);
@@ -66,9 +39,7 @@ class AdminStaticPagesController extends Controller
     {
         $data = $request->validate([
             'pages' => ['required', 'array'],
-            'pages.user_agreement' => ['required', 'array'],
-            'pages.privacy_policy' => ['required', 'array'],
-            'pages.procurement_rules' => ['required', 'array'],
+            'pages.supplier_terms' => ['required', 'array'],
 
             'pages.*.slug' => ['required', 'string'],
             'pages.*.title_ru' => ['nullable', 'string'],

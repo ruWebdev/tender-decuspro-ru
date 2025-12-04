@@ -160,17 +160,9 @@ return [
         'logo_alt' => 'QBS · Tender platform',
         'note' => 'All rights reserved',
         'links' => [
-            'user_agreement' => [
-                'label' => 'User agreement',
-                'url' => '/docs/user-agreement',
-            ],
-            'privacy' => [
-                'label' => 'Privacy policy',
-                'url' => '/docs/privacy-policy',
-            ],
-            'regulations' => [
-                'label' => 'Procurement regulations',
-                'url' => '/docs/procurement-rules',
+            'supplier_terms' => [
+                'label' => 'General terms, operating and privacy policy for suppliers LLC "QBS".',
+                'url' => '/docs/supplier-terms',
             ],
         ],
     ],

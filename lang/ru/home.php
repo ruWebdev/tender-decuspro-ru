@@ -160,17 +160,9 @@ return [
         'logo_alt' => 'QBS · Тендерная площадка',
         'note' => 'Все права защищены',
         'links' => [
-            'user_agreement' => [
-                'label' => 'Пользовательское соглашение',
-                'url' => '/docs/user-agreement',
-            ],
-            'privacy' => [
-                'label' => 'Политика конфиденциальности',
-                'url' => '/docs/privacy-policy',
-            ],
-            'regulations' => [
-                'label' => 'Регламент проведения закупок',
-                'url' => '/docs/procurement-rules',
+            'supplier_terms' => [
+                'label' => 'Общие условия, политика работы и конфиденциальности для поставщиков LLC «QBS».',
+                'url' => '/docs/supplier-terms',
             ],
         ],
     ],

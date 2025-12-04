@@ -147,18 +147,8 @@ onUpdated(() => {
             <h6 class="fw-semibold mb-3">{{ t('home.footer.links_title', t('home.footer.logo_alt')) }}</h6>
             <ul class="list-unstyled footer-links">
               <li>
-                <Link :href="route('docs.show', { slug: 'user-agreement' })">
-                {{ t('home.footer.links.user_agreement.label') }}
-                </Link>
-              </li>
-              <li>
-                <Link :href="route('docs.show', { slug: 'privacy-policy' })">
-                {{ t('home.footer.links.privacy.label') }}
-                </Link>
-              </li>
-              <li>
-                <Link :href="route('docs.show', { slug: 'procurement-rules' })">
-                {{ t('home.footer.links.regulations.label') }}
+                <Link :href="route('docs.show', { slug: 'supplier-terms' })">
+                {{ t('home.footer.links.supplier_terms.label') }}
                 </Link>
               </li>
             </ul>

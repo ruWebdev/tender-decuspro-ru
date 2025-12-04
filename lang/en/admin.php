@@ -226,6 +226,11 @@ return [
         ],
     ],
 
+    'proposals' => [
+        'price_rub_label' => 'rubles',
+        'price_cny_label' => 'yuans',
+    ],
+
     'content' => [
         'title' => 'Content',
         'index_title' => 'Content Management',
@@ -240,9 +245,7 @@ return [
         'static_pages' => [
             'title' => 'Static Pages',
             'pages' => [
-                'user_agreement' => 'User Agreement',
-                'privacy_policy' => 'Privacy Policy',
-                'procurement_rules' => 'Procurement Regulations',
+                'supplier_terms' => 'General terms, operating and privacy policy for suppliers LLC "QBS".',
             ],
             'fields' => [
                 'title_ru' => 'Title (RU)',
