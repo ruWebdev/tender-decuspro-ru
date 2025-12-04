@@ -161,27 +161,60 @@ class AdminPlatformSuppliersController extends Controller
         if (! $path || ! is_readable($path)) {
             return back()->with('error', __('admin.platform_suppliers.import.cannot_read'));
         }
+        $handle = fopen($path, 'rb');
 
-        $content = file_get_contents($path);
-
-        if ($content === false || trim($content) === '') {
-            return back()->with('error', __('admin.platform_suppliers.import.empty_file'));
-        }
-
-        $items = json_decode($content, true);
-
-        if (! is_array($items)) {
-            return back()->with('error', __('admin.platform_suppliers.import.invalid_file'));
+        if ($handle === false) {
+            return back()->with('error', __('admin.platform_suppliers.import.cannot_read'));
         }
 
         $created = 0;
         $skipped = 0;
 
-        foreach ($items as $item) {
-            if (! is_array($item)) {
+        // читаем заголовок
+        $header = fgetcsv($handle, 0, ',', '"');
+
+        if ($header === false || count($header) === 0) {
+            fclose($handle);
+
+            return back()->with('error', __('admin.platform_suppliers.import.empty_file'));
+        }
+
+        // строим карту индекс -> имя колонки
+        $headerMap = [];
+
+        foreach ($header as $index => $name) {
+            $name = trim((string) $name);
+
+            if ($name === '') {
+                continue;
+            }
+
+            $headerMap[$index] = $name;
+        }
+
+        if (empty($headerMap)) {
+            fclose($handle);
+
+            return back()->with('error', __('admin.platform_suppliers.import.invalid_file'));
+        }
+
+        while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
+            // пропускаем полностью пустые строки
+            if (count(array_filter($row, static fn($v) => trim((string) $v) !== '')) === 0) {
                 $skipped++;
 
                 continue;
+            }
+
+            $item = [];
+
+            foreach ($row as $index => $value) {
+                if (! array_key_exists($index, $headerMap)) {
+                    continue;
+                }
+
+                $columnName = $headerMap[$index];
+                $item[$columnName] = $value;
             }
 
             $name = trim((string) ($item['Company Name'] ?? ''));
@@ -277,6 +310,8 @@ class AdminPlatformSuppliersController extends Controller
                 $created++;
             }
         }
+
+        fclose($handle);
 
         return redirect()->route('admin.platform_suppliers.index')
             ->with('success', trans('admin.platform_suppliers.import.success', ['created' => $created, 'skipped' => $skipped]));

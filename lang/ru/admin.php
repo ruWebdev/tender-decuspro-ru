@@ -410,8 +410,8 @@ return [
             'no' => 'Нет',
         ],
         'import' => [
-            'title' => 'Импорт поставщиков из JSON',
-            'field_file' => 'Файл JSON',
+            'title' => 'Импорт поставщиков из CSV',
+            'field_file' => 'CSV файл',
             'field_language' => 'Язык поставщика',
             'submit' => 'Загрузить',
             'hint' => 'Файл должен содержать заголовок Company Name, Primary Email, Primary Phone, Website и другие поля. Неизвестные поля будут добавлены в комментарий построчно.',
