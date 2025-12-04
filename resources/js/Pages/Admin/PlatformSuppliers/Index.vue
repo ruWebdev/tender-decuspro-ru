@@ -31,6 +31,67 @@ const resetFilters = () => {
 
 const hasSuppliers = computed(() => suppliers.value && suppliers.value.data && suppliers.value.data.length > 0);
 
+// Импорт из CSV
+const showImportModal = ref(false);
+const importForm = ref({
+    file: null,
+    language: 'ru',
+});
+const importErrors = ref({});
+const isImporting = ref(false);
+
+const languages = [
+    { value: 'ru', label: 'Русский' },
+    { value: 'en', label: 'English' },
+    { value: 'cn', label: '中文' },
+];
+
+const openImportModal = () => {
+    importForm.value = {
+        file: null,
+        language: 'ru',
+    };
+    importErrors.value = {};
+    showImportModal.value = true;
+};
+
+const closeImportModal = () => {
+    showImportModal.value = false;
+};
+
+const handleFileChange = (event) => {
+    const files = event.target.files;
+    importForm.value.file = files && files.length ? files[0] : null;
+};
+
+const submitImport = () => {
+    if (!importForm.value.file) {
+        importErrors.value = { file: t('admin.platform_suppliers.import.validation.file_required') };
+
+        return;
+    }
+
+    isImporting.value = true;
+    importErrors.value = {};
+
+    const formData = new FormData();
+    formData.append('file', importForm.value.file);
+    formData.append('language', importForm.value.language);
+
+    router.post(route('admin.platform_suppliers.import_csv'), formData, {
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            isImporting.value = false;
+            closeImportModal();
+        },
+        onError: (errors) => {
+            importErrors.value = errors;
+            isImporting.value = false;
+        },
+    });
+};
+
 const totalCount = computed(() => suppliers.value?.total || 0);
 
 const languageLabel = (code) => {
@@ -79,9 +140,14 @@ const deleteSupplier = (supplier) => {
         <div class="admin-platform-suppliers">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">{{ t('admin.platform_suppliers.index_title') }}</h1>
-                <Link :href="route('admin.platform_suppliers.create')" class="btn btn-primary">
-                {{ t('admin.platform_suppliers.actions.create') }}
-                </Link>
+                <div class="btn-list">
+                    <button type="button" class="btn btn-outline-secondary" @click="openImportModal">
+                        {{ t('admin.platform_suppliers.actions.import_csv') }}
+                    </button>
+                    <Link :href="route('admin.platform_suppliers.create')" class="btn btn-primary">
+                    {{ t('admin.platform_suppliers.actions.create') }}
+                    </Link>
+                </div>
             </div>
 
             <div class="card mb-4">
@@ -194,6 +260,54 @@ const deleteSupplier = (supplier) => {
                             </li>
                         </ul>
                     </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Модальное окно импорта CSV -->
+        <div v-if="showImportModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ t('admin.platform_suppliers.import.title') }}</h5>
+                        <button type="button" class="btn-close" @click="closeImportModal"></button>
+                    </div>
+                    <form @submit.prevent="submitImport">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">{{ t('admin.platform_suppliers.import.field_file') }}
+                                    *</label>
+                                <input type="file" class="form-control" accept=".json,application/json,.csv,text/csv"
+                                    :class="{ 'is-invalid': importErrors.file }" @change="handleFileChange">
+                                <div v-if="importErrors.file" class="invalid-feedback">{{ importErrors.file }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">{{ t('admin.platform_suppliers.import.field_language') }}
+                                    *</label>
+                                <select v-model="importForm.language" class="form-select"
+                                    :class="{ 'is-invalid': importErrors.language }">
+                                    <option v-for="lang in languages" :key="lang.value" :value="lang.value">
+                                        {{ lang.label }}
+                                    </option>
+                                </select>
+                                <div v-if="importErrors.language" class="invalid-feedback">
+                                    {{ importErrors.language }}
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mb-0">
+                                {{ t('admin.platform_suppliers.import.hint') }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="closeImportModal">
+                                {{ t('common.cancel', 'Отмена') }}
+                            </button>
+                            <button type="submit" class="btn btn-primary" :disabled="isImporting">
+                                {{ t('admin.platform_suppliers.import.submit') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

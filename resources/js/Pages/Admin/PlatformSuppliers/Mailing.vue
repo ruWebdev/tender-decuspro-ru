@@ -25,9 +25,16 @@ const form = ref({
     notification_template_id: '',
     tender_ids: [],
     company_filter: '',
+    language: 'ru',
 });
 const formErrors = ref({});
 const isSubmitting = ref(false);
+
+const languages = [
+    { value: 'ru', label: 'Русский' },
+    { value: 'en', label: 'English' },
+    { value: 'cn', label: '中文' },
+];
 
 const openCreateModal = () => {
     form.value = {
@@ -36,6 +43,7 @@ const openCreateModal = () => {
         notification_template_id: '',
         tender_ids: [],
         company_filter: '',
+        language: 'ru',
     };
     formErrors.value = {};
     showCreateModal.value = true;
@@ -273,6 +281,22 @@ const isTenderSelected = (tenderId) => {
                                 <div v-if="formErrors.notification_template_id" class="invalid-feedback">
                                     {{ formErrors.notification_template_id }}
                                 </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">{{ t('admin.platform_suppliers.mailing.field_language') }}
+                                    *</label>
+                                <select v-model="form.language" class="form-select"
+                                    :class="{ 'is-invalid': formErrors.language }">
+                                    <option v-for="lang in languages" :key="lang.value" :value="lang.value">
+                                        {{ lang.label }}
+                                    </option>
+                                </select>
+                                <div v-if="formErrors.language" class="invalid-feedback">
+                                    {{ formErrors.language }}
+                                </div>
+                                <small class="text-muted">{{ t('admin.platform_suppliers.mailing.language_hint')
+                                    }}</small>
                             </div>
 
                             <div class="mb-3">

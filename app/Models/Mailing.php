@@ -23,6 +23,7 @@ class Mailing extends Model
         'notification_template_id',
         'tender_ids',
         'company_filter',
+        'language',
         'status',
         'sent_count',
         'total_recipients',

@@ -54,10 +54,22 @@ class AdminPlatformSuppliersController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
+            'all_phones' => ['nullable', 'string'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
+            'all_emails' => ['nullable', 'string'],
             'website' => ['nullable', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'contact_person' => ['nullable', 'string', 'max:255'],
+            'established_year' => ['nullable', 'integer', 'min:0'],
+            'employee_count' => ['nullable', 'integer', 'min:0'],
             'comment' => ['nullable', 'string'],
+            'description' => ['nullable', 'string'],
+            'main_products' => ['nullable', 'string'],
+            'export_markets' => ['nullable', 'string'],
+            'certifications' => ['nullable', 'string'],
+            'keyword' => ['nullable', 'string', 'max:255'],
             'language' => ['nullable', 'string', 'max:5'],
             'invitation_sent' => ['nullable', 'boolean'],
         ]);
@@ -73,10 +85,22 @@ class AdminPlatformSuppliersController extends Controller
             'supplier' => [
                 'id' => $platformSupplier->id,
                 'name' => $platformSupplier->name,
+                'title' => $platformSupplier->title,
                 'phone' => $platformSupplier->phone,
+                'all_phones' => $platformSupplier->all_phones,
                 'email' => $platformSupplier->email,
+                'all_emails' => $platformSupplier->all_emails,
                 'website' => $platformSupplier->website,
+                'location' => $platformSupplier->location,
+                'contact_person' => $platformSupplier->contact_person,
+                'established_year' => $platformSupplier->established_year,
+                'employee_count' => $platformSupplier->employee_count,
                 'comment' => $platformSupplier->comment,
+                'description' => $platformSupplier->description,
+                'main_products' => $platformSupplier->main_products,
+                'export_markets' => $platformSupplier->export_markets,
+                'certifications' => $platformSupplier->certifications,
+                'keyword' => $platformSupplier->keyword,
                 'language' => $platformSupplier->language,
                 'invitation_sent' => (bool) $platformSupplier->invitation_sent,
             ],
@@ -87,10 +111,22 @@ class AdminPlatformSuppliersController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
+            'all_phones' => ['nullable', 'string'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
+            'all_emails' => ['nullable', 'string'],
             'website' => ['nullable', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'contact_person' => ['nullable', 'string', 'max:255'],
+            'established_year' => ['nullable', 'integer', 'min:0'],
+            'employee_count' => ['nullable', 'integer', 'min:0'],
             'comment' => ['nullable', 'string'],
+            'description' => ['nullable', 'string'],
+            'main_products' => ['nullable', 'string'],
+            'export_markets' => ['nullable', 'string'],
+            'certifications' => ['nullable', 'string'],
+            'keyword' => ['nullable', 'string', 'max:255'],
             'language' => ['nullable', 'string', 'max:5'],
             'invitation_sent' => ['nullable', 'boolean'],
         ]);
@@ -107,6 +143,145 @@ class AdminPlatformSuppliersController extends Controller
         return redirect()->route('admin.platform_suppliers.index');
     }
 
+    public function importFromCsv(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'file' => ['required', 'file'],
+            'language' => ['required', 'string', 'in:ru,en,cn'],
+        ]);
+
+        $file = $data['file'];
+
+        if (! $file->isValid()) {
+            return back()->with('error', __('admin.platform_suppliers.import.invalid_file'));
+        }
+
+        $path = $file->getRealPath();
+
+        if (! $path || ! is_readable($path)) {
+            return back()->with('error', __('admin.platform_suppliers.import.cannot_read'));
+        }
+
+        $content = file_get_contents($path);
+
+        if ($content === false || trim($content) === '') {
+            return back()->with('error', __('admin.platform_suppliers.import.empty_file'));
+        }
+
+        $items = json_decode($content, true);
+
+        if (! is_array($items)) {
+            return back()->with('error', __('admin.platform_suppliers.import.invalid_file'));
+        }
+
+        $created = 0;
+        $skipped = 0;
+
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                $skipped++;
+
+                continue;
+            }
+
+            $name = trim((string) ($item['Company Name'] ?? ''));
+            $email = trim((string) ($item['Primary Email'] ?? ''));
+            $phone = trim((string) ($item['Primary Phone'] ?? ''));
+            $website = trim((string) ($item['Website'] ?? ''));
+
+            if ($name === '' && $email === '' && $phone === '' && $website === '') {
+                $skipped++;
+
+                continue;
+            }
+
+            $allEmails = trim((string) ($item['All Emails'] ?? ''));
+            $allPhones = trim((string) ($item['All Phones'] ?? ''));
+
+            $location = trim((string) ($item['Location'] ?? ''));
+            $contactPerson = trim((string) ($item['Contact Person'] ?? ''));
+            $establishedYear = $item['Established Year'] ?? null;
+            $employeeCount = $item['Employee Count'] ?? null;
+            $description = trim((string) ($item['Description'] ?? ''));
+            $mainProducts = trim((string) ($item['Main Products'] ?? ''));
+            $exportMarkets = trim((string) ($item['Export Markets'] ?? ''));
+            $certifications = trim((string) ($item['Certifications'] ?? ''));
+            $keyword = trim((string) ($item['Keyword'] ?? ''));
+            $title = trim((string) ($item['Title'] ?? ''));
+            $externalId = (string) ($item['ID'] ?? '');
+            $parsedDate = trim((string) ($item['Parsed Date'] ?? ''));
+
+            // Поиск дубля: сначала по email, затем по website, затем по (name + location)
+            $existing = null;
+
+            if ($email !== '') {
+                $existing = PlatformSupplier::where('email', $email)->first();
+            }
+
+            if (! $existing && $website !== '') {
+                $existing = PlatformSupplier::where('website', $website)->first();
+            }
+
+            if (! $existing && $name !== '') {
+                $query = PlatformSupplier::where('name', $name);
+
+                if ($location !== '') {
+                    $query->where('location', $location);
+                }
+
+                $existing = $query->first();
+            }
+
+            $attributes = [
+                'name' => $name !== '' ? $name : ($email ?: $phone ?: 'Supplier'),
+                'title' => $title !== '' ? $title : null,
+                'email' => $email !== '' ? $email : null,
+                'all_emails' => $allEmails !== '' ? $allEmails : null,
+                'phone' => $phone !== '' ? $phone : null,
+                'all_phones' => $allPhones !== '' ? $allPhones : null,
+                'website' => $website !== '' ? $website : null,
+                'location' => $location !== '' ? $location : null,
+                'contact_person' => $contactPerson !== '' ? $contactPerson : null,
+                'established_year' => $establishedYear !== null ? (int) $establishedYear : null,
+                'employee_count' => $employeeCount !== null ? (int) $employeeCount : null,
+                'description' => $description !== '' ? $description : null,
+                'main_products' => $mainProducts !== '' ? $mainProducts : null,
+                'export_markets' => $exportMarkets !== '' ? $exportMarkets : null,
+                'certifications' => $certifications !== '' ? $certifications : null,
+                'keyword' => $keyword !== '' ? $keyword : null,
+                'source_external_id' => $externalId !== '' ? $externalId : null,
+                'parsed_at' => $parsedDate !== '' ? $parsedDate : null,
+                'language' => $data['language'],
+                'invitation_sent' => false,
+            ];
+
+            if ($existing) {
+                // Дополняем только пустые поля у существующей записи
+                $update = [];
+
+                foreach ($attributes as $key => $value) {
+                    if ($value === null || $value === '') {
+                        continue;
+                    }
+
+                    if ($existing->{$key} === null || $existing->{$key} === '') {
+                        $update[$key] = $value;
+                    }
+                }
+
+                if (! empty($update)) {
+                    $existing->update($update);
+                }
+            } else {
+                PlatformSupplier::create($attributes);
+                $created++;
+            }
+        }
+
+        return redirect()->route('admin.platform_suppliers.index')
+            ->with('success', trans('admin.platform_suppliers.import.success', ['created' => $created, 'skipped' => $skipped]));
+    }
+
     public function mailing(): Response
     {
         $mailings = Mailing::with('notificationTemplate')
@@ -116,7 +291,8 @@ class AdminPlatformSuppliersController extends Controller
         $templates = NotificationTemplate::select('id', 'name', 'type')->get();
 
         $tenders = Tender::select('id', 'title')
-            ->where('status', 'active')
+            ->where('status', 'open')
+            ->where('is_finished', false)
             ->orderByDesc('created_at')
             ->limit(100)
             ->get();
@@ -143,6 +319,7 @@ class AdminPlatformSuppliersController extends Controller
             'tender_ids' => ['nullable', 'array'],
             'tender_ids.*' => ['uuid', 'exists:tenders,id'],
             'company_filter' => ['nullable', 'string', 'max:1000'],
+            'language' => ['required', 'string', 'in:ru,en,cn'],
         ]);
 
         // Подсчитываем потенциальных получателей
@@ -170,6 +347,7 @@ class AdminPlatformSuppliersController extends Controller
             'notification_template_id' => $data['notification_template_id'],
             'tender_ids' => $data['tender_ids'] ?? [],
             'company_filter' => $data['company_filter'] ?? null,
+            'language' => $data['language'],
             'status' => Mailing::STATUS_DRAFT,
             'total_recipients' => $totalRecipients,
         ]);

@@ -129,8 +129,8 @@ class ProcessMailingJob implements ShouldQueue
                 continue;
             }
 
-            // Получаем тело письма на языке поставщика
-            $locale = $supplier->language ?: 'ru';
+            // Получаем тело письма на языке рассылки
+            $locale = $mailing->language ?: 'ru';
             $bodyField = 'body_' . $locale;
             $body = $template->{$bodyField} ?: $template->body_ru;
 
