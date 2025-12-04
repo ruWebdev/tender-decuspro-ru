@@ -115,11 +115,15 @@ const statusClass = (status) => {
 };
 
 const progressPercent = (mailing) => {
-    if (!mailing.total_recipients || mailing.total_recipients === 0) {
+    const limit = mailing.emails_limit && mailing.emails_limit > 0
+        ? mailing.emails_limit
+        : mailing.total_recipients;
+
+    if (!limit || limit === 0) {
         return 0;
     }
 
-    return Math.round((mailing.sent_count / mailing.total_recipients) * 100);
+    return Math.round((mailing.sent_count / limit) * 100);
 };
 
 const canStart = (mailing) => {
@@ -199,7 +203,10 @@ const isTenderSelected = (tenderId) => {
                                             </div>
                                         </div>
                                         <span class="text-muted small">
-                                            {{ mailing.sent_count }} / {{ mailing.total_recipients }}
+                                            {{ mailing.sent_count }} /
+                                            {{ mailing.emails_limit && mailing.emails_limit > 0
+                                                ? mailing.emails_limit
+                                                : mailing.total_recipients }}
                                         </span>
                                     </div>
                                 </td>

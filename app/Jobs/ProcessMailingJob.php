@@ -144,12 +144,28 @@ class ProcessMailingJob implements ShouldQueue
             // Тема письма берётся из названия рассылки, шаблон — как запасной вариант
             $subject = $mailing->name ?: $template->name;
 
+            Log::info('ProcessMailingJob: подготовка отправки письма', [
+                'mailing_id' => $mailing->id,
+                'mailing_name' => $mailing->name,
+                'template_name' => $template->name,
+                'subject' => $subject,
+                'to' => $supplier->email,
+            ]);
+
             // Отправляем письмо
             $result = $smtpBzService->send(
                 $supplier->email,
                 $subject,
                 $body
             );
+
+            Log::info('ProcessMailingJob: отправка завершена', [
+                'mailing_id' => $mailing->id,
+                'to' => $supplier->email,
+                'subject' => $subject,
+                'success' => $result['success'] ?? false,
+                'status' => $result['status'] ?? null,
+            ]);
 
             // Логируем результат
             MailingLog::create([
