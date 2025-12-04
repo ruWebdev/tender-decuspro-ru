@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\TranslateTenderJob;
+use App\Models\ProposalItem;
 use App\Models\Tender;
 use App\Models\TenderChat;
 use Illuminate\Http\RedirectResponse;
@@ -101,6 +102,24 @@ class TenderController extends Controller
     {
         $tender->load('items');
 
+        $itemIds = $tender->items->pluck('id')->all();
+
+        $bestPrices = [];
+
+        if (! empty($itemIds)) {
+            $bestPrices = ProposalItem::query()
+                ->whereIn('tender_item_id', $itemIds)
+                ->whereHas('proposal', function ($query) use ($tender) {
+                    $query->where('tender_id', $tender->id)
+                        ->where('status', 'submitted');
+                })
+                ->selectRaw('tender_item_id, MIN(price) as best_price')
+                ->groupBy('tender_item_id')
+                ->pluck('best_price', 'tender_item_id')
+                ->map(fn($value) => (float) $value)
+                ->all();
+        }
+
         $publicQuestions = $tender->questions()
             ->where('is_public', true)
             ->with(['user:id,name'])
@@ -167,6 +186,7 @@ class TenderController extends Controller
             'questions' => $publicQuestions,
             'my_proposal' => $myProposal,
             'chat' => $chatData,
+            'best_prices' => $bestPrices,
         ]);
     }
 

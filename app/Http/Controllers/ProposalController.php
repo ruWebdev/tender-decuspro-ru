@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proposal;
+use App\Models\ProposalItem;
 use App\Models\Tender;
 use App\Models\SystemSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -128,12 +130,83 @@ class ProposalController extends Controller
     {
         $user = $request->user();
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'items' => ['required', 'array', 'min:1'],
             'items.*.tender_item_id' => ['required', 'uuid'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
             'items.*.comment' => ['nullable', 'string'],
         ]);
+
+        if ($user && method_exists($user, 'isSupplier') && $user->isSupplier()) {
+            $validator->after(function ($validator) use ($tender): void {
+                $data = $validator->getData();
+                $items = $data['items'] ?? [];
+
+                if (! is_array($items) || count($items) === 0) {
+                    return;
+                }
+
+                $itemIds = collect($items)
+                    ->pluck('tender_item_id')
+                    ->filter()
+                    ->unique()
+                    ->all();
+
+                if (empty($itemIds)) {
+                    return;
+                }
+
+                $bestPrices = ProposalItem::query()
+                    ->whereIn('tender_item_id', $itemIds)
+                    ->whereHas('proposal', function ($query) use ($tender) {
+                        $query->where('tender_id', $tender->id)
+                            ->where('status', 'submitted');
+                    })
+                    ->selectRaw('tender_item_id, MIN(price) as best_price')
+                    ->groupBy('tender_item_id')
+                    ->pluck('best_price', 'tender_item_id');
+
+                if ($bestPrices->isEmpty()) {
+                    return;
+                }
+
+                foreach ($items as $index => $item) {
+                    $tenderItemId = $item['tender_item_id'] ?? null;
+                    $price = $item['price'] ?? null;
+
+                    if (! $tenderItemId || $price === '' || $price === null) {
+                        continue;
+                    }
+
+                    if (! $bestPrices->has($tenderItemId)) {
+                        continue;
+                    }
+
+                    $best = (float) $bestPrices[$tenderItemId];
+
+                    if ($best <= 0.0) {
+                        continue;
+                    }
+
+                    $candidate = (float) $price;
+
+                    if ($candidate <= 0.0) {
+                        continue;
+                    }
+
+                    $threshold = $best * 0.99;
+
+                    if ($candidate > $threshold) {
+                        $validator->errors()->add(
+                            "items.$index.price",
+                            __('proposals.price_must_be_lower_than_best'),
+                        );
+                    }
+                }
+            });
+        }
+
+        $validated = $validator->validate();
 
         $proposal = Proposal::firstOrCreate(
             [

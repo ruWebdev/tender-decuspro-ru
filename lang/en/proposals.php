@@ -92,4 +92,5 @@ return [
     'back_to_tender' => 'Back to tender',
     'action_approve' => 'Approve',
     'action_reject' => 'Reject',
+    'price_must_be_lower_than_best' => 'The new price for this item must be at least 1% lower than the current minimum price.',
 ];

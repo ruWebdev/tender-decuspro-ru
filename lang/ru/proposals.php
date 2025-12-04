@@ -92,4 +92,5 @@ return [
     'back_to_tender' => 'Назад к тендеру',
     'action_approve' => 'Принять',
     'action_reject' => 'Отклонить',
+    'price_must_be_lower_than_best' => 'Новая цена по этой позиции должна быть хотя бы на 1% ниже текущей минимальной цены.',
 ];

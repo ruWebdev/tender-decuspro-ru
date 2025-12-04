@@ -8,6 +8,7 @@ const page = usePage();
 const { t } = useTranslations();
 
 const tender = computed(() => page.props.tender);
+const bestPrices = computed(() => page.props.best_prices || {});
 const authUser = computed(() => page.props.auth?.user || null);
 const authUserId = computed(() => authUser.value?.id || null);
 const roleNames = computed(() => authUser.value?.role_names || []);
@@ -98,6 +99,34 @@ const formatTime = (tender) => {
 const formatDateOnly = (value) => {
   if (!value) return '-';
   return new Date(value).toLocaleDateString(jsLocale.value, { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+
+const formatNumber = (value) => {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return '-';
+  }
+
+  return Number(value).toFixed(2);
+};
+
+const bestPriceForItem = (item) => {
+  if (!item || !item.id) {
+    return null;
+  }
+
+  const raw = bestPrices.value?.[item.id];
+
+  if (raw === null || raw === undefined) {
+    return null;
+  }
+
+  const num = Number(raw);
+
+  if (!Number.isFinite(num)) {
+    return null;
+  }
+
+  return num;
 };
 
 // Q&A
@@ -204,6 +233,7 @@ const submitChatMessage = () => {
                       <th>{{ t('tenders.col_item_title') }}</th>
                       <th>{{ t('tenders.col_quantity') }}</th>
                       <th>{{ t('tenders.col_unit') }}</th>
+                      <th>{{ t('tenders.col_best_price') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -211,6 +241,7 @@ const submitChatMessage = () => {
                       <td>{{ itemTitle(item) }}</td>
                       <td>{{ item.quantity }}</td>
                       <td>{{ item.unit || '-' }}</td>
+                      <td>{{ formatNumber(bestPriceForItem(item)) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -249,7 +280,7 @@ const submitChatMessage = () => {
                   :placeholder="t('tenders.qa_ask_placeholder')"
                   :class="{ 'is-invalid': questionForm.errors.question }"></textarea>
                 <div v-if="questionForm.errors.question" class="invalid-feedback">{{ questionForm.errors.question
-                  }}</div>
+                }}</div>
                 <div class="mt-2 d-flex justify-content-end">
                   <button class="btn btn-primary" :disabled="questionForm.processing || !questionForm.question.trim()"
                     @click="submitQuestion">
@@ -281,7 +312,7 @@ const submitChatMessage = () => {
               :action="route('proposals.withdraw', { proposal: myProposal.id })" method="post" class="d-inline">
               <input type="hidden" name="_method" value="POST" />
               <button type="submit" class="btn btn-outline-danger">{{ t('proposals.action_withdraw', 'Отозвать')
-                }}</button>
+              }}</button>
             </form>
 
             <Link v-if="isCustomer" :href="route('tenders.comparison', { tender: tender.id })"
