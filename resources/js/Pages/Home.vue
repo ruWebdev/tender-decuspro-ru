@@ -62,7 +62,7 @@ const faqItems = computed(() => [
 const statsItems = computed(() => [
   { value: siteSettings.value.stats_tenders || '500+', label: t('home.stats.tenders.label') },
   { value: siteSettings.value.stats_vendors || '1200+', label: t('home.stats.vendors.label') },
-  { value: siteSettings.value.stats_total_value || '$50M+', label: t('home.stats.total_value.label') },
+  { value: siteSettings.value.stats_total_value || '¥50M+', label: t('home.stats.total_value.label') },
   { value: siteSettings.value.stats_success_rate || '98%', label: t('home.stats.success_rate.label') },
 ]);
 
@@ -226,7 +226,7 @@ const getCountdown = (targetDate) => {
                   </div>
                   <h5 class="tender-card-title">{{ tender.title }}</h5>
                   <p class="tender-card-desc">{{ getTenderDescription(tender) || t('home.tenders.table.no_description')
-                  }}</p>
+                    }}</p>
                   <div class="countdown-box">
                     <div class="countdown-label">
                       <span class="me-1">⏱️</span>{{ t('home.closing_soon.closing_in') }}:

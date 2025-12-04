@@ -58,7 +58,7 @@ return [
     'col_item_title' => 'Позиция',
     'col_quantity' => 'Количество',
     'col_unit' => 'Ед. изм.',
-    'col_price' => 'Цена, ₽',
+    'col_price' => 'Цена, ¥',
     'col_comment' => 'Комментарий',
     'button_save_draft' => 'Сохранить черновик',
     'button_submit' => 'Отправить коммерческое предложение',

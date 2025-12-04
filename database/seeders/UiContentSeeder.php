@@ -23,7 +23,7 @@ class UiContentSeeder extends Seeder
             ['key' => 'home.stats.tenders.label', 'ru' => 'Активных тендеров', 'en' => 'Active Tenders', 'cn' => '活跃招标'],
             ['key' => 'home.stats.vendors.value', 'ru' => '1200+', 'en' => '1200+', 'cn' => '1200+'],
             ['key' => 'home.stats.vendors.label', 'ru' => 'Зарегистрированных поставщиков', 'en' => 'Registered Vendors', 'cn' => '注册供应商'],
-            ['key' => 'home.stats.total_value.value', 'ru' => '$50M+', 'en' => '$50M+', 'cn' => '$50M+'],
+            ['key' => 'home.stats.total_value.value', 'ru' => '¥50M+', 'en' => '¥50M+', 'cn' => '¥50M+'],
             ['key' => 'home.stats.total_value.label', 'ru' => 'Общая стоимость', 'en' => 'Total Value', 'cn' => '总价值'],
             ['key' => 'home.stats.success_rate.value', 'ru' => '98%', 'en' => '98%', 'cn' => '98%'],
             ['key' => 'home.stats.success_rate.label', 'ru' => 'Успешных сделок', 'en' => 'Success Rate', 'cn' => '成功率'],

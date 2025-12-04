@@ -13,6 +13,8 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 // Tabler Icons
 import * as TablerIcons from '@tabler/icons-vue';
 
+import { handleMetrikaOnNavigation } from './utils/yandexMetrika';
+
 // Initialize Tabler
 function initializeTabler() {
     if (window.tabler) {
@@ -35,6 +37,7 @@ createInertiaApp({
             setup() {
                 onMounted(() => {
                     initializeTabler();
+                    handleMetrikaOnNavigation();
                 });
             }
         });
@@ -65,4 +68,11 @@ router.on('navigate', () => {
             try { initializeTabler(); } catch { }
         }, { once: true });
     }
+
+    try {
+        handleMetrikaOnNavigation();
+    } catch {
+        // глушим ошибки метрики, чтобы не ломать приложение
+    }
 });
+

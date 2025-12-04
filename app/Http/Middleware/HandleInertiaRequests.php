@@ -66,7 +66,7 @@ class HandleInertiaRequests extends Middleware
                     'site_address' => SystemSetting::getValue('site_address', ''),
                     'stats_tenders' => SystemSetting::getValue('stats_tenders', '500+'),
                     'stats_vendors' => SystemSetting::getValue('stats_vendors', '1200+'),
-                    'stats_total_value' => SystemSetting::getValue('stats_total_value', '$50M+'),
+                    'stats_total_value' => SystemSetting::getValue('stats_total_value', '¥50M+'),
                     'stats_success_rate' => SystemSetting::getValue('stats_success_rate', '98%'),
                 ]
             ),

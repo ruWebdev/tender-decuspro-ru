@@ -38,7 +38,7 @@ class HomeController extends Controller
             )
             ->withCount('items')
             ->orderByDesc('created_at')
-            ->limit(5)
+            ->limit(6)
             ->get();
 
         $overrides = UiContent::getOverridesFor(app()->getLocale(), 'home.');

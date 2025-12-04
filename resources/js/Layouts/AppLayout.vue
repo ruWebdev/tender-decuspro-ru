@@ -168,16 +168,8 @@ onUpdated(() => {
             <h6 class="fw-semibold mb-3">{{ t('home.footer.contact.title') }}</h6>
             <ul class="list-unstyled footer-contact">
               <li class="d-flex align-items-center mb-2">
-                <span class="footer-contact-icon me-2">📞</span>
-                <span>{{ siteSettings.site_phone || t('home.contacts.phone.value') }}</span>
-              </li>
-              <li class="d-flex align-items-center mb-2">
                 <span class="footer-contact-icon me-2">✉️</span>
                 <span>{{ siteSettings.site_email || t('home.contacts.technical.value') }}</span>
-              </li>
-              <li class="d-flex align-items-center">
-                <span class="footer-contact-icon me-2">📍</span>
-                <span>{{ siteSettings.site_address || t('home.footer.contact.address') }}</span>
               </li>
             </ul>
           </div>
