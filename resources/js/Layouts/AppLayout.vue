@@ -33,6 +33,16 @@ const logout = () => {
 
 const currentYear = new Date().getFullYear();
 
+const isQrModalOpen = ref(false);
+
+const openQrModal = () => {
+  isQrModalOpen.value = true;
+};
+
+const closeQrModal = () => {
+  isQrModalOpen.value = false;
+};
+
 onMounted(() => {
   nextTick(() => { if (window.tabler) { try { window.tabler.init(); } catch { } } });
 });
@@ -48,10 +58,10 @@ onUpdated(() => {
       <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
           <Link href="/" class="navbar-brand d-flex align-items-center">
-          <div class="brand-icon">
-            <span class="brand-icon-text">📄</span>
-          </div>
-          <span class="brand-text ms-2 fw-bold">{{ siteName }}</span>
+            <div class="brand-icon">
+              <span class="brand-icon-text">📄</span>
+            </div>
+            <span class="brand-text ms-2 fw-bold">{{ siteName }}</span>
           </Link>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -148,20 +158,18 @@ onUpdated(() => {
             <ul class="list-unstyled footer-links">
               <li>
                 <Link :href="route('docs.show', { slug: 'supplier-terms' })">
-                {{ t('home.footer.links.supplier_terms.label') }}
+                  {{ t('home.footer.links.supplier_terms.label') }}
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div class="col-lg-4">
-            <h6 class="fw-semibold mb-3">{{ t('home.footer.contact.title') }}</h6>
-            <ul class="list-unstyled footer-contact">
-              <li class="d-flex align-items-center mb-2">
-                <span class="footer-contact-icon me-2">✉️</span>
-                <span>{{ siteSettings.site_email || t('home.contacts.technical.value') }}</span>
-              </li>
-            </ul>
+          <div class="col-lg-4 text-end">
+            <div class="footer-contact text-end">
+              <div class="qr-thumbnail-wrapper" @click="openQrModal">
+                <img src="/assets/images/wechat-qr.png" class="img-fluid qr-thumbnail" alt="">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -172,6 +180,13 @@ onUpdated(() => {
         </div>
       </div>
     </footer>
+
+    <div v-if="isQrModalOpen" class="qr-modal-backdrop" @click.self="closeQrModal">
+      <div class="qr-modal-dialog">
+        <button type="button" class="btn-close btn-close-white qr-modal-close" @click="closeQrModal"></button>
+        <img src="/assets/images/wechat-qr.png" class="img-fluid qr-modal-image" alt="">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -241,6 +256,11 @@ onUpdated(() => {
   color: rgba(255, 255, 255, 0.6);
 }
 
+.footer-contact.text-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .footer-social-link {
   width: 36px;
   height: 36px;
@@ -261,5 +281,55 @@ onUpdated(() => {
 
 .text-white-50 {
   color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.qr-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.qr-modal-dialog {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+  padding: 1rem;
+  background: #000;
+  border-radius: 0.5rem;
+}
+
+.qr-modal-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.qr-modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.qr-thumbnail-wrapper {
+  width: 120px;
+  padding: 4px;
+  background: #fff;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.qr-thumbnail-wrapper:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.qr-thumbnail {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 </style>
