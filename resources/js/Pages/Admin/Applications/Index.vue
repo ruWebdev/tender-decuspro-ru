@@ -1,10 +1,42 @@
 <script setup>
-import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/Composables/useTranslations';
 
 const { t } = useTranslations();
+
+const page = usePage();
+
+const currentLocale = computed(() => page.props.locale || 'ru');
+
+const jsLocale = computed(() => {
+    if (currentLocale.value === 'en') {
+        return 'en-US';
+    }
+
+    if (currentLocale.value === 'cn') {
+        return 'zh-CN';
+    }
+
+    return 'ru-RU';
+});
+
+const formatDateTime = (value) => {
+    if (!value) {
+        return '-';
+    }
+
+    const d = new Date(value);
+
+    return d.toLocaleString(jsLocale.value, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+};
 
 const props = defineProps({
     proposals: Object,
@@ -83,6 +115,32 @@ const getStatusLabel = (status) => {
 
     return s || '-';
 };
+
+const getStatusBadgeClass = (status) => {
+    const s = status;
+
+    if (s === 'submitted') {
+        return 'badge bg-info text-light';
+    }
+
+    if (s === 'draft') {
+        return 'badge bg-secondary text-light';
+    }
+
+    if (s === 'withdrawn') {
+        return 'badge bg-dark text-light';
+    }
+
+    if (s === 'approved') {
+        return 'badge bg-success text-light';
+    }
+
+    if (s === 'rejected') {
+        return 'badge bg-danger text-light';
+    }
+
+    return 'badge bg-secondary text-light';
+};
 </script>
 
 <template>
@@ -93,12 +151,12 @@ const getStatusLabel = (status) => {
             </div>
 
             <div class="card">
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div v-if="proposals.data.length === 0" class="text-muted">
                         {{ t('admin.applications.empty', 'Заявки пока отсутствуют.') }}
                     </div>
 
-                    <div v-else class="table-responsive">
+                    <div v-else>
                         <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
@@ -115,8 +173,11 @@ const getStatusLabel = (status) => {
                                     <td>{{ proposal.id }}</td>
                                     <td>{{ proposal.tender?.title }}</td>
                                     <td>{{ proposal.user?.name }}</td>
-                                    <td>{{ getStatusLabel(proposal.status) }}</td>
-                                    <td>{{ proposal.created_at }}</td>
+                                    <td>
+                                        <span :class="getStatusBadgeClass(proposal.status)">{{
+                                            getStatusLabel(proposal.status) }}</span>
+                                    </td>
+                                    <td>{{ formatDateTime(proposal.created_at) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -143,16 +204,19 @@ const getStatusLabel = (status) => {
                             <dd class="col-8">{{ selectedProposal.tender?.title }}</dd>
 
                             <dt class="col-4">{{ t('admin.applications.table.col_status', 'Статус') }}</dt>
-                            <dd class="col-8">{{ getStatusLabel(selectedProposal.status) }}</dd>
+                            <dd class="col-8">
+                                <span :class="getStatusBadgeClass(selectedProposal.status)">{{
+                                    getStatusLabel(selectedProposal.status) }}</span>
+                            </dd>
 
                             <dt class="col-4">{{ t('admin.applications.table.col_created_at', 'Дата заявки') }}</dt>
-                            <dd class="col-8">{{ selectedProposal.created_at }}</dd>
+                            <dd class="col-8">{{ formatDateTime(selectedProposal.created_at) }}</dd>
                         </dl>
 
                         <hr />
 
                         <h6 class="mb-2">{{ t('admin.applications.offcanvas.supplier_info', 'Информация о поставщике')
-                            }}</h6>
+                        }}</h6>
                         <dl class="row small">
                             <dt class="col-4">{{ t('common.name', 'Имя') }}</dt>
                             <dd class="col-8">{{ selectedProposal.user?.name }}</dd>
@@ -178,14 +242,14 @@ const getStatusLabel = (status) => {
                                 <thead>
                                     <tr>
                                         <th>{{ t('proposals.col_item_title', 'Позиция') }}</th>
-                                        <th>{{ t('proposals.col_quantity', 'Количество') }}</th>
+                                        <th>{{ t('proposals.col_quantity', 'Кол-во') }}</th>
                                         <th>{{ t('proposals.col_unit', 'Ед. изм.') }}</th>
                                         <th>{{ t('proposals.col_price', 'Цена') }}</th>
-                                        <th>{{ t('proposals.col_comment', 'Комментарий') }}</th>
+                                        <th>{{ t('proposals.col_comment', 'Комм.') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in selectedProposal.items" :key="item.id">
+                                    <tr class="small" v-for="item in selectedProposal.items" :key="item.id">
                                         <td>{{ item.tender_item?.title || t('proposals.fallback_item', 'Позиция') }}
                                         </td>
                                         <td>{{ item.tender_item?.quantity }}</td>
