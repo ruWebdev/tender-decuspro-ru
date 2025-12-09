@@ -217,6 +217,8 @@ return [
             'title' => '申请详情',
             'proposal_info' => '申请信息',
             'supplier_info' => '供应商信息',
+            'positions_title' => '申请中的项目',
+            'positions_empty' => '此申请没有找到项目。',
         ],
     ],
 

@@ -17,6 +17,7 @@ class AdminApplicationsController extends Controller
                 'user:id,name,email,is_blocked',
                 'user.supplierProfile:id,user_id,company_name,contact_data',
                 'tender:id,title,status,is_finished',
+                'items.tenderItem',
             ])
             ->orderByDesc('created_at');
 

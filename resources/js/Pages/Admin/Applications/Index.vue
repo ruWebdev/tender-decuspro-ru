@@ -44,6 +44,45 @@ const rejectProposal = () => {
         },
     });
 };
+
+const formatNumber = (value) => {
+    const num = Number(value);
+
+    if (!Number.isFinite(num)) {
+        return '-';
+    }
+
+    return num.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+};
+
+const getStatusLabel = (status) => {
+    const s = status;
+
+    if (s === 'submitted') {
+        return t('proposals.status_submitted', 'Отправлено');
+    }
+
+    if (s === 'draft') {
+        return t('proposals.status_draft', 'Черновик');
+    }
+
+    if (s === 'withdrawn') {
+        return t('proposals.status_withdrawn', 'Отозвано');
+    }
+
+    if (s === 'approved') {
+        return t('proposals.status_approved', 'Принято');
+    }
+
+    if (s === 'rejected') {
+        return t('proposals.status_rejected', 'Отклонено');
+    }
+
+    return s || '-';
+};
 </script>
 
 <template>
@@ -76,7 +115,7 @@ const rejectProposal = () => {
                                     <td>{{ proposal.id }}</td>
                                     <td>{{ proposal.tender?.title }}</td>
                                     <td>{{ proposal.user?.name }}</td>
-                                    <td>{{ proposal.status }}</td>
+                                    <td>{{ getStatusLabel(proposal.status) }}</td>
                                     <td>{{ proposal.created_at }}</td>
                                 </tr>
                             </tbody>
@@ -104,7 +143,7 @@ const rejectProposal = () => {
                             <dd class="col-8">{{ selectedProposal.tender?.title }}</dd>
 
                             <dt class="col-4">{{ t('admin.applications.table.col_status', 'Статус') }}</dt>
-                            <dd class="col-8">{{ selectedProposal.status }}</dd>
+                            <dd class="col-8">{{ getStatusLabel(selectedProposal.status) }}</dd>
 
                             <dt class="col-4">{{ t('admin.applications.table.col_created_at', 'Дата заявки') }}</dt>
                             <dd class="col-8">{{ selectedProposal.created_at }}</dd>
@@ -113,7 +152,7 @@ const rejectProposal = () => {
                         <hr />
 
                         <h6 class="mb-2">{{ t('admin.applications.offcanvas.supplier_info', 'Информация о поставщике')
-                        }}</h6>
+                            }}</h6>
                         <dl class="row small">
                             <dt class="col-4">{{ t('common.name', 'Имя') }}</dt>
                             <dd class="col-8">{{ selectedProposal.user?.name }}</dd>
@@ -127,6 +166,40 @@ const rejectProposal = () => {
                             <dt class="col-4">{{ t('common.phone', 'Телефон') }}</dt>
                             <dd class="col-8">{{ selectedProposal.user?.supplier_profile?.contact_data?.phone }}</dd>
                         </dl>
+
+                        <hr />
+
+                        <h6 class="mb-2">
+                            {{ t('admin.applications.offcanvas.positions_title', 'Позиции в заявке') }}
+                        </h6>
+
+                        <div v-if="selectedProposal.items && selectedProposal.items.length" class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>{{ t('proposals.col_item_title', 'Позиция') }}</th>
+                                        <th>{{ t('proposals.col_quantity', 'Количество') }}</th>
+                                        <th>{{ t('proposals.col_unit', 'Ед. изм.') }}</th>
+                                        <th>{{ t('proposals.col_price', 'Цена') }}</th>
+                                        <th>{{ t('proposals.col_comment', 'Комментарий') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in selectedProposal.items" :key="item.id">
+                                        <td>{{ item.tender_item?.title || t('proposals.fallback_item', 'Позиция') }}
+                                        </td>
+                                        <td>{{ item.tender_item?.quantity }}</td>
+                                        <td>{{ item.tender_item?.unit }}</td>
+                                        <td>{{ formatNumber(item.price) }}</td>
+                                        <td>{{ item.comment }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-else class="text-muted small">
+                            {{ t('admin.applications.offcanvas.positions_empty', 'Позиции для этой заявки не найдены.')
+                            }}
+                        </div>
                     </div>
 
                     <div class="offcanvas-footer d-flex justify-content-end gap-2">

@@ -223,6 +223,8 @@ return [
             'title' => 'Application details',
             'proposal_info' => 'Application information',
             'supplier_info' => 'Supplier information',
+            'positions_title' => 'Items in proposal',
+            'positions_empty' => 'No items found for this application.',
         ],
     ],
 
