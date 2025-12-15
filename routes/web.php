@@ -12,6 +12,7 @@ use App\Http\Controllers\ContentPageController;
 use App\Http\Controllers\DeepSeekController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ParserPlatformSuppliersController;
+use App\Http\Controllers\ParserTenderImportController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ProposalTotalController;
 use App\Http\Controllers\SupplierProfileController;
@@ -34,11 +35,15 @@ Route::prefix('parser')->middleware('parser.cors')->group(function () {
     // OPTIONS preflight для CORS
     Route::options('/platform-suppliers/check', fn() => response('', 204));
     Route::options('/platform-suppliers/store', fn() => response('', 204));
+    Route::options('/tenders/import', fn() => response('', 204));
 
     Route::post('/platform-suppliers/check', [ParserPlatformSuppliersController::class, 'check'])
         ->name('parser.platform_suppliers.check');
     Route::post('/platform-suppliers/store', [ParserPlatformSuppliersController::class, 'store'])
         ->name('parser.platform_suppliers.store');
+
+    Route::post('/tenders/import', [ParserTenderImportController::class, 'store'])
+        ->name('parser.tenders.import');
 });
 
 Route::get('/dashboard', [CabinetController::class, 'index'])

@@ -52,6 +52,11 @@ class TenderItem extends Model
         return $this->hasMany(ProposalItem::class);
     }
 
+    public function supplierOffers(): HasMany
+    {
+        return $this->hasMany(TenderItemSupplierOffer::class);
+    }
+
     public function getTitleAttribute($value): string
     {
         $locale = app()->getLocale();
